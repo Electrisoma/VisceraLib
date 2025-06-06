@@ -1,8 +1,6 @@
 @file:Suppress("UnstableApiUsage")
 
 import dev.ithundxr.silk.ChangelogText
-import java.io.ByteArrayOutputStream
-
 
 plugins {
     id("dev.architectury.loom")

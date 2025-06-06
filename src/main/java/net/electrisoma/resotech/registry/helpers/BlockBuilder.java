@@ -1,7 +1,5 @@
 package net.electrisoma.resotech.registry.helpers;
 
-import net.electrisoma.resotech.registry.ResoTechBlocks;
-
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 
@@ -18,6 +16,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+@SuppressWarnings("unused")
 public class BlockBuilder {
     private static final List<BlockBuilder> ALL_BUILDERS = new ArrayList<>();
 

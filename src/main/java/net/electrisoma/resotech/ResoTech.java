@@ -10,7 +10,7 @@ import com.mojang.logging.LogUtils;
 
 import org.slf4j.Logger;
 
-
+@SuppressWarnings("unused")
 public class ResoTech {
 	public static final String MOD_ID = "resotech";
 	public static final String NAME = "ResoTech";

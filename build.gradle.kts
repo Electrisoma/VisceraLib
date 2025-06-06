@@ -82,7 +82,7 @@ tasks.build {
 }
 
 // Global control over Modmuss Publish
-tasks.create("templatePublish") {
+tasks.register("templatePublish") {
     when (val platform = System.getenv("PLATFORM")) {
         "all" -> {
             dependsOn(tasks.build,

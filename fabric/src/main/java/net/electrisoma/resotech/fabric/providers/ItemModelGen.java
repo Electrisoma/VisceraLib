@@ -14,6 +14,7 @@ import net.minecraft.world.level.ItemLike;
 
 import java.util.function.Supplier;
 
+@SuppressWarnings({"unused", "UnusedReturnValue"})
 public class ItemModelGen extends ItemModelProvider {
     public ItemModelGen(PackOutput output, ExistingFileHelper exFileHelper) {
         super(output, ResoTech.MOD_ID, exFileHelper);

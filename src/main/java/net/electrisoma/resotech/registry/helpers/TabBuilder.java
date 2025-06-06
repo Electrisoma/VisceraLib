@@ -2,8 +2,6 @@ package net.electrisoma.resotech.registry.helpers;
 
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.electrisoma.resotech.ResoTech;
-import net.electrisoma.resotech.registry.ResoTechBlocks;
-import net.electrisoma.resotech.registry.ResoTechItems;
 import net.electrisoma.resotech.registry.ResoTechTabs;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -20,6 +18,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+@SuppressWarnings("unused")
 public class TabBuilder {
     private static final List<TabBuilder> ALL_BUILDERS = new ArrayList<>();
 

@@ -3,7 +3,6 @@ package net.electrisoma.resotech.fabric.providers;
 import net.electrisoma.resotech.ResoTech;
 import net.electrisoma.resotech.registry.ResoTechBlocks;
 import net.electrisoma.resotech.registry.ResoTechItems;
-import net.electrisoma.resotech.registry.ResoTechTabs;
 
 import io.github.fabricators_of_create.porting_lib.data.LanguageProvider;
 
@@ -22,7 +21,6 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.core.Registry;
 
 import com.google.common.base.Supplier;
 
@@ -168,10 +166,8 @@ public class LangGen extends LanguageProvider {
         add(entity.getDescriptionId(), name);
     }
     public void add(Enchantment ench, String name) {
-        Registry<Enchantment> enchantmentRegistry = (Registry<Enchantment>) Registries.ENCHANTMENT;
-        ResourceLocation key = enchantmentRegistry.getKey(ench);
-        assert key != null;
-        add("enchantment." + key.toLanguageKey(), name);
+        ResourceLocation key = Registries.ENCHANTMENT.registry();
+        add("enchantment." + key.getNamespace() + "." + key.getPath(), name);
     }
     public void add(MobEffect effect, String name) {
         add(effect.getDescriptionId(), name);
@@ -190,9 +186,7 @@ public class LangGen extends LanguageProvider {
         return toEnglishName(BuiltInRegistries.ENTITY_TYPE.getKey(entity).getPath());
     }
     private String autoName(Enchantment ench) {
-        Registry<Enchantment> enchantmentRegistry = (Registry<Enchantment>) Registries.ENCHANTMENT;
-        ResourceLocation key = enchantmentRegistry.getKey(ench);
-        assert key != null;
+        ResourceLocation key = Registries.ENCHANTMENT.registry();
         return toEnglishName(key.getPath());
     }
     private String autoName(MobEffect effect) {

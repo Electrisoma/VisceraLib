@@ -1,17 +1,13 @@
 package net.electrisoma.resotech.fabric;
 
 import io.github.fabricators_of_create.porting_lib.data.ExistingFileHelper;
-import net.createmod.catnip.lang.Lang;
 import net.electrisoma.resotech.ResoTech;
 import net.electrisoma.resotech.fabric.providers.LangGen;
-import net.electrisoma.resotech.registry.ResoTechBlocks;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator.Pack.Factory;
 import net.electrisoma.resotech.fabric.providers.BlockstateGen;
 import net.electrisoma.resotech.fabric.providers.ItemModelGen;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.minecraft.server.packs.repository.Pack;
-import net.minecraft.world.level.block.state.BlockState;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

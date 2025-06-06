@@ -8,6 +8,7 @@ import net.minecraft.world.entity.MobCategory;
 import java.util.function.Supplier;
 import net.minecraft.world.entity.EntityType.EntityFactory;
 
+@SuppressWarnings({"unused", "FieldCanBeLocal"})
 public class EntityBuilder<T extends net.minecraft.world.entity.Entity> {
     private final DeferredRegister<EntityType<?>> deferredRegister;
     private final String name;

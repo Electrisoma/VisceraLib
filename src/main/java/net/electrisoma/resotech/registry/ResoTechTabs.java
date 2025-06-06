@@ -26,6 +26,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+@SuppressWarnings("unused")
 public class ResoTechTabs {
     public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS =
             DeferredRegister.create(ResoTech.MOD_ID, Registries.CREATIVE_MODE_TAB);
@@ -51,6 +52,7 @@ public class ResoTechTabs {
      * Legacy registration method using ResoTechDisplayItemsGenerator.
      * Optional to keep or remove.
      */
+    @SuppressWarnings("UnstableApiUsage")
     public static RegistrySupplier<CreativeModeTab> registerTab(
             String name,
             Supplier<? extends ItemLike> iconSupplier,

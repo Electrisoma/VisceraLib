@@ -8,9 +8,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
-import java.util.ArrayList;
-import java.util.List;
-
+@SuppressWarnings("unused")
 public class ResoTechBlocks {
     public static final DeferredRegister<Block> BLOCKS =
             DeferredRegister.create(ResoTech.MOD_ID, Registries.BLOCK);

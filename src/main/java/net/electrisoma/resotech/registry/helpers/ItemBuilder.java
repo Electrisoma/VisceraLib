@@ -2,7 +2,6 @@ package net.electrisoma.resotech.registry.helpers;
 
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
-import net.electrisoma.resotech.registry.ResoTechItems;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
@@ -14,6 +13,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+@SuppressWarnings({"unused", "FieldCanBeLocal"})
 public class ItemBuilder {
     private static final List<ItemBuilder> ALL_BUILDERS = new ArrayList<>();
 

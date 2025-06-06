@@ -7,9 +7,6 @@ import net.electrisoma.resotech.registry.helpers.ItemBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ResoTechItems {
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(ResoTech.MOD_ID, Registries.ITEM);

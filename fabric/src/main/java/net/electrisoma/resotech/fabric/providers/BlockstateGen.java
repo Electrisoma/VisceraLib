@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.Block;
 
 import java.util.Optional;
 
+@SuppressWarnings("unused")
 public class BlockstateGen extends BlockStateProvider {
     public BlockstateGen(PackOutput output, ExistingFileHelper exFileHelper) {
         super(output, ResoTech.MOD_ID, exFileHelper);

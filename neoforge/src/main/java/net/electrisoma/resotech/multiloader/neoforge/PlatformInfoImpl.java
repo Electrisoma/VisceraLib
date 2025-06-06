@@ -8,6 +8,7 @@ import net.neoforged.neoforgespi.language.MavenVersionAdapter;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class PlatformInfoImpl {
     public static PlatformInfo getCurrent() {
         return PlatformInfo.NEOFORGE;
