@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "id": "${id}",
+  "version": "${version}",
+  "name": "${name}",
+  "description": "${description}",
+  "authors": [
+    "${authors}"
+  ],
+  "contact": {
+  },
+  "license": "${license}",
+  "icon": "icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.electrisoma.resotech.fabric.ResoTechImpl"
+    ],
+    "fabric-datagen": [
+      "net.electrisoma.resotech.fabric.ResoTechDataFabric"
+    ]
+  },
+  "mixins": [
+  ],
+  "depends": {
+    "fabricloader": ">=0.15",
+    "minecraft": "${minecraft}",
+    "architectury": "${archApi}",
+    "flywheel": "${flywheel}",
+    "veil": "${veil}",
+    "ponder": "${ponder}"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "resotech:block/machine_block"
+    }
+  }
+}

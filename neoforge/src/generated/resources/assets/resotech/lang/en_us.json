@@ -1,0 +1,6 @@
+{
+  "block.resotech.machine_block": "Machine Thing",
+  "item.resotech.test_item": "Item Thing",
+  "itemGroup.resotech.base": "ResoTech",
+  "itemGroup.resotech.machines": "Machines"
+}
