@@ -1,5 +1,9 @@
 {
+  "advancement.resotech.root": "ɥɔǝ⊥osǝᴚ",
+  "advancement.resotech.root.desc": "ǝɔuɐuosǝᴚ ǝᙠ ǝɹǝH",
   "block.resotech.machine_block": "ƃuᴉɥ⊥ ǝuᴉɥɔɐɯ",
+  "block.resotech.test": "ʇsǝ⊥",
+  "item.resotech.test_bucket": "ʇǝʞɔnᙠ ʇsǝ⊥",
   "item.resotech.test_item": "ƃuᴉɥ⊥ ɯǝʇΙ",
   "itemGroup.resotech.base": "ɥɔǝ⊥osǝᴚ",
   "itemGroup.resotech.machines": "sǝuᴉɥɔɐɯ"

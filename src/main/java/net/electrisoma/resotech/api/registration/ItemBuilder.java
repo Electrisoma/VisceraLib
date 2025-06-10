@@ -1,4 +1,4 @@
-package net.electrisoma.resotech.registry.helpers;
+package net.electrisoma.resotech.api.registration;
 
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;

@@ -1,11 +1,12 @@
-package net.electrisoma.resotech.registry.helpers;
+package net.electrisoma.resotech.api.registration;
 
-import dev.architectury.registry.registries.RegistrySupplier;
 import net.electrisoma.resotech.ResoTech;
 import net.electrisoma.resotech.registry.ResoTechTabs;
 
-import net.minecraft.core.registries.BuiltInRegistries;
+import dev.architectury.registry.registries.RegistrySupplier;
+
 import net.minecraft.core.registries.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -15,8 +16,8 @@ import net.minecraft.world.level.block.Block;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.function.Predicate;
 
 @SuppressWarnings("unused")
 public class TabBuilder {
@@ -131,7 +132,8 @@ public class TabBuilder {
 
             includedItems.stream()
                     .sorted(Comparator.comparing(i -> BuiltInRegistries.ITEM.getKey(i).toString()))
-                    .forEach(item -> output.accept(new ItemStack(item), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS));
+                    .forEach(item ->
+                            output.accept(new ItemStack(item), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS));
         });
 
         if (builderCustomizer != null) builderCustomizer.accept(builder);

@@ -1,14 +1,13 @@
 package net.electrisoma.resotech.registry;
 
 import net.electrisoma.resotech.ResoTech;
+import net.electrisoma.resotech.api.registration.TabBuilder;
+import net.electrisoma.resotech.api.registration.ItemBuilder;
+import net.electrisoma.resotech.api.registration.BlockBuilder;
 
 import dev.architectury.registry.CreativeTabRegistry;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
-
-import net.electrisoma.resotech.registry.helpers.BlockBuilder;
-import net.electrisoma.resotech.registry.helpers.ItemBuilder;
-import net.electrisoma.resotech.registry.helpers.TabBuilder;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -80,7 +79,6 @@ public class ResoTechTabs {
         @Override
         public void accept(CreativeModeTab.ItemDisplayParameters parameters, Output output) {
             ResourceLocation tabId = ResoTech.path(tabName);
-
             List<Item> items = new ArrayList<>();
 
             for (var builder : ItemBuilder.getAllBuilders()) {

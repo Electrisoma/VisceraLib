@@ -1,5 +1,6 @@
 package net.electrisoma.resotech;
 
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.createmod.catnip.lang.LangBuilder;
 
 import net.electrisoma.resotech.multiloader.PlatformInfo;
@@ -23,6 +24,12 @@ public class ResoTech {
 		LOGGER.info("{} {} initializing! on platform: {}", NAME, VERSION, LOADER);
 
 		ModSetup.register();
+
+	}
+
+	@ExpectPlatform
+	public static void onRegister() {
+		throw new AssertionError();
 	}
 
 	public static LangBuilder lang() {

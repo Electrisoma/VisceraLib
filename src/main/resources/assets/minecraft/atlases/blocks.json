@@ -1,0 +1,12 @@
+{
+  "sources": [
+    {
+      "type": "single",
+      "resource": "resotech:fluid/test_flow"
+    },
+    {
+      "type": "single",
+      "resource": "resotech:fluid/test_still"
+    }
+  ]
+}

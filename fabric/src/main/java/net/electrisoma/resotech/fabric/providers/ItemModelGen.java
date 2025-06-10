@@ -1,11 +1,12 @@
 package net.electrisoma.resotech.fabric.providers;
 
+import net.electrisoma.resotech.ResoTech;
+
 import io.github.fabricators_of_create.porting_lib.data.ExistingFileHelper;
 import io.github.fabricators_of_create.porting_lib.models.generators.ItemModelBuilder;
 import io.github.fabricators_of_create.porting_lib.models.generators.ItemModelProvider;
 import io.github.fabricators_of_create.porting_lib.models.generators.ModelFile;
 
-import net.electrisoma.resotech.ResoTech;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
@@ -14,7 +15,6 @@ import net.minecraft.world.level.ItemLike;
 
 import java.util.function.Supplier;
 
-@SuppressWarnings({"unused", "UnusedReturnValue"})
 public class ItemModelGen extends ItemModelProvider {
     public ItemModelGen(PackOutput output, ExistingFileHelper exFileHelper) {
         super(output, ResoTech.MOD_ID, exFileHelper);
@@ -30,11 +30,6 @@ public class ItemModelGen extends ItemModelProvider {
                     if (item instanceof BlockItem) blockItem(() -> item);
                     else generated(() -> item);
                 });
-    }
-
-    @Override
-    public String getName() {
-        return ResoTech.MOD_ID + "Item Models";
     }
 
     public String modid(Supplier<? extends ItemLike> item) {
@@ -70,7 +65,6 @@ public class ItemModelGen extends ItemModelProvider {
     public ItemModelBuilder generated(Supplier<? extends ItemLike> item) {
         return generated(item, itemTexture(item));
     }
-
     public ItemModelBuilder generated(Supplier<? extends ItemLike> item, ResourceLocation... layers) {
         ItemModelBuilder builder = getBuilder(name(item)).parent(new ModelFile.UncheckedModelFile("item/generated"));
         for (int i = 0; i < layers.length; i++) {
@@ -82,8 +76,12 @@ public class ItemModelGen extends ItemModelProvider {
     public ItemModelBuilder handheld(Supplier<? extends ItemLike> item) {
         return handheld(item, itemTexture(item));
     }
-
     public ItemModelBuilder handheld(Supplier<? extends ItemLike> item, ResourceLocation texture) {
         return withExistingParent(name(item), "item/handheld").texture("layer0", texture);
+    }
+
+    @Override
+    public String getName() {
+        return ResoTech.MOD_ID + " Item Models";
     }
 }

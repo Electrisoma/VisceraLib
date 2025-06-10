@@ -174,7 +174,6 @@ publishMods {
             "architectury-api"
         )
     }
-
     modrinth {
         projectId = "publish.modrinth"
         accessToken = System.getenv("MODRINTH_TOKEN")

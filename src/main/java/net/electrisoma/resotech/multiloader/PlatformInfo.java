@@ -29,4 +29,5 @@ public enum PlatformInfo {
     public static String findVersion() {
         throw new AssertionError();
     }
+
 }

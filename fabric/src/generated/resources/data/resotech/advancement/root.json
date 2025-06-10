@@ -1,0 +1,29 @@
+{
+  "criteria": {
+    "0": {
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "resotech:textures/gui/advancements.png",
+    "description": {
+      "color": "#DBA213",
+      "translate": "advancement.resotech.root.desc"
+    },
+    "icon": {
+      "count": 1,
+      "id": "resotech:test_item"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "advancement.resotech.root"
+    }
+  },
+  "requirements": [
+    [
+      "0"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

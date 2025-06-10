@@ -1,14 +1,16 @@
 package net.electrisoma.resotech.fabric.providers;
 
 import net.electrisoma.resotech.ResoTech;
+import net.electrisoma.resotech.api.registration.FluidBuilder;
+import net.electrisoma.resotech.registry.ResoTechAdvancements;
 import net.electrisoma.resotech.registry.ResoTechBlocks;
 import net.electrisoma.resotech.registry.ResoTechItems;
 
 import io.github.fabricators_of_create.porting_lib.data.LanguageProvider;
 
-import net.electrisoma.resotech.registry.helpers.BlockBuilder;
-import net.electrisoma.resotech.registry.helpers.ItemBuilder;
-import net.electrisoma.resotech.registry.helpers.TabBuilder;
+import net.electrisoma.resotech.api.registration.BlockBuilder;
+import net.electrisoma.resotech.api.registration.ItemBuilder;
+import net.electrisoma.resotech.api.registration.TabBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
@@ -83,6 +85,18 @@ public class LangGen extends LanguageProvider {
             Map.Entry<String, String> entry = tab.getLangEntry();
             add(entry.getKey(), entry.getValue());
         }
+
+        for (FluidBuilder fluidBuilder : FluidBuilder.getAllBuilders()) {
+            fluidBuilder.getLangEntry().ifPresent(lang -> {
+                String namespace = ResoTech.MOD_ID;
+                String name = fluidBuilder.getName();
+
+                add("block." + namespace + "." + name, lang);
+                add("item." + namespace + "." + name + "_bucket", lang + " Bucket");
+            });
+        }
+
+        ResoTechAdvancements.provideLang(this::add);
     }
 
     public void addBlock(Supplier<? extends Block> block) {
@@ -239,5 +253,10 @@ public class LangGen extends LanguageProvider {
             return CompletableFuture.allOf(mainRun, upsideDownLang.run(output));
         }
         return mainRun;
+    }
+
+    @Override
+    public String getName() {
+        return ResoTech.NAME + " Lang";
     }
 }

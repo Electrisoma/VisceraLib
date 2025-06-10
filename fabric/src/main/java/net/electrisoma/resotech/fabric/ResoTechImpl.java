@@ -14,6 +14,9 @@ public class ResoTechImpl implements ModInitializer {
 		onServerStarting();
 	}
 
+	public static void onRegister() {
+	}
+
 	public void onServerStarting() {
 		ServerLifecycleEvents.SERVER_STARTED.register(server ->
 				ResoTech.LOGGER.info(ResoTech.SERVER_START)

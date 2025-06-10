@@ -2,10 +2,9 @@ package net.electrisoma.resotech.fabric;
 
 import io.github.fabricators_of_create.porting_lib.data.ExistingFileHelper;
 import net.electrisoma.resotech.ResoTech;
-import net.electrisoma.resotech.fabric.providers.LangGen;
+import net.electrisoma.resotech.fabric.providers.*;
+import net.electrisoma.resotech.registry.ResoTechAdvancements;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator.Pack.Factory;
-import net.electrisoma.resotech.fabric.providers.BlockstateGen;
-import net.electrisoma.resotech.fabric.providers.ItemModelGen;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 
@@ -29,7 +28,9 @@ public class ResoTechDataFabric implements DataGeneratorEntrypoint {
         pack.addProvider((Factory<BlockstateGen>) output -> new BlockstateGen(output, helper));
         pack.addProvider((Factory<ItemModelGen>) output -> new ItemModelGen(output, helper));
         pack.addProvider((Factory<LangGen>) LangGen::new);
+        pack.addProvider(LootTableGen::new);
+        TagGen.addGenerators(pack);
 
-
+        pack.addProvider(ResoTechAdvancements::new);
     }
 }
