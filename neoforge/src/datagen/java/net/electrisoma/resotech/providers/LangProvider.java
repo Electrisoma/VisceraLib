@@ -1,16 +1,13 @@
-package net.electrisoma.resotech.fabric.providers;
+package net.electrisoma.resotech.providers;
 
 import net.electrisoma.resotech.ResoTech;
+import net.electrisoma.resotech.api.registration.BlockBuilder;
 import net.electrisoma.resotech.api.registration.FluidBuilder;
+import net.electrisoma.resotech.api.registration.ItemBuilder;
+import net.electrisoma.resotech.api.registration.TabBuilder;
 import net.electrisoma.resotech.registry.ResoTechAdvancements;
 import net.electrisoma.resotech.registry.ResoTechBlocks;
 import net.electrisoma.resotech.registry.ResoTechItems;
-
-import io.github.fabricators_of_create.porting_lib.data.LanguageProvider;
-
-import net.electrisoma.resotech.api.registration.BlockBuilder;
-import net.electrisoma.resotech.api.registration.ItemBuilder;
-import net.electrisoma.resotech.api.registration.TabBuilder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
@@ -23,78 +20,97 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
-
-import com.google.common.base.Supplier;
+import net.neoforged.neoforge.common.data.LanguageProvider;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
-public class LangGen extends LanguageProvider {
-    private final LangGen upsideDownLang;
+public class LangProvider extends LanguageProvider {
+    private final LangProvider upsideDownLang;
+    private final Set<String> addedKeys = new HashSet<>();
 
-    public LangGen(PackOutput output) {
-        super(output, ResoTech.MOD_ID, "en_us");
-        this.upsideDownLang = new LangGen(output, "en_ud");
+    public LangProvider(PackOutput output, String modid) {
+        super(output, modid, "en_us");
+        this.upsideDownLang = new LangProvider(output, "en_ud");
     }
-    private LangGen(PackOutput output, String locale) {
-        super(output, ResoTech.MOD_ID, locale);
+    private LangProvider(PackOutput output, String modid, String locale) {
+        super(output, modid, locale);
         this.upsideDownLang = null;
     }
-
-    Set<String> addedKeys = new HashSet<>();
 
     @Override
     protected void addTranslations() {
         for (Block block : ResoTechBlocks.BLOCKS.getRegistrar()) {
-            ResourceLocation id = BuiltInRegistries.BLOCK.getKey(block);
+            var id = BuiltInRegistries.BLOCK.getKey(block);
             if (ResoTech.MOD_ID.equals(id.getNamespace())) {
                 boolean hasLang = BlockBuilder.getAllBuilders().stream()
-                        .anyMatch(builder -> builder.getName().equals(id.getPath())
-                                && builder.getLangEntry().isPresent());
+                        .anyMatch(builder -> builder.getName().equals(id.getPath()) && builder.getLangEntry().isPresent());
                 if (!hasLang) addBlock(() -> block);
             }
         }
+
         for (var builder : BlockBuilder.getAllBuilders()) {
-            builder.getLangEntry().ifPresent(lang -> {
-                ResourceLocation id = ResoTech.path(builder.getName());
-                add("block." + id.getNamespace() + "." + id.getPath(), lang);
-            });
+            builder.getLangEntry().ifPresent(lang ->
+                    add("block." + ResoTech.MOD_ID + "." + builder.getName(), lang));
         }
 
         for (Item item : ResoTechItems.ITEMS.getRegistrar()) {
-            ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
+            var id = BuiltInRegistries.ITEM.getKey(item);
             if (ResoTech.MOD_ID.equals(id.getNamespace())) {
                 boolean hasLang = ItemBuilder.getAllBuilders().stream()
-                        .anyMatch(builder -> builder.getName().equals(id.getPath())
-                                && builder.getLangEntry().isPresent());
+                        .anyMatch(builder -> builder.getName().equals(id.getPath()) && builder.getLangEntry().isPresent());
                 if (!hasLang) addItem(() -> item);
             }
         }
+
         for (var builder : ItemBuilder.getAllBuilders()) {
-            builder.getLangEntry().ifPresent(lang -> {
-                ResourceLocation id = ResoTech.path(builder.getName());
-                add("item." + id.getNamespace() + "." + id.getPath(), lang);
-            });
+            builder.getLangEntry().ifPresent(lang ->
+                    add("item." + ResoTech.MOD_ID + "." + builder.getName(), lang));
         }
 
         for (TabBuilder tab : TabBuilder.getAllBuilders()) {
-            Map.Entry<String, String> entry = tab.getLangEntry();
+            var entry = tab.getLangEntry();
             add(entry.getKey(), entry.getValue());
         }
 
-        for (FluidBuilder fluidBuilder : FluidBuilder.getAllBuilders()) {
-            fluidBuilder.getLangEntry().ifPresent(lang -> {
-                String namespace = ResoTech.MOD_ID;
-                String name = fluidBuilder.getName();
-
-                add("block." + namespace + "." + name, lang);
-                add("item." + namespace + "." + name + "_bucket", lang + " Bucket");
+        for (FluidBuilder fluid : FluidBuilder.getAllBuilders()) {
+            fluid.getLangEntry().ifPresent(lang -> {
+                String name = fluid.getName();
+                add("block." + ResoTech.MOD_ID + "." + name, lang);
+                add("item." + ResoTech.MOD_ID + "." + name + "_bucket", lang + " Bucket");
             });
         }
 
         ResoTechAdvancements.provideLang(this::add);
+    }
+
+    @Override
+    public void add(String key, String value) {
+        if (!addedKeys.add(key)) {
+            System.err.println("Duplicate lang key detected (ignored): " + key);
+            return;
+        }
+        super.add(key, value);
+        if (upsideDownLang != null) {
+            upsideDownLang.add(key, toUpsideDown(value));
+        }
+    }
+
+    @Override
+    public CompletableFuture<?> run(CachedOutput output) {
+        var main = super.run(output);
+        if (upsideDownLang != null) {
+            return CompletableFuture.allOf(main, upsideDownLang.run(output));
+        }
+        return main;
+    }
+
+    @Override
+    public String getName() {
+        return ResoTech.NAME + " Lang";
     }
 
     public void addBlock(Supplier<? extends Block> block) {
@@ -104,29 +120,11 @@ public class LangGen extends LanguageProvider {
         add(block.get(), name);
     }
 
-    public void addBlockWithTooltip(Supplier<? extends Block> block, String tooltip) {
-        addBlock(block);
-        addTooltip(block, tooltip);
-    }
-    public void addBlockWithTooltip(Supplier<? extends Block> block, String name, String tooltip) {
-        addBlock(block, name);
-        addTooltip(block, tooltip);
-    }
-
     public void addItem(Supplier<? extends Item> item) {
         add(item.get(), autoName(item.get()));
     }
     public void addItem(Supplier<? extends Item> item, String name) {
         add(item.get(), name);
-    }
-
-    public void addItemWithTooltip(Supplier<? extends Item> item, String tooltip) {
-        addItem(item);
-        addTooltip(item, tooltip);
-    }
-    public void addItemWithTooltip(Supplier<? extends Item> item, String name, String tooltip) {
-        addItem(item, name);
-        addTooltip(item, tooltip);
     }
 
     public void addTooltip(Supplier<? extends ItemLike> item, String tooltip) {
@@ -140,8 +138,8 @@ public class LangGen extends LanguageProvider {
 
     public void addTab(Supplier<CreativeModeTab> tab, String name) {
         var contents = tab.get().getDisplayName().getContents();
-        if (contents instanceof TranslatableContents lang) {
-            add(lang.getKey(), name);
+        if (contents instanceof TranslatableContents translatable) {
+            add(translatable.getKey(), name);
         } else {
             System.err.println("Creative tab has non-translatable name: " + tab.get().getDisplayName());
         }
@@ -202,26 +200,27 @@ public class LangGen extends LanguageProvider {
         return toEnglishName(key.getPath());
     }
     private String autoName(MobEffect effect) {
-        return toEnglishName(Objects.requireNonNull(BuiltInRegistries.MOB_EFFECT.getKey(effect)).getPath());
+        return toEnglishName(BuiltInRegistries.MOB_EFFECT.getKey(effect).getPath());
     }
-
-    private static final String NORMAL =
-            "abcdefghijklmnopqrstuvwxyz" +
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-            "0123456789" +
-            ".,'?!_;/\\()[]{}<>";
-
-    private static final String UPSIDE =
-            "ɐqɔpǝɟƃɥᴉɾʞןɯuodbɹsʇnʌʍxʎz" +
-            "∀ᙠƆᗡƎℲ⅁HΙſʞWɯNOԀӨᴚS⊥∩ΛMX⅄Z" +
-            "0ƖᄅƐㄣϛ9ㄥ86" +
-            "˙‘‚¿¡‾؛/\\)(][}{><";
 
     private static String toEnglishName(String id) {
         return Arrays.stream(id.split("_"))
                 .map(s -> s.substring(0, 1).toUpperCase(Locale.ROOT) + s.substring(1))
                 .collect(Collectors.joining(" "));
     }
+
+    private static final String NORMAL =
+            "abcdefghijklmnopqrstuvwxyz" +
+                    "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+                    "0123456789" +
+                    ".,'?!_;/\\()[]{}<>";
+
+    private static final String UPSIDE =
+            "ɐqɔpǝɟƃɥᴉɾʞןɯuodbɹsʇnʌʍxʎz" +
+                    "∀ᙠƆᗡƎℲ⅁HΙſʞWɯNOԀӨᴚS⊥∩ΛMX⅄Z" +
+                    "0ƖᄅƐㄣϛ9ㄥ86" +
+                    "˙‘‚¿¡‾؛/\\)(][}{><";
+
     private String toUpsideDown(String str) {
         StringBuilder result = new StringBuilder(str.length());
         for (int i = str.length() - 1; i >= 0; i--) {
@@ -230,31 +229,5 @@ public class LangGen extends LanguageProvider {
             result.append(index >= 0 ? UPSIDE.charAt(index) : c);
         }
         return result.toString();
-    }
-
-    @Override
-    public void add(String key, String value) {
-        if (!addedKeys.add(key)) {
-            System.err.println("Duplicate lang key detected (ignored): " + key);
-            return;
-        }
-        super.add(key, value);
-        if (upsideDownLang != null) {
-            upsideDownLang.add(key, toUpsideDown(value));
-        }
-    }
-
-    @Override
-    public CompletableFuture<?> run(CachedOutput output) {
-        var mainRun = super.run(output);
-        if (upsideDownLang != null) {
-            return CompletableFuture.allOf(mainRun, upsideDownLang.run(output));
-        }
-        return mainRun;
-    }
-
-    @Override
-    public String getName() {
-        return ResoTech.NAME + " Lang";
     }
 }

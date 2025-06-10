@@ -12,25 +12,25 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Set;
 
-public class ResoTechDataFabric implements DataGeneratorEntrypoint {
-    @Override
-    public void onInitializeDataGenerator(FabricDataGenerator gen) {
-        Path rtResources = Paths.get(System.getProperty(ExistingFileHelper.EXISTING_RESOURCES));
-        ExistingFileHelper helper = new ExistingFileHelper(
-                Set.of(rtResources),
-                Set.of(ResoTech.MOD_ID),
-                false,
-                null,
-                null
-        );
-        FabricDataGenerator.Pack pack = gen.createPack();
-
-        pack.addProvider((Factory<BlockstateGen>) output -> new BlockstateGen(output, helper));
-        pack.addProvider((Factory<ItemModelGen>) output -> new ItemModelGen(output, helper));
-        pack.addProvider((Factory<LangGen>) LangGen::new);
-        pack.addProvider(LootTableGen::new);
-        TagGen.addGenerators(pack);
-
-        pack.addProvider(ResoTechAdvancements::new);
-    }
-}
+//public class ResoTechDataFabric implements DataGeneratorEntrypoint {
+//    @Override
+//    public void onInitializeDataGenerator(FabricDataGenerator gen) {
+//        Path rtResources = Paths.get(System.getProperty(ExistingFileHelper.EXISTING_RESOURCES));
+//        ExistingFileHelper helper = new ExistingFileHelper(
+//                Set.of(rtResources),
+//                Set.of(ResoTech.MOD_ID),
+//                false,
+//                null,
+//                null
+//        );
+//        FabricDataGenerator.Pack pack = gen.createPack();
+//
+//        pack.addProvider((Factory<BlockstateGen>) output -> new BlockstateGen(output, helper));
+//        pack.addProvider((Factory<ItemModelGen>) output -> new ItemModelGen(output, helper));
+//        pack.addProvider((Factory<LangGen>) LangGen::new);
+//        pack.addProvider(LootTableGen::new);
+//        TagGen.addGenerators(pack);
+//
+//        pack.addProvider(ResoTechAdvancements::new);
+//    }
+//}

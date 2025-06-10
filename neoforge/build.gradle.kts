@@ -47,6 +47,13 @@ configurations {
     get("developmentNeoForge").extendsFrom(commonBundle)
 }
 
+sourceSets {
+    create("datagen") {
+        runtimeClasspath += sourceSets["main"].runtimeClasspath
+        compileClasspath += sourceSets["main"].compileClasspath
+    }
+}
+
 loom {
     decompilers {
         get("vineflower").apply { // Adds names to lambdas - useful for mixins
@@ -57,6 +64,22 @@ loom {
     silentMojangMappingsLicense()
     accessWidenerPath = common.loom.accessWidenerPath
     runConfigs {
+        create("DataGenFabric") {
+            data()
+
+            name("Fabric Data Generation (NeoForge)")
+            programArgs("--output", file("fabric/src/generated/resources").absolutePath)
+            programArgs("--existing", "${project.rootProject.file("common/src/main/resources")}")
+            source(sourceSets.getByName("datagen"))
+        }
+        create("DataGenNeoForge") {
+            data()
+
+            name("NeoForge Data Generation ")
+            programArgs("--output", file("neoforge/src/generated/resources").absolutePath)
+            programArgs("--existing", "${project.rootProject.file("common/src/main/resources")}")
+        }
+
         all {
             isIdeConfigGenerated = true
             runDir = "../../../run"
@@ -137,10 +160,12 @@ tasks.processResources {
     )
 }
 
-sourceSets.main {
-    resources { // include generated resources in resources
-        srcDir("src/generated/resources")
-        exclude("src/generated/resources/.cache")
+sourceSets {
+    main {
+        resources { // include generated resources in resources
+            srcDir("src/generated/resources")
+            exclude("src/generated/resources/.cache")
+        }
     }
 }
 
@@ -155,6 +180,12 @@ tasks.register<Copy>("buildAndCollect") {
     from(tasks.remapJar.get().archiveFile, tasks.remapSourcesJar.get().archiveFile)
     into(rootProject.layout.buildDirectory.file("libs/${mod.version}/$loader"))
     dependsOn("build")
+}
+
+tasks.register("runDataGen") {
+    group = "loom"
+    description = "Generate data for " + mod.id
+    dependsOn("runDataGenFabric", "runDataGenNeoForge")
 }
 
 // Modmuss Publish

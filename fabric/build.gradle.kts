@@ -61,26 +61,26 @@ loom {
     silentMojangMappingsLicense()
     accessWidenerPath = common.loom.accessWidenerPath
     runConfigs {
-        create("DataGenFabric") {
-            client()
-
-            name("Fabric Data Generation")
-            vmArg("-Dfabric-api.datagen")
-            vmArg("-Dfabric-api.datagen.output-dir=${project.rootProject.file("fabric/src/generated/resources")}")
-            vmArg("-Dfabric-api.datagen.modid=resotech")
-            vmArg("-Dporting_lib.datagen.existing_resources=${project.rootProject.file("common/src/main/resources")}")
-            vmArg("-Dresotech.datagen.platform=fabric")
-        }
-        create("DataGenNeoForge") {
-            client()
-
-            name("NeoForge Data Generation (Fabric)")
-            vmArg("-Dfabric-api.datagen")
-            vmArg("-Dfabric-api.datagen.output-dir=${project.rootProject.file("neoforge/src/generated/resources")}")
-            vmArg("-Dfabric-api.datagen.modid=resotech")
-            vmArg("-Dporting_lib.datagen.existing_resources=${project.rootProject.file("common/src/main/resources")}")
-            vmArg("-Dresotech.datagen.platform=neoforge")
-        }
+//        create("DataGenFabric") {
+//            client()
+//
+//            name("Fabric Data Generation")
+//            vmArg("-Dfabric-api.datagen")
+//            vmArg("-Dfabric-api.datagen.output-dir=${project.rootProject.file("fabric/src/generated/resources")}")
+//            vmArg("-Dfabric-api.datagen.modid=resotech")
+//            vmArg("-Dporting_lib.datagen.existing_resources=${project.rootProject.file("common/src/main/resources")}")
+//            vmArg("-Dresotech.datagen.platform=fabric")
+//        }
+//        create("DataGenNeoForge") {
+//            client()
+//
+//            name("NeoForge Data Generation (Fabric)")
+//            vmArg("-Dfabric-api.datagen")
+//            vmArg("-Dfabric-api.datagen.output-dir=${project.rootProject.file("neoforge/src/generated/resources")}")
+//            vmArg("-Dfabric-api.datagen.modid=resotech")
+//            vmArg("-Dporting_lib.datagen.existing_resources=${project.rootProject.file("common/src/main/resources")}")
+//            vmArg("-Dresotech.datagen.platform=neoforge")
+//        }
         all {
             isIdeConfigGenerated = true
             runDir = "../../../run"
@@ -185,12 +185,6 @@ tasks.register<Copy>("buildAndCollect") {
     from(tasks.remapJar.get().archiveFile, tasks.remapSourcesJar.get().archiveFile)
     into(rootProject.layout.buildDirectory.file("libs/${mod.version}/$loader"))
     dependsOn("build")
-}
-
-tasks.register("runDataGen") {
-    group = "loom"
-    description = "Generate data for " + mod.id
-    dependsOn("runDataGenFabric", "runDataGenNeoForge")
 }
 
 // Modmuss Publish

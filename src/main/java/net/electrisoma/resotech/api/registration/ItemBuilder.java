@@ -4,8 +4,10 @@ import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -16,22 +18,31 @@ import java.util.stream.Collectors;
 @SuppressWarnings({"unused", "FieldCanBeLocal"})
 public class ItemBuilder {
     private static final List<ItemBuilder> ALL_BUILDERS = new ArrayList<>();
+    public static List<ItemBuilder> getAllBuilders() {
+        return Collections.unmodifiableList(ALL_BUILDERS);
+    }
 
-    private final DeferredRegister<Item> deferredRegister;
+    private final DeferredRegister<Item> itemRegister;
     private final String name;
 
     private Supplier<Item> itemSupplier;
     private Item.Properties properties = new Item.Properties();
 
     private final Set<Supplier<ResourceKey<CreativeModeTab>>> creativeTabs = new HashSet<>();
+    private String langName = null;
+
     private Integer burnTime = null;
     private Float compostChance = null;
-    private String langName = null;
+
+    private final List<TagKey<Item>> itemTags = new ArrayList<>();
+    public List<TagKey<Item>> getItemTags() {
+        return Collections.unmodifiableList(itemTags);
+    }
 
     private final List<Consumer<Item>> postRegisterTasks = new ArrayList<>();
 
-    public ItemBuilder(DeferredRegister<Item> deferredRegister, String name) {
-        this.deferredRegister = deferredRegister;
+    public ItemBuilder(DeferredRegister<Item> itemRegister, String name) {
+        this.itemRegister = itemRegister;
         this.name = name;
     }
 
@@ -39,7 +50,6 @@ public class ItemBuilder {
         this.properties = props;
         return this;
     }
-
     public ItemBuilder modifyProperties(Function<Item.Properties, Item.Properties> modifier) {
         this.properties = modifier.apply(properties);
         return this;
@@ -49,10 +59,10 @@ public class ItemBuilder {
         this.itemSupplier = supplier;
         return this;
     }
+    private Supplier<Item> defaultSupplier() {
+        return () -> new Item(properties);
+    }
 
-    /**
-     * Add a creative tab using a direct ResourceKey supplier (manual).
-     */
     public ItemBuilder tab(Supplier<ResourceKey<CreativeModeTab>> tabKeySupplier) {
         creativeTabs.add(tabKeySupplier);
         return this;
@@ -76,18 +86,23 @@ public class ItemBuilder {
         this.langName = langName;
         return this;
     }
-    public String getName() {
-        return name;
-    }
     public Optional<String> getLangEntry() {
         return Optional.ofNullable(langName);
+    }
+
+    public ItemBuilder tag(TagKey<Item> tag) {
+        this.itemTags.add(tag);
+        return this;
+    }
+    @SafeVarargs public final ItemBuilder tags(TagKey<Item>... tags) {
+        Collections.addAll(this.itemTags, tags);
+        return this;
     }
 
     public ItemBuilder burnTime(int ticks) {
         this.burnTime = ticks;
         return this;
     }
-
     public ItemBuilder compostChance(float chance) {
         this.compostChance = chance;
         return this;
@@ -98,16 +113,12 @@ public class ItemBuilder {
         return this;
     }
 
-    private Supplier<Item> defaultSupplier() {
-        return () -> new Item(properties);
-    }
-
     public RegistrySupplier<Item> register() {
         if (itemSupplier == null) itemSupplier = defaultSupplier();
 
         ALL_BUILDERS.add(this);
 
-        RegistrySupplier<Item> registered = deferredRegister.register(name, itemSupplier);
+        RegistrySupplier<Item> registered = itemRegister.register(name, itemSupplier);
 
         registered.listen(item -> {
             Set<ResourceKey<CreativeModeTab>> resolvedTabs = creativeTabs.stream()
@@ -126,8 +137,7 @@ public class ItemBuilder {
 
         return registered;
     }
-
-    public static List<ItemBuilder> getAllBuilders() {
-        return Collections.unmodifiableList(ALL_BUILDERS);
+    public String getName() {
+        return name;
     }
 }

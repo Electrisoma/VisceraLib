@@ -1,6 +1,7 @@
 package net.electrisoma.resotech.client.neoforge;
 
 import net.electrisoma.resotech.ResoTech;
+import net.electrisoma.resotech.api.registration.FluidBuilder;
 import net.electrisoma.resotech.client.ResoTechClient;
 import net.electrisoma.resotech.registry.ResoTechFluids;
 
@@ -23,7 +24,7 @@ public class ResoTechClientImpl {
 
     @SubscribeEvent
     private static void initializeClient(RegisterClientExtensionsEvent event) {
-        ResoTechFluids.FLUIDS_INFOS.forEach((attributes ->
+        FluidBuilder.getAllAttributes().forEach((attributes ->
                 event.registerFluidType(new IClientFluidTypeExtensions() {
             @Override
             public @NotNull ResourceLocation getStillTexture() {

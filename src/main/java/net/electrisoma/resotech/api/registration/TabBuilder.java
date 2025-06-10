@@ -22,6 +22,9 @@ import java.util.function.Predicate;
 @SuppressWarnings("unused")
 public class TabBuilder {
     private static final List<TabBuilder> ALL_BUILDERS = new ArrayList<>();
+    public static List<TabBuilder> getAllBuilders() {
+        return Collections.unmodifiableList(ALL_BUILDERS);
+    }
 
     private static int tabCounter = 0;
     private static final int TABS_PER_ROW = 6;
@@ -74,7 +77,6 @@ public class TabBuilder {
         this.displayName = displayName;
         return this;
     }
-
     public Map.Entry<String, String> getLangEntry() {
         String key = "itemGroup." + modId + "." + name;
         String value = displayName != null ? displayName : name;
@@ -90,7 +92,6 @@ public class TabBuilder {
         this.explicitContentSupplier = supplier != null ? supplier : Collections::emptyList;
         return this;
     }
-
     public TabBuilder itemFilter(Predicate<Item> itemFilter) {
         this.itemFilter = itemFilter != null ? itemFilter : item -> true;
         return this;
@@ -100,7 +101,6 @@ public class TabBuilder {
         ALL_BUILDERS.add(this);
         return ResoTechTabs.CREATIVE_TABS.register(name, this::build);
     }
-
     public CreativeModeTab build() {
         CreativeModeTab.Builder builder = CreativeModeTab.builder(row, column);
         builder.icon(() -> iconSupplier != null ? iconSupplier.get() : new ItemStack(Items.BARRIER));
@@ -141,14 +141,9 @@ public class TabBuilder {
         return builder.build();
     }
 
-    public static List<TabBuilder> getAllBuilders() {
-        return Collections.unmodifiableList(ALL_BUILDERS);
-    }
-
     public ResourceKey<CreativeModeTab> getResourceKey() {
         return ResourceKey.create(Registries.CREATIVE_MODE_TAB, getKey());
     }
-
     public ResourceLocation getKey() {
         return ResoTech.path(name);
     }

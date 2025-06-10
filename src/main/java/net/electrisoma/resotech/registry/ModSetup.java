@@ -6,6 +6,7 @@ public class ModSetup {
         ResoTechFluids.init();
         ResoTechBlocks.init();
         ResoTechItems.init();
+        ResoTechTags.init();
     }
 }
 

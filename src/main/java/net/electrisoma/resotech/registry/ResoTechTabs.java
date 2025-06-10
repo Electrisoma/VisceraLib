@@ -69,9 +69,6 @@ public class ResoTechTabs {
         return ResourceKey.create(Registries.CREATIVE_MODE_TAB, tabSupplier.getId());
     }
 
-    /**
-     * Internal display item generator now takes a Supplier for explicitInclusions.
-     */
     public record ResoTechDisplayItemsGenerator(
             String tabName,
             Supplier<Collection<? extends ItemLike>> explicitInclusionsSupplier,

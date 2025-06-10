@@ -29,8 +29,18 @@ import java.util.stream.Collectors;
 
 import static net.electrisoma.resotech.ResoTech.path;
 
-@SuppressWarnings({"unused", "UnstableApiUsage"})
+@SuppressWarnings({"unused"})
 public class FluidBuilder {
+    private static final List<FluidBuilder> ALL_BUILDERS = new ArrayList<>();
+    public static List<FluidBuilder> getAllBuilders() {
+        return Collections.unmodifiableList(ALL_BUILDERS);
+    }
+
+    private static final List<ArchitecturyFluidAttributes> ALL_FLUID_ATTRIBUTES = new ArrayList<>();
+    public static List<ArchitecturyFluidAttributes> getAllAttributes() {
+        return Collections.unmodifiableList(ALL_FLUID_ATTRIBUTES);
+    }
+
     private final String name;
     private String langEntry = null;
     private final List<TagKey<Fluid>> fluidTags = new ArrayList<>();
@@ -48,14 +58,21 @@ public class FluidBuilder {
 
     private ResourceLocation stillTexture;
     private ResourceLocation flowTexture;
+    private ResourceLocation overlayTexture;
     private int color = 0xFFFFFFFF;
+    private int luminance = 0;
+    private int density = 1000;
+    private int temperature = 300;
+    private int viscosity = 1000;
+    private int slopeFindDistance = 4;
+    private int dropOff = 1;
+    private int tickDelay = 5;
+    private float explosionResistance = 100.0F;
     private boolean convertToSource = false;
     private boolean lighterThanAir = false;
 
     private Consumer<Item.Properties> itemProps = p -> {};
     private Consumer<BlockBehaviour.Properties> blockProps = p -> {};
-
-    private final List<ArchitecturyFluidAttributes> fluidAttributesList;
 
     private final Set<Supplier<ResourceKey<CreativeModeTab>>> creativeTabs = new HashSet<>();
 
@@ -63,26 +80,17 @@ public class FluidBuilder {
         this.langEntry = langEntry;
         return this;
     }
-
     public Optional<String> getLangEntry() {
         return Optional.ofNullable(langEntry);
     }
 
-    private static final List<FluidBuilder> ALL_BUILDERS = new ArrayList<>();
-
-    public static List<FluidBuilder> getAllBuilders() {
-        return Collections.unmodifiableList(ALL_BUILDERS);
-    }
-
     public FluidBuilder(String name, DeferredRegister<Fluid> fluidRegister,
                         DeferredRegister<Item> itemRegister,
-                        DeferredRegister<Block> blockRegister,
-                        List<ArchitecturyFluidAttributes> fluidAttributesList) {
+                        DeferredRegister<Block> blockRegister) {
         this.name = name;
         this.fluidRegister = fluidRegister;
         this.itemRegister = itemRegister;
         this.blockRegister = blockRegister;
-        this.fluidAttributesList = fluidAttributesList;
         ALL_BUILDERS.add(this);
     }
 
@@ -91,17 +99,46 @@ public class FluidBuilder {
         this.flowTexture = flowing;
         return this;
     }
-
     public FluidBuilder color(int color) {
         this.color = color;
         return this;
     }
-
+    public FluidBuilder luminance(int value) {
+        this.luminance = value;
+        return this;
+    }
+    public FluidBuilder density(int value) {
+        this.density = value;
+        return this;
+    }
+    public FluidBuilder temperature(int value) {
+        this.temperature = value;
+        return this;
+    }
+    public FluidBuilder viscosity(int value) {
+        this.viscosity = value;
+        return this;
+    }
+    public FluidBuilder slopeFindDistance(int value) {
+        this.slopeFindDistance = value;
+        return this;
+    }
+    public FluidBuilder dropOff(int value) {
+        this.dropOff = value;
+        return this;
+    }
+    public FluidBuilder tickDelay(int value) {
+        this.tickDelay = value;
+        return this;
+    }
+    public FluidBuilder explosionResistance(float value) {
+        this.explosionResistance = value;
+        return this;
+    }
     public FluidBuilder convertToSource(boolean value) {
         this.convertToSource = value;
         return this;
     }
-
     public FluidBuilder lighterThanAir(boolean value) {
         this.lighterThanAir = value;
         return this;
@@ -111,7 +148,6 @@ public class FluidBuilder {
         this.itemProps = props;
         return this;
     }
-
     public FluidBuilder blockProperties(Consumer<BlockBehaviour.Properties> props) {
         this.blockProps = props;
         return this;
@@ -121,7 +157,6 @@ public class FluidBuilder {
         creativeTabs.add(tabKeySupplier);
         return this;
     }
-
     public FluidBuilder tab(RegistrySupplier<CreativeModeTab> tabSupplier) {
         Objects.requireNonNull(tabSupplier, "Creative tab supplier cannot be null");
         creativeTabs.add(() -> {
@@ -133,7 +168,6 @@ public class FluidBuilder {
         });
         return this;
     }
-
     public Set<ResourceKey<CreativeModeTab>> getTabs() {
         return creativeTabs.stream().map(Supplier::get).collect(Collectors.toUnmodifiableSet());
     }
@@ -142,13 +176,10 @@ public class FluidBuilder {
         this.fluidTags.add(tag);
         return this;
     }
-
-    @SafeVarargs
-    public final FluidBuilder tags(TagKey<Fluid>... tags) {
+    @SafeVarargs public final FluidBuilder tags(TagKey<Fluid>... tags) {
         Collections.addAll(this.fluidTags, tags);
         return this;
     }
-
     public List<TagKey<Fluid>> getFluidTags() {
         return Collections.unmodifiableList(fluidTags);
     }
@@ -159,6 +190,9 @@ public class FluidBuilder {
         }
         if (flowTexture == null) {
             flowTexture = path("fluid/" + name + "_flow");
+        }
+        if (overlayTexture == null) {
+            flowTexture = path("gui/" + name + "_overlay");
         }
 
         flowing = fluidRegister.register("flowing_" + name,
@@ -172,9 +206,19 @@ public class FluidBuilder {
                 .bucketItemSupplier(() -> bucket)
                 .flowingTexture(flowTexture)
                 .sourceTexture(stillTexture)
+                .overlayTexture(overlayTexture)
                 .color(color)
+                .luminosity(luminance)
+                .density(density)
+                .temperature(temperature)
+                .viscosity(viscosity)
+                .slopeFindDistance(slopeFindDistance)
+                .dropOff(dropOff)
+                .tickDelay(tickDelay)
+                .explosionResistance(explosionResistance)
                 .convertToSource(convertToSource)
-                .lighterThanAir(lighterThanAir);
+                .lighterThanAir(lighterThanAir)
+        ;
 
         block = blockRegister.register(name, () -> {
             BlockBehaviour.Properties props = BlockBehaviour.Properties.ofFullCopy(Blocks.WATER);
@@ -188,6 +232,7 @@ public class FluidBuilder {
                     .stacksTo(1);
 
             for (Supplier<ResourceKey<CreativeModeTab>> tabSupplier : creativeTabs) {
+                //noinspection UnstableApiUsage
                 props = props.arch$tab(tabSupplier.get());
             }
 
@@ -195,7 +240,7 @@ public class FluidBuilder {
             return new ArchitecturyBucketItem(still, props);
         });
 
-        fluidAttributesList.add(attributes);
+        ALL_FLUID_ATTRIBUTES.add(attributes);
 
         return still;
     }

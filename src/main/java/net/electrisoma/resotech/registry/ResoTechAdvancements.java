@@ -25,7 +25,6 @@ import static net.electrisoma.resotech.api.registration.advancement.AdvancementB
 
 @SuppressWarnings("unused")
 public class ResoTechAdvancements implements DataProvider {
-
     public static final List<AdvancementBuilder> ENTRIES = new ArrayList<>();
 
     public static final AdvancementBuilder ROOT =
@@ -42,7 +41,6 @@ public class ResoTechAdvancements implements DataProvider {
         return new AdvancementBuilder(id, builder);
     }
 
-    // DataGen infrastructure
     private final PackOutput output;
     private final CompletableFuture<HolderLookup.Provider> registries;
 
