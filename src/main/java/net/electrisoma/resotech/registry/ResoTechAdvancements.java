@@ -23,6 +23,7 @@ import java.util.function.UnaryOperator;
 
 import static net.electrisoma.resotech.api.registration.advancement.AdvancementBuilder.TaskType.*;
 
+@SuppressWarnings("unused")
 public class ResoTechAdvancements implements DataProvider {
 
     public static final List<AdvancementBuilder> ENTRIES = new ArrayList<>();
@@ -36,6 +37,7 @@ public class ResoTechAdvancements implements DataProvider {
             .type(SILENT)
     );
 
+    @SuppressWarnings("SameParameterValue")
     private static AdvancementBuilder register(String id, UnaryOperator<AdvancementBuilder.Builder> builder) {
         return new AdvancementBuilder(id, builder);
     }

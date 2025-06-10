@@ -19,10 +19,11 @@ import net.minecraft.world.level.block.Block;
 import java.util.Objects;
 import java.util.function.*;
 
+@SuppressWarnings("unused")
 public class AdvancementBuilder {
     private static final ResourceLocation BACKGROUND = ResoTech.path("textures/gui/advancements.png");
     private static final String LANG_PREFIX = "advancement." + ResoTech.MOD_ID + ".";
-    private static final String SECRET_SUFFIX = "\n\u00A77(Hidden Advancement)";
+    private static final String SECRET_SUFFIX = "\n§7(Hidden Advancement)";
 
     private final Advancement.Builder mcBuilder = Advancement.Builder.advancement();
     private final Builder builder = new Builder();

@@ -4,6 +4,7 @@ import com.google.common.base.Supplier;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import org.jetbrains.annotations.ApiStatus;
 
+@SuppressWarnings({"unused", "UnimplementedExpectPlatform"})
 public enum Env {
     CLIENT, SERVER;
 

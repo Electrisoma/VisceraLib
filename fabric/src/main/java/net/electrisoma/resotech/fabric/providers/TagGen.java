@@ -6,18 +6,16 @@ import net.electrisoma.resotech.api.registration.FluidBuilder;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
 
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+@SuppressWarnings("deprecation")
 public class TagGen {
     public static void addGenerators(FabricDataGenerator.Pack pack) {
         pack.addProvider(BlockTags::new);

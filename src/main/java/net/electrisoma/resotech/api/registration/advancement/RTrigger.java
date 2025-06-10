@@ -2,7 +2,6 @@ package net.electrisoma.resotech.api.registration.advancement;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.electrisoma.resotech.api.registration.advancement.RCriterionTrigger;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.advancements.critereon.ContextAwarePredicate;
@@ -31,6 +30,7 @@ public class RTrigger extends RCriterionTrigger<RTrigger.Instance> {
         return Instance.CODEC;
     }
 
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public static class Instance extends RCriterionTrigger.Instance {
         private static final Codec<Instance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                 EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(Instance::player)

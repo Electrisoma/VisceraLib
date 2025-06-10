@@ -3,7 +3,6 @@ package net.electrisoma.resotech.api.registration.advancement;
 import java.util.*;
 import java.util.function.Supplier;
 
-
 import com.google.common.collect.Maps;
 
 import net.electrisoma.resotech.ResoTech;
@@ -49,6 +48,7 @@ public abstract class RCriterionTrigger<T extends RCriterionTrigger.Instance> im
         this.listeners.remove(playerAdvancementsIn);
     }
 
+    @SuppressWarnings("SameParameterValue")
     protected void trigger(ServerPlayer player, @Nullable List<Supplier<Object>> suppliers) {
         PlayerAdvancements playerAdvancements = player.getAdvancements();
         Set<Listener<T>> playerListeners = this.listeners.get(playerAdvancements);

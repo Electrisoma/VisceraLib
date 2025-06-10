@@ -4,6 +4,7 @@ import net.minecraft.tags.BlockTags;
 
 import java.util.function.Function;
 
+@SuppressWarnings("unused")
 public class BlockTransforms {
     public static Function<BlockBuilder, BlockBuilder> pickaxeOnly() {
         return b -> b.tag(BlockTags.MINEABLE_WITH_PICKAXE);

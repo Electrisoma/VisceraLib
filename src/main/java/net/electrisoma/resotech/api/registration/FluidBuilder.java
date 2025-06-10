@@ -8,7 +8,6 @@ import dev.architectury.core.item.ArchitecturyBucketItem;
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 
-import net.electrisoma.resotech.ResoTech;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -30,6 +29,7 @@ import java.util.stream.Collectors;
 
 import static net.electrisoma.resotech.ResoTech.path;
 
+@SuppressWarnings({"unused", "UnstableApiUsage"})
 public class FluidBuilder {
     private final String name;
     private String langEntry = null;

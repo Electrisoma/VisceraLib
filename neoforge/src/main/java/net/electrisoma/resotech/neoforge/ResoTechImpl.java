@@ -2,8 +2,6 @@ package net.electrisoma.resotech.neoforge;
 
 import net.electrisoma.resotech.ResoTech;
 
-import net.electrisoma.resotech.client.neoforge.ResoTechClientImpl;
-import net.electrisoma.resotech.multiloader.Env;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModLoadingContext;

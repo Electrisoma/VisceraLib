@@ -1,6 +1,5 @@
 package net.electrisoma.resotech.registry;
 
-import dev.architectury.core.item.ArchitecturyBucketItem;
 import net.electrisoma.resotech.ResoTech;
 import net.electrisoma.resotech.api.registration.ItemBuilder;
 
@@ -9,9 +8,6 @@ import dev.architectury.registry.registries.RegistrySupplier;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.item.Items;
-
-import java.util.function.Supplier;
 
 public class ResoTechItems {
     public static final DeferredRegister<Item> ITEMS =
@@ -27,12 +23,4 @@ public class ResoTechItems {
                     .lang("Item Thing")
                     .tab(ResoTechTabs.BASE)
                     .register();
-
-//    public static final RegistrySupplier<Item> TEST_BUCKET =
-//            ITEMS.register("test_bucket", () ->
-//                    new ArchitecturyBucketItem(ResoTechFluids.TEST_STILL,
-//                            new Item.Properties()
-//                                    .craftRemainder(Items.BUCKET)
-//                                    .stacksTo(1)
-//                                    .arch$tab(ResoTechTabs.BASE)));
 }

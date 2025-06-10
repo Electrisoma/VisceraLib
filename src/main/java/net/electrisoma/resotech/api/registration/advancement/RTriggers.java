@@ -10,9 +10,7 @@ import java.util.LinkedList;
 public class RTriggers {
     private static final List<RCriterionTrigger<?>> triggers = new LinkedList<>();
     public static void register() {
-        triggers.forEach(trigger -> {
-            Registry.register(BuiltInRegistries.TRIGGER_TYPES, trigger.getId(), trigger);
-        });
+        triggers.forEach(trigger -> Registry.register(BuiltInRegistries.TRIGGER_TYPES, trigger.getId(), trigger));
     }
 
     public static RTrigger addTrigger(String id) {

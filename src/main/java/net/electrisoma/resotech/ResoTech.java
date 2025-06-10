@@ -27,7 +27,8 @@ public class ResoTech {
 
 	}
 
-	@ExpectPlatform
+	@SuppressWarnings("UnimplementedExpectPlatform")
+    @ExpectPlatform
 	public static void onRegister() {
 		throw new AssertionError();
 	}

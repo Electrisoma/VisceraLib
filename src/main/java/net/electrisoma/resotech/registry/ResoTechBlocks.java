@@ -1,6 +1,5 @@
 package net.electrisoma.resotech.registry;
 
-import dev.architectury.core.block.ArchitecturyLiquidBlock;
 import net.electrisoma.resotech.ResoTech;
 import net.electrisoma.resotech.api.registration.BlockBuilder;
 
@@ -9,12 +8,8 @@ import dev.architectury.registry.registries.RegistrySupplier;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
-
-import java.util.function.Supplier;
 
 import static net.electrisoma.resotech.api.registration.BlockTransforms.*;
 
@@ -39,9 +34,4 @@ public class ResoTechBlocks {
                     .lang("Machine Thing")
                     .tab(ResoTechTabs.MACHINES)
                     .register();
-
-//    public static final RegistrySupplier<LiquidBlock> TEST_FLUID =
-//            BLOCKS.register("test", () ->
-//                    new ArchitecturyLiquidBlock(ResoTechFluids.TEST_STILL,
-//                            BlockBehaviour.Properties.ofFullCopy(Blocks.WATER)));
 }
