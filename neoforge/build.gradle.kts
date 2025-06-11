@@ -35,24 +35,28 @@ val commonBundle: Configuration by configurations.creating {
     isCanBeConsumed = false
     isCanBeResolved = true
 }
-
 val shadowBundle: Configuration by configurations.creating {
     isCanBeConsumed = false
     isCanBeResolved = true
 }
-
 configurations {
     compileClasspath.get().extendsFrom(commonBundle)
     runtimeClasspath.get().extendsFrom(commonBundle)
     get("developmentNeoForge").extendsFrom(commonBundle)
 }
 
-sourceSets {
-    create("datagen") {
-        runtimeClasspath += sourceSets["main"].runtimeClasspath
-        compileClasspath += sourceSets["main"].compileClasspath
-    }
-}
+//sourceSets {
+//    create("datagen") {
+//        runtimeClasspath += sourceSets["main"].runtimeClasspath
+//        compileClasspath += sourceSets["main"].compileClasspath
+//    }
+//    main {
+//        resources {
+//            srcDir("src/generated/resources")
+//            exclude("**/.cache")
+//        }
+//    }
+//}
 
 loom {
     decompilers {
@@ -64,22 +68,23 @@ loom {
     silentMojangMappingsLicense()
     accessWidenerPath = common.loom.accessWidenerPath
     runConfigs {
-        create("DataGenFabric") {
-            data()
-
-            name("Fabric Data Generation (NeoForge)")
-            programArgs("--output", file("fabric/src/generated/resources").absolutePath)
-            programArgs("--existing", "${project.rootProject.file("common/src/main/resources")}")
-            source(sourceSets.getByName("datagen"))
-        }
-        create("DataGenNeoForge") {
-            data()
-
-            name("NeoForge Data Generation ")
-            programArgs("--output", file("neoforge/src/generated/resources").absolutePath)
-            programArgs("--existing", "${project.rootProject.file("common/src/main/resources")}")
-        }
-
+//        create("DataGenFabric") {
+//            data()
+//
+//            name("Fabric Data Generation (NeoForge)")
+//            programArgs("--output", file("fabric/src/generated/resources").absolutePath)
+//            programArgs("--existing", "${project.rootProject.file("common/src/main/resources")}")
+//            runDir("build/datagen")
+//
+//        }
+//        create("DataGenNeoForge") {
+//            data()
+//
+//            name("NeoForge Data Generation ")
+//            programArgs("--output", file("neoforge/src/generated/resources").absolutePath)
+//            programArgs("--existing", "${project.rootProject.file("common/src/main/resources")}")
+//            runDir("build/datagen")
+//        }
         all {
             isIdeConfigGenerated = true
             runDir = "../../../run"
@@ -182,11 +187,11 @@ tasks.register<Copy>("buildAndCollect") {
     dependsOn("build")
 }
 
-tasks.register("runDataGen") {
-    group = "loom"
-    description = "Generate data for " + mod.id
-    dependsOn("runDataGenFabric", "runDataGenNeoForge")
-}
+//tasks.register("runDataGen") {
+//    group = "loom"
+//    description = "Generate data for " + mod.id
+//    dependsOn("runDataGenFabric", "runDataGenNeoForge")
+//}
 
 // Modmuss Publish
 publishMods {

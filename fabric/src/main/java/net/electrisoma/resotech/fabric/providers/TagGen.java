@@ -3,8 +3,6 @@ package net.electrisoma.resotech.fabric.providers;
 import net.electrisoma.resotech.ResoTech;
 import net.electrisoma.resotech.api.registration.BlockBuilder;
 import net.electrisoma.resotech.api.registration.FluidBuilder;
-import net.electrisoma.resotech.api.registration.ItemBuilder;
-import net.electrisoma.resotech.registry.ResoTechTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.core.HolderLookup;
@@ -32,20 +30,7 @@ public class TagGen {
 
         @Override
         protected void addTags(HolderLookup.Provider provider) {
-            var itemLookup = provider.lookupOrThrow(Registries.ITEM);
-            for (ItemBuilder builder : ItemBuilder.getAllBuilders()) {
-                Item item = builder.register().get();
-                var itemKey = item.builtInRegistryHolder().key();
-
-                for (TagKey<Item> tag : builder.getItemTags()) {
-                    itemLookup.get(itemKey).ifPresent(holder -> tag(tag).add(holder.key()));
-                }
-            }
-
-            for (ResoTechTags.AllItemTags tagEnum : ResoTechTags.AllItemTags.values()) {
-                if (!tagEnum.alwaysDatagen) continue;
-                tag(tagEnum.tag);
-            }
+            // Add item tags here if needed
         }
 
         @Override
@@ -61,7 +46,9 @@ public class TagGen {
 
         @Override
         protected void addTags(HolderLookup.Provider provider) {
+
             var blockLookup = provider.lookupOrThrow(Registries.BLOCK);
+
             for (BlockBuilder builder : BlockBuilder.getAllBuilders()) {
                 Block block = builder.getRegisteredBlock().get();
 
@@ -70,11 +57,6 @@ public class TagGen {
                         tag(tag).add(holder.key());
                     }
                 });
-            }
-
-            for (ResoTechTags.AllBlockTags tagEnum : ResoTechTags.AllBlockTags.values()) {
-                if (!tagEnum.alwaysDatagen) continue;
-                tag(tagEnum.tag);
             }
         }
 
@@ -92,6 +74,7 @@ public class TagGen {
         @Override
         protected void addTags(HolderLookup.Provider provider) {
             var fluidLookup = provider.lookupOrThrow(Registries.FLUID);
+
             for (FluidBuilder builder : FluidBuilder.getAllBuilders()) {
                 var still = builder.getStill().get();
                 var flowing = builder.getFlowing().get();
@@ -99,17 +82,13 @@ public class TagGen {
                 var stillKey = still.builtInRegistryHolder().key();
                 var flowingKey = flowing.builtInRegistryHolder().key();
 
-                fluidLookup.get(stillKey).ifPresent(stillHolder ->
-                        fluidLookup.get(flowingKey).ifPresent(flowingHolder -> {
-                            for (TagKey<net.minecraft.world.level.material.Fluid> tag : builder.getFluidTags()) {
-                                tag(tag).add(stillHolder.key()).add(flowingHolder.key());
-                            }
-                        }));
-            }
-
-            for (ResoTechTags.AllFluidTags tagEnum : ResoTechTags.AllFluidTags.values()) {
-                if (!tagEnum.alwaysDatagen) continue;
-                tag(tagEnum.tag);
+                fluidLookup.get(stillKey).ifPresent(stillHolder -> {
+                    fluidLookup.get(flowingKey).ifPresent(flowingHolder -> {
+                        for (TagKey<net.minecraft.world.level.material.Fluid> tag : builder.getFluidTags()) {
+                            tag(tag).add(stillHolder.key()).add(flowingHolder.key());
+                        }
+                    });
+                });
             }
         }
 

@@ -56,6 +56,7 @@ public class LangGen extends LanguageProvider {
                 if (!hasLang) addBlock(() -> block);
             }
         }
+
         for (var builder : BlockBuilder.getAllBuilders()) {
             builder.getLangEntry().ifPresent(lang -> {
                 ResourceLocation id = ResoTech.path(builder.getName());
@@ -72,6 +73,7 @@ public class LangGen extends LanguageProvider {
                 if (!hasLang) addItem(() -> item);
             }
         }
+
         for (var builder : ItemBuilder.getAllBuilders()) {
             builder.getLangEntry().ifPresent(lang -> {
                 ResourceLocation id = ResoTech.path(builder.getName());
@@ -207,15 +209,15 @@ public class LangGen extends LanguageProvider {
 
     private static final String NORMAL =
             "abcdefghijklmnopqrstuvwxyz" +
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
-            "0123456789" +
-            ".,'?!_;/\\()[]{}<>";
+                    "ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+                    "0123456789" +
+                    ".,'?!_;/\\()[]{}<>";
 
     private static final String UPSIDE =
             "ɐqɔpǝɟƃɥᴉɾʞןɯuodbɹsʇnʌʍxʎz" +
-            "∀ᙠƆᗡƎℲ⅁HΙſʞWɯNOԀӨᴚS⊥∩ΛMX⅄Z" +
-            "0ƖᄅƐㄣϛ9ㄥ86" +
-            "˙‘‚¿¡‾؛/\\)(][}{><";
+                    "∀ᙠƆᗡƎℲ⅁HΙſʞWɯNOԀӨᴚS⊥∩ΛMX⅄Z" +
+                    "0ƖᄅƐㄣϛ9ㄥ86" +
+                    "˙‘‚¿¡‾؛/\\)(][}{><";
 
     private static String toEnglishName(String id) {
         return Arrays.stream(id.split("_"))
