@@ -82,13 +82,12 @@ public class TagGen {
                 var stillKey = still.builtInRegistryHolder().key();
                 var flowingKey = flowing.builtInRegistryHolder().key();
 
-                fluidLookup.get(stillKey).ifPresent(stillHolder -> {
-                    fluidLookup.get(flowingKey).ifPresent(flowingHolder -> {
-                        for (TagKey<net.minecraft.world.level.material.Fluid> tag : builder.getFluidTags()) {
-                            tag(tag).add(stillHolder.key()).add(flowingHolder.key());
-                        }
-                    });
-                });
+                fluidLookup.get(stillKey).ifPresent(stillHolder ->
+                        fluidLookup.get(flowingKey).ifPresent(flowingHolder -> {
+                            for (TagKey<net.minecraft.world.level.material.Fluid> tag : builder.getFluidTags()) {
+                                tag(tag).add(stillHolder.key()).add(flowingHolder.key());
+                            }
+                        }));
             }
         }
 
