@@ -1,17 +1,19 @@
 package net.electrisoma.resotech.registry;
 
 import net.electrisoma.resotech.ResoTech;
-import net.electrisoma.resotech.api.registration.BlockBuilder;
+import net.electrisoma.resotech.api.registration.builders.BlockBuilder;
 
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 
+import net.electrisoma.resotech.api.registration.SharedProperties;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 
-import static net.electrisoma.resotech.api.registration.BlockTransforms.*;
+import static net.electrisoma.resotech.api.registration.BuilderTransforms.*;
 
 @SuppressWarnings("unused")
 public class ResoTechBlocks {
@@ -25,9 +27,12 @@ public class ResoTechBlocks {
 
     public static final RegistrySupplier<Block> MACHINE_BLOCK =
             new BlockBuilder(BLOCKS, "machine_block")
+                    .initialProperties(SharedProperties::netheriteMetal)
                     .properties(p -> p
                             .strength(1.0F, 10000.0F)
-                            .mapColor(MapColor.COLOR_GRAY))
+                            .mapColor(MapColor.COLOR_GRAY)
+                    )
+                    .renderLayer(RenderType.translucent())
                     .properties(BlockBehaviour.Properties::requiresCorrectToolForDrops)
                     .transform(pickaxeOnly())
                     .withBlockItem(ResoTechItems.ITEMS)

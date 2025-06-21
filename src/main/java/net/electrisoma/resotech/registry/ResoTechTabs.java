@@ -1,9 +1,9 @@
 package net.electrisoma.resotech.registry;
 
 import net.electrisoma.resotech.ResoTech;
-import net.electrisoma.resotech.api.registration.TabBuilder;
-import net.electrisoma.resotech.api.registration.ItemBuilder;
-import net.electrisoma.resotech.api.registration.BlockBuilder;
+import net.electrisoma.resotech.api.registration.builders.TabBuilder;
+import net.electrisoma.resotech.api.registration.builders.ItemBuilder;
+import net.electrisoma.resotech.api.registration.builders.BlockBuilder;
 
 import dev.architectury.registry.CreativeTabRegistry;
 import dev.architectury.registry.registries.DeferredRegister;

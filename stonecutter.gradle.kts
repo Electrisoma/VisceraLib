@@ -62,7 +62,6 @@ subprojects {
         maven("https://maven.fabricmc.net/")
         maven("https://maven.neoforged.net/releases/")
 
-        maven("https://mvn.devos.one/snapshots")
         maven("https://maven.blamejared.com")
         maven("https://maven.createmod.net/")
         maven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven/")

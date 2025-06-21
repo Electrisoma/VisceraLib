@@ -31,10 +31,6 @@ architectury {
     fabric()
 }
 
-val portLibModules = listOf(
-    "tags", "models", "data", "lazy_registration"
-)
-
 val commonBundle: Configuration by configurations.creating {
     isCanBeConsumed = false
     isCanBeResolved = true
@@ -61,26 +57,6 @@ loom {
     silentMojangMappingsLicense()
     accessWidenerPath = common.loom.accessWidenerPath
     runConfigs {
-        create("DataGenFabric") {
-            client()
-
-            name("Fabric Data Generation")
-            vmArg("-Dfabric-api.datagen")
-            vmArg("-Dfabric-api.datagen.output-dir=${project.rootProject.file("fabric/src/generated/resources")}")
-            vmArg("-Dfabric-api.datagen.modid=resotech")
-            vmArg("-Dporting_lib.datagen.existing_resources=${project.rootProject.file("common/src/main/resources")}")
-            vmArg("-Dresotech.datagen.platform=fabric")
-        }
-        create("DataGenNeoForge") {
-            client()
-
-            name("NeoForge Data Generation (Fabric)")
-            vmArg("-Dfabric-api.datagen")
-            vmArg("-Dfabric-api.datagen.output-dir=${project.rootProject.file("neoforge/src/generated/resources")}")
-            vmArg("-Dfabric-api.datagen.modid=resotech")
-            vmArg("-Dporting_lib.datagen.existing_resources=${project.rootProject.file("common/src/main/resources")}")
-            vmArg("-Dresotech.datagen.platform=neoforge")
-        }
         all {
             isIdeConfigGenerated = true
             runDir = "../../../run"
@@ -101,10 +77,6 @@ dependencies {
 
     modApi("net.fabricmc.fabric-api:fabric-api:${common.mod.dep("fabric_api_version")}")
     modImplementation("net.fabricmc:fabric-loader:${mod.dep("fabric_loader")}")
-
-    for (module in portLibModules) {
-        modApi(include("io.github.fabricators_of_create.Porting-Lib:$module:${common.mod.dep("portingLib")}")!!)
-    }
 
     "dev.architectury:architectury-fabric:${common.mod.dep("archApi")}".let {
         modImplementation(it)
@@ -185,12 +157,6 @@ tasks.register<Copy>("buildAndCollect") {
     from(tasks.remapJar.get().archiveFile, tasks.remapSourcesJar.get().archiveFile)
     into(rootProject.layout.buildDirectory.file("libs/${mod.version}/$loader"))
     dependsOn("build")
-}
-
-tasks.register("runDataGen") {
-    group = "loom"
-    description = "Generate data for " + mod.id
-    dependsOn("runDataGenFabric", "runDataGenNeoForge")
 }
 
 // Modmuss Publish

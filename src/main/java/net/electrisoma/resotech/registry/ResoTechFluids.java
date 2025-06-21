@@ -1,15 +1,15 @@
 package net.electrisoma.resotech.registry;
 
 import net.electrisoma.resotech.ResoTech;
-import net.electrisoma.resotech.api.registration.FluidBuilder;
+import net.electrisoma.resotech.api.registration.builders.FluidBuilder;
 
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;
 
-import net.minecraft.tags.FluidTags;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.phys.Vec3;
 
 import static net.electrisoma.resotech.registry.ResoTechTags.*;
 
@@ -24,9 +24,11 @@ public class ResoTechFluids {
     }
 
     public static final RegistrySupplier<FlowingFluid> TEST_FLUID =
-            new FluidBuilder("test", FLUIDS, ResoTechItems.ITEMS, ResoTechBlocks.BLOCKS)
+            new FluidBuilder("test_fluid", FLUIDS, ResoTechItems.ITEMS, ResoTechBlocks.BLOCKS)
                     .lang("Test Fluid")
-                    .tags(FluidTags.WATER, AllFluidTags.TEST.tag)
+                    .fogColor(new Vec3(1, 0, 0))
+                    .fogDensity(8)
+                    .tags(AllFluidTags.TEST.tag)
                     .tab(ResoTechTabs.BASE)
                     .register();
 }

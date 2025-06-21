@@ -1,7 +1,7 @@
 package net.electrisoma.resotech.registry;
 
 import net.electrisoma.resotech.ResoTech;
-import net.electrisoma.resotech.api.registration.ItemBuilder;
+import net.electrisoma.resotech.api.registration.builders.ItemBuilder;
 
 import dev.architectury.registry.registries.DeferredRegister;
 import dev.architectury.registry.registries.RegistrySupplier;

@@ -68,23 +68,24 @@ loom {
     silentMojangMappingsLicense()
     accessWidenerPath = common.loom.accessWidenerPath
     runConfigs {
-//        create("DataGenFabric") {
-//            data()
-//
-//            name("Fabric Data Generation (NeoForge)")
-//            programArgs("--output", file("fabric/src/generated/resources").absolutePath)
-//            programArgs("--existing", "${project.rootProject.file("common/src/main/resources")}")
-//            runDir("build/datagen")
-//
-//        }
-//        create("DataGenNeoForge") {
-//            data()
-//
-//            name("NeoForge Data Generation ")
-//            programArgs("--output", file("neoforge/src/generated/resources").absolutePath)
-//            programArgs("--existing", "${project.rootProject.file("common/src/main/resources")}")
-//            runDir("build/datagen")
-//        }
+        create("DataGenFabric") {
+            data()
+
+            name("Fabric Data Generation")
+            programArgs("--all", "--mod", mod.id)
+            programArgs("--output", "${project.rootProject.file("fabric/src/generated/resources")}")
+            programArgs("--existing", "${project.rootProject.file("src/main/resources")}")
+            vmArg("-Dresotech.datagen.platform=fabric")
+        }
+        create("DataGenNeoForge") {
+            data()
+
+            name("NeoForge Data Generation")
+            programArgs("--all", "--mod", mod.id)
+            programArgs("--output", "${project.rootProject.file("neoforge/src/generated/resources")}")
+            programArgs("--existing", "${project.rootProject.file("src/main/resources")}")
+            vmArg("-Dresotech.datagen.platform=neoforge")
+        }
         all {
             isIdeConfigGenerated = true
             runDir = "../../../run"
@@ -187,11 +188,11 @@ tasks.register<Copy>("buildAndCollect") {
     dependsOn("build")
 }
 
-//tasks.register("runDataGen") {
-//    group = "loom"
-//    description = "Generate data for " + mod.id
-//    dependsOn("runDataGenFabric", "runDataGenNeoForge")
-//}
+tasks.register("runDataGen") {
+    group = "loom"
+    description = "Generate data for " + mod.id
+    dependsOn("runDataGenFabric", "runDataGenNeoForge")
+}
 
 // Modmuss Publish
 publishMods {

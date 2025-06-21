@@ -18,12 +18,10 @@
     ],
     "client": [
       "net.electrisoma.resotech.client.fabric.ResoTechClientImpl"
-    ],
-    "fabric-datagen": [
-      "net.electrisoma.resotech.fabric.ResoTechDataFabric"
     ]
   },
   "mixins": [
+    "resotech.fabric.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.15",
