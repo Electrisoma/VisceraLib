@@ -1,4 +1,4 @@
-package net.electrisoma.visceralib.api.registration.fluid;
+package net.electrisoma.visceralib.core.fluid;
 
 import net.minecraft.resources.ResourceLocation;
 
@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 public class VisceralFluidAttributes {
     private final Supplier<VisceralFlowingFluid> stillFluid;
     private final Supplier<VisceralFlowingFluid> flowingFluid;
-    private final Supplier<?> block; // you can type this better if you want
+    private final Supplier<?> block;
     private final Supplier<?> bucket;
 
     private final ResourceLocation stillTexture;
@@ -45,7 +45,6 @@ public class VisceralFluidAttributes {
         this.convertToSource = builder.convertToSource;
     }
 
-    // Getters here, e.g.
     public Supplier<VisceralFlowingFluid> getStillFluid() {
         return stillFluid;
     }
@@ -55,7 +54,6 @@ public class VisceralFluidAttributes {
     public ResourceLocation getStillTexture() {
         return stillTexture;
     }
-    // etc...
 
     public static Builder builder(Supplier<VisceralFlowingFluid> still, Supplier<VisceralFlowingFluid> flowing) {
         return new Builder(still, flowing);

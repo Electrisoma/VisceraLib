@@ -1,123 +1,83 @@
 package net.electrisoma.visceralib.api.registration.builders;
 
-import net.electrisoma.visceralib.VisceraLib;
-import net.electrisoma.visceralib.api.registration.AbstractVisceralRegistrar;
-import net.electrisoma.visceralib.api.registration.VisceralDeferredRegister;
-import net.electrisoma.visceralib.api.registration.VisceralRegistrySupplier;
-import net.electrisoma.visceralib.api.registration.entry.TabEntry;
-
-import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
+import net.electrisoma.visceralib.api.registration.VisceralRegistrySupplier;
+import net.electrisoma.visceralib.api.registration.AbstractVisceralRegistrar;
+import net.electrisoma.visceralib.api.registration.entry.TabEntry;
 
-import java.util.*;
-import java.util.function.Consumer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
-public class TabBuilder<R extends AbstractVisceralRegistrar<R>> {
-    private static final List<TabBuilder<?>> ALL_BUILDERS = new ArrayList<>();
-    private static final int TABS_PER_ROW = 6;
-    private static int tabCounter = 0;
-
-    public static List<TabBuilder<?>> getAllBuilders() {
-        return Collections.unmodifiableList(ALL_BUILDERS);
-    }
-
-    private final R registrar;
-    private final VisceralDeferredRegister<CreativeModeTab> tabRegister;
+public class TabBuilder {
     private final String name;
-    private final String modId;
-    private final CreativeModeTab.Row row;
-    private final int column;
+    private Component title;
+    private Supplier<ItemStack> iconSupplier;
+    private final AbstractVisceralRegistrar<?> registrar;
 
-    private Supplier<ItemStack> iconSupplier = () -> new ItemStack(Items.BARRIER);
-    private String displayName = null;
-    private Consumer<CreativeModeTab.Builder> builderCustomizer = null;
+    private static final List<TabBuilder> ALL_BUILDERS = new ArrayList<>();
 
-    private TabEntry<CreativeModeTab> registeredTab = null;
-    private VisceralRegistrySupplier<CreativeModeTab> registeredSupplier = null;
+    private final List<Supplier<ItemStack>> tabContents = new ArrayList<>();
+    private TabEntry<CreativeModeTab> tabEntry;
 
-    public TabBuilder(R registrar, String name) {
-        this.registrar = Objects.requireNonNull(registrar);
-        this.name = Objects.requireNonNull(name);
-        this.modId = registrar.getModId();
-        this.tabRegister = registrar.deferredRegister(Registries.CREATIVE_MODE_TAB);
-
-        this.row = (tabCounter / TABS_PER_ROW == 0) ? CreativeModeTab.Row.TOP : CreativeModeTab.Row.BOTTOM;
-        this.column = tabCounter % TABS_PER_ROW;
-        tabCounter++;
+    public static List<TabBuilder> getAllBuilders() {
+        return List.copyOf(ALL_BUILDERS);
     }
 
-    public TabBuilder<R> icon(Supplier<ItemStack> iconSupplier) {
-        this.iconSupplier = iconSupplier != null ? iconSupplier : () -> new ItemStack(Items.BARRIER);
-        return this;
-    }
-
-    public TabBuilder<R> icon(ItemStack icon) {
-        return icon(() -> icon);
-    }
-
-    public TabBuilder<R> icon(net.minecraft.world.item.Item item) {
-        return icon(() -> new ItemStack(item));
-    }
-
-    public TabBuilder<R> lang(String displayName) {
-        this.displayName = displayName;
-        return this;
-    }
-
-    public TabBuilder<R> customize(Consumer<CreativeModeTab.Builder> customizer) {
-        this.builderCustomizer = customizer;
-        return this;
-    }
-
-    public TabEntry<CreativeModeTab> register() {
-        if (registeredTab != null)
-            return registeredTab;
-
+    public TabBuilder(AbstractVisceralRegistrar<?> registrar, String name) {
+        this.registrar = registrar;
+        this.name = name;
         ALL_BUILDERS.add(this);
-
-        ResourceKey<CreativeModeTab> key = ResourceKey.create(Registries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(modId, name));
-        VisceralRegistrySupplier<CreativeModeTab> supplier = new VisceralRegistrySupplier<>(key, this::build);
-
-        tabRegister.register(name, this::build);
-
-        registeredTab = new TabEntry<>(supplier);
-        return registeredTab;
     }
 
-    private CreativeModeTab build() {
-        CreativeModeTab.Builder builder = CreativeModeTab.builder(row, column)
-                .icon(iconSupplier)
-                .title(Component.translatable("itemGroup." + modId + "." + name));
+    public TabBuilder icon(Item item) {
+        this.iconSupplier = () -> new ItemStack(item);
+        return this;
+    }
 
-        if (builderCustomizer != null)
-            builderCustomizer.accept(builder);
+    public TabBuilder lang(String langString) {
+        this.title = Component.literal(langString);
+        return this;
+    }
 
-        return builder.build();
+    public TabBuilder addItem(ItemLike item) {
+        return addItem(() -> new ItemStack(item));
+    }
+
+    public TabBuilder addItem(Supplier<ItemStack> stackSupplier) {
+        tabContents.add(stackSupplier);
+        return this;
+    }
+
+    public List<Supplier<ItemStack>> getTabContents() {
+        return List.copyOf(tabContents);
     }
 
     public String getName() {
         return name;
     }
 
-    public String getModId() {
-        return modId;
+    public TabEntry<CreativeModeTab> getTabEntry() {
+        return tabEntry;
     }
 
-    public ResourceKey<CreativeModeTab> getKey() {
-        return ResourceKey.create(Registries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(modId, name));
-    }
+    public TabEntry<CreativeModeTab> register() {
+        Supplier<CreativeModeTab> tabSupplier = () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 1)
+                .title(title != null ? title : Component.literal(name))
+                .icon(iconSupplier != null ? iconSupplier : () -> ItemStack.EMPTY)
+                .build();
 
-    public Optional<VisceralRegistrySupplier<CreativeModeTab>> getRegisteredSupplier() {
-        return Optional.ofNullable(registeredSupplier);
-    }
+        var deferredRegister = registrar.deferredRegister(net.minecraft.core.registries.Registries.CREATIVE_MODE_TAB);
 
-    public Optional<String> getLangEntry() {
-        return Optional.ofNullable(displayName);
+        var registrySupplier = deferredRegister.register(name, tabSupplier);
+
+        this.tabEntry = new TabEntry<>(new VisceralRegistrySupplier<>(registrySupplier.getKey(), registrySupplier::get));
+        return tabEntry;
     }
 }

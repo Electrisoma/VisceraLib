@@ -1,5 +1,5 @@
 @MethodsReturnNonnullByDefault
 
-package net.electrisoma.visceralib.api.registration.fluid;
+package net.electrisoma.visceralib.core.fluid;
 
 import net.minecraft.MethodsReturnNonnullByDefault;

@@ -4,7 +4,7 @@ import net.electrisoma.visceralib.VisceraLib;
 import net.electrisoma.visceralib.api.registration.VisceralRegistrar;
 
 import net.electrisoma.visceralib.api.registration.entry.FluidEntry;
-import net.electrisoma.visceralib.api.registration.fluid.VisceralFlowingFluid;
+import net.electrisoma.visceralib.core.fluid.VisceralFlowingFluid;
 import net.minecraft.tags.FluidTags;
 
 @SuppressWarnings("unused")

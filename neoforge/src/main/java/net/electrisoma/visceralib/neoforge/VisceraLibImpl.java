@@ -25,6 +25,8 @@ public class VisceraLibImpl {
 		eventBus = ModLoadingContext.get().getActiveContainer().getEventBus();
 		neoforgeBus = NeoForge.EVENT_BUS;
 
+		VisceralRegistries.setFactory(VisceralDeferredRegisterNeoForge::new);
+
 		VisceraLib.init();
 
 		for (VisceralDeferredRegister<?> deferred : VisceralRegistries.getAllForMod(VisceraLib.MOD_ID)) {
@@ -37,8 +39,8 @@ public class VisceraLibImpl {
 		for (BlockBuilder<?, ?> builder : BlockBuilder.getAllBuilders()) {
 			builder.getRegisteredSupplier().ifPresent(VisceralRegistrySupplier::notifyListeners);
 		}
-		for (TabBuilder<?> builder : TabBuilder.getAllBuilders()) {
-			builder.getRegisteredSupplier().ifPresent(VisceralRegistrySupplier::notifyListeners);
-		}
+//		for (TabBuilder<?> builder : TabBuilder.getAllBuilders()) {
+//			builder.getRegisteredSupplier().ifPresent(VisceralRegistrySupplier::notifyListeners);
+//		}
 	}
 }

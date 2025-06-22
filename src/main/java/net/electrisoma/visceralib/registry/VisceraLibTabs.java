@@ -10,14 +10,19 @@ import net.minecraft.world.item.*;
 public class VisceraLibTabs {
     private static final VisceralRegistrar REGISTRAR = VisceraLib.registrar();
 
-    public static TabEntry<CreativeModeTab> BASE;
-
     public static void init() {
-        BASE = VisceraLib.registrar()
-                .tab("base")
-                .icon(() -> new ItemStack(VisceraLibItems.TEST_ITEM.get()))
-                .lang("Base Tab")
-                .register();
-        VisceraLib.LOGGER.info("Registered tab: {}", BASE.getKey());
+        VisceraLib.LOGGER.info("Registering Tabs for " + VisceraLib.NAME);
     }
+
+    public static final TabEntry<CreativeModeTab> BASE = REGISTRAR
+            .tab("base")
+            .icon(Items.DIRT)
+            .lang("Base Tab")
+            .register();
+
+    public static final TabEntry<CreativeModeTab> MACHINES = REGISTRAR
+            .tab("machines")
+            .icon(Items.DIRT)
+            .lang("Machines")
+            .register();
 }

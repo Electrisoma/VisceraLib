@@ -31,6 +31,7 @@ public class ItemBuilder<T extends Item, R extends AbstractVisceralRegistrar<R>>
     private final Set<Supplier<ResourceKey<CreativeModeTab>>> creativeTabs = new HashSet<>();
     private final List<TagKey<Item>> itemTags = new ArrayList<>();
     private final List<Consumer<T>> postRegisterTasks = new ArrayList<>();
+    private VisceralRegistrySupplier<T> registeredSupplier;
 
     private String langName = null;
     private Integer burnTime = null;
@@ -110,11 +111,17 @@ public class ItemBuilder<T extends Item, R extends AbstractVisceralRegistrar<R>>
                 task.accept(item);
         });
 
+        this.registeredSupplier = typedRegistered;
+
         return new ItemEntry<>(typedRegistered);
     }
 
     public Set<ResourceKey<CreativeModeTab>> getTabs() {
         return creativeTabs.stream().map(Supplier::get).collect(Collectors.toUnmodifiableSet());
+    }
+
+    public Optional<VisceralRegistrySupplier<T>> getRegisteredSupplier() {
+        return Optional.ofNullable(registeredSupplier);
     }
 
     public List<TagKey<Item>> getTags() {

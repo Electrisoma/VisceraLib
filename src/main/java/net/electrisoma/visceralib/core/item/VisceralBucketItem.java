@@ -1,9 +1,8 @@
-package net.electrisoma.visceralib.api.registration.fluid;
+package net.electrisoma.visceralib.core.item;
 
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.material.FlowingFluid;
-import net.minecraft.world.level.material.Fluid;
 
 import java.util.function.Supplier;
 

@@ -1,4 +1,4 @@
-package net.electrisoma.visceralib.api.registration.fluid;
+package net.electrisoma.visceralib.core.block;
 import java.util.function.Supplier;
 
 import net.minecraft.world.level.block.LiquidBlock;

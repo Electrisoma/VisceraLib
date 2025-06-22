@@ -5,6 +5,8 @@ import net.electrisoma.visceralib.api.registration.VisceralRegistrySupplier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 
+import java.util.function.Consumer;
+
 public class TabEntry<T> {
     private final VisceralRegistrySupplier<T> supplier;
 
@@ -18,5 +20,9 @@ public class TabEntry<T> {
 
     public T get() {
         return supplier.get();
+    }
+
+    public void listen(Consumer<T> listener) {
+        supplier.listen(listener);
     }
 }

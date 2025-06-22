@@ -19,7 +19,7 @@ public class VisceraLib {
 	public static final Logger LOGGER = LogUtils.getLogger();
 
 	private static final VisceralRegistrar REGISTRAR = VisceralRegistrar.create(MOD_ID)
-			.defaultCreativeTab(VisceraLibTabs.BASE);
+			.defaultCreativeTab(() -> VisceraLibTabs.BASE);
 
 	public static void init() {
 		LOGGER.info("{} {} initializing! on platform: {}", NAME, VERSION, LOADER);

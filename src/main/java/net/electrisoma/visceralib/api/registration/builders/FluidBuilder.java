@@ -4,10 +4,9 @@ import net.electrisoma.visceralib.api.registration.AbstractVisceralRegistrar;
 import net.electrisoma.visceralib.api.registration.VisceralDeferredRegister;
 import net.electrisoma.visceralib.api.registration.VisceralRegistrySupplier;
 import net.electrisoma.visceralib.api.registration.entry.FluidEntry;
-import net.electrisoma.visceralib.api.registration.fluid.VisceralFlowingFluid;
-import net.electrisoma.visceralib.api.registration.fluid.VisceralFluidAttributes;
-import net.electrisoma.visceralib.api.registration.fluid.VisceralLiquidBlock;
-import net.minecraft.core.Registry;
+import net.electrisoma.visceralib.core.fluid.VisceralFlowingFluid;
+import net.electrisoma.visceralib.core.fluid.VisceralFluidAttributes;
+import net.electrisoma.visceralib.core.block.VisceralLiquidBlock;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -168,7 +167,6 @@ public class FluidBuilder<R extends AbstractVisceralRegistrar<R>> {
         liquidBlockSupplier = blockRegister.register(name, () -> {
             BlockBehaviour.Properties props = BlockBehaviour.Properties.ofFullCopy(Blocks.WATER);
             blockProperties.accept(props);
-            // We create a VisceralLiquidBlock, which is a subclass of LiquidBlock, which is a subclass of Block
             return new VisceralLiquidBlock(stillSupplier, props);
         });
 

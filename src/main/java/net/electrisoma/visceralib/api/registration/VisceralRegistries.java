@@ -26,9 +26,8 @@ public final class VisceralRegistries {
      * Set the platform-specific factory. Must be called during platform initialization.
      */
     public static void setFactory(DeferredRegisterFactory factory) {
-        if (factory == null) {
+        if (factory == null)
             throw new IllegalArgumentException("DeferredRegisterFactory cannot be null");
-        }
         FACTORY = factory;
     }
 
@@ -49,9 +48,8 @@ public final class VisceralRegistries {
 
     public static synchronized Collection<VisceralDeferredRegister<?>> getAllForMod(String modId) {
         Map<ResourceKey<?>, VisceralDeferredRegister<?>> modRegs = REGISTRIES.get(modId);
-        if (modRegs == null) {
+        if (modRegs == null)
             return Collections.emptyList();
-        }
         return Collections.unmodifiableCollection(modRegs.values());
     }
 }

@@ -20,7 +20,6 @@ public class VisceraLibItems {
                     .stacksTo(1)
                     .rarity(Rarity.COMMON)
             )
-            .tab(() -> VisceraLibTabs.BASE.getKey())
             .lang("Test Item")
             .register();
 }

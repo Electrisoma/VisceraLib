@@ -15,9 +15,12 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public abstract class AbstractVisceralRegistrar<T extends AbstractVisceralRegistrar<T>> {
     protected final String modId;
+    private TabEntry<CreativeModeTab> defaultTabEntry = null;
+    private Supplier<TabEntry<CreativeModeTab>> defaultTabEntrySupplier = null;
 
     protected AbstractVisceralRegistrar(String modId) {
         this.modId = modId;
@@ -27,14 +30,22 @@ public abstract class AbstractVisceralRegistrar<T extends AbstractVisceralRegist
         return VisceralRegistries.getOrCreate(registryKey, modId);
     }
 
-    private TabEntry<CreativeModeTab> defaultTabEntry = null;
-
     public T defaultCreativeTab(TabEntry<CreativeModeTab> tabEntry) {
         this.defaultTabEntry = tabEntry;
+        this.defaultTabEntrySupplier = null;
+        return self();
+    }
+
+    public T defaultCreativeTab(Supplier<TabEntry<CreativeModeTab>> tabEntrySupplier) {
+        this.defaultTabEntrySupplier = tabEntrySupplier;
+        this.defaultTabEntry = null;
         return self();
     }
 
     public Optional<TabEntry<CreativeModeTab>> getDefaultTabEntry() {
+        if (defaultTabEntrySupplier != null) {
+            return Optional.ofNullable(defaultTabEntrySupplier.get());
+        }
         return Optional.ofNullable(defaultTabEntry);
     }
 
@@ -50,8 +61,8 @@ public abstract class AbstractVisceralRegistrar<T extends AbstractVisceralRegist
         return new FluidBuilder<>(self(), name);
     }
 
-    public TabBuilder<T> tab(String name) {
-        return new TabBuilder<>(self(), name);
+    public TabBuilder tab(String name) {
+        return new TabBuilder(this, name);
     }
 
     public String getModId() {
