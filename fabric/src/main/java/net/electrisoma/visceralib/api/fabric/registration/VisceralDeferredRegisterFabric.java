@@ -1,10 +1,12 @@
-package net.electrisoma.visceralib.api.registration;
+package net.electrisoma.visceralib.api.fabric.registration;
 
+import net.electrisoma.visceralib.api.registration.VisceralDeferredRegister;
+import net.electrisoma.visceralib.api.registration.VisceralRegistrySupplier;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,23 +27,26 @@ public class VisceralDeferredRegisterFabric<T> extends VisceralDeferredRegister<
         Registry<T> registry = getRegistryInstance(registryKey);
 
         T value = supplier.get();
+
         Registry.register(registry, id, value);
 
-        VisceralRegistrySupplier<T> wrapped = new VisceralRegistrySupplier<>(() -> value);
+        ResourceKey<T> key = ResourceKey.create(registryKey, id);
+        VisceralRegistrySupplier<T> wrapped = new VisceralRegistrySupplier<>(key, () -> value);
+
         entries.put(name, wrapped);
 
         return wrapped;
     }
 
     @Override
-    public void registerToEventBus(@Nullable Object modEventBus) {}
+    public void registerToEventBus(@Nullable Object modEventBus) {
+        // Fabric has no event bus for this, no-op
+    }
 
     @SuppressWarnings("unchecked")
     private Registry<T> getRegistryInstance(ResourceKey<? extends Registry<T>> key) {
-        if (key == Registries.ITEM) return (Registry<T>) Registries.ITEM;
-        if (key == Registries.BLOCK) return (Registry<T>) Registries.BLOCK;
-
-        throw new IllegalArgumentException("Unsupported registry key: " + key.location());
+        return (Registry<T>) BuiltInRegistries.REGISTRY.getOptional(key.location())
+                .orElseThrow(() -> new IllegalArgumentException("Unsupported or unknown registry key: " + key.location()));
     }
 
     private ResourceLocation createId(String name) {

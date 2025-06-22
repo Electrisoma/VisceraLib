@@ -5,8 +5,6 @@ import net.electrisoma.visceralib.api.registration.builders.BlockBuilder;
 import net.electrisoma.visceralib.api.registration.builders.ItemBuilder;
 import net.electrisoma.visceralib.api.registration.builders.TabBuilder;
 
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 
 import net.neoforged.api.distmarker.Dist;
@@ -17,7 +15,7 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import java.util.function.Supplier;
 
 @EventBusSubscriber(modid = VisceraLib.MOD_ID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
-public class CreativeTabFiller {
+public class CreativeTabFillerNeoForge {
     @SubscribeEvent
     public static void onBuildCreativeTab(BuildCreativeModeTabContentsEvent event) {
         for (TabBuilder builder : TabBuilder.getAllBuilders()) {
