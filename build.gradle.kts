@@ -51,16 +51,7 @@ dependencies {
     modApi("net.fabricmc.fabric-api:fabric-api:${mod.dep("fabric_api_version")}")
 
     // general stuff
-    modImplementation("dev.architectury:architectury:${mod.dep("archApi")}")
-
-    modImplementation("net.createmod.ponder:Ponder-Common-$minecraft:${mod.dep("ponder")}")
-
-    compileOnly("dev.engine-room.flywheel:flywheel-common-mojmap-api-$minecraft:${mod.dep("flywheel")}")
-
-    implementation("foundry.veil:veil-common-$minecraft:${mod.dep("veil")}") {
-        exclude("maven.modrinth")
-        exclude("me.fallenbreath")
-    }
+    //modImplementation("dev.architectury:architectury:${mod.dep("archApi")}")
 
     "io.github.llamalad7:mixinextras-common:${mod.dep("mixin_extras")}".let {
         annotationProcessor(it)

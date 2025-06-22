@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.electrisoma.visceralib.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "client.FogRendererMixin"
+  ],
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -78,27 +78,6 @@ dependencies {
     modApi("net.fabricmc.fabric-api:fabric-api:${common.mod.dep("fabric_api_version")}")
     modImplementation("net.fabricmc:fabric-loader:${mod.dep("fabric_loader")}")
 
-    "dev.architectury:architectury-fabric:${common.mod.dep("archApi")}".let {
-        modImplementation(it)
-        include(it)
-    }
-
-    "net.createmod.ponder:Ponder-Fabric-$minecraft:${common.mod.dep("ponder")}".let {
-        modImplementation(it)
-        include(it)
-    }
-    compileOnly("dev.engine-room.flywheel:flywheel-fabric-api-$minecraft:${common.mod.dep("flywheel")}")
-    "dev.engine-room.flywheel:flywheel-fabric-$minecraft:${common.mod.dep("flywheel")}".let {
-        modImplementation(it)
-        include(it)
-    }
-    "foundry.veil:veil-fabric-$minecraft:${common.mod.dep("veil")}".let {
-        modImplementation(it)
-        include(it)
-    }
-
-    modRuntimeOnly("maven.modrinth:modmenu:${common.mod.dep("modmenu")}")
-
     "io.github.llamalad7:mixinextras-fabric:${mod.dep("mixin_extras")}".let {
         annotationProcessor(it)
         implementation(it)
@@ -131,11 +110,7 @@ tasks.processResources {
     properties(listOf("fabric.mod.json"),
         "id" to mod.id, "name" to mod.name, "license" to mod.license,
         "version" to mod.version, "minecraft" to common.mod.prop("mc_dep_fabric"),
-        "authors" to mod.authors, "description" to mod.description,
-        "archApi" to common.mod.dep("archApi_range_fabric"),
-        "flywheel" to common.mod.dep("flywheel_range_fabric"),
-        "veil" to common.mod.dep("veil_range_fabric"),
-        "ponder" to common.mod.dep("ponder_range_fabric")
+        "authors" to mod.authors, "description" to mod.description
     )
 }
 

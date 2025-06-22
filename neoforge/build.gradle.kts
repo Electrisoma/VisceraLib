@@ -75,7 +75,7 @@ loom {
             programArgs("--all", "--mod", mod.id)
             programArgs("--output", "${project.rootProject.file("fabric/src/generated/resources")}")
             programArgs("--existing", "${project.rootProject.file("src/main/resources")}")
-            vmArg("-Dresotech.datagen.platform=fabric")
+            vmArg("-Dvisceralib.datagen.platform=fabric")
         }
         create("DataGenNeoForge") {
             data()
@@ -84,7 +84,7 @@ loom {
             programArgs("--all", "--mod", mod.id)
             programArgs("--output", "${project.rootProject.file("neoforge/src/generated/resources")}")
             programArgs("--existing", "${project.rootProject.file("src/main/resources")}")
-            vmArg("-Dresotech.datagen.platform=neoforge")
+            vmArg("-Dvisceralib.datagen.platform=neoforge")
         }
         all {
             isIdeConfigGenerated = true
@@ -105,25 +105,6 @@ dependencies {
     })
 
     "neoForge"("net.neoforged:neoforge:${common.mod.dep("neoforge_loader")}")
-
-    "dev.architectury:architectury-neoforge:${common.mod.dep("archApi")}".let {
-        modImplementation(it)
-        include(it)
-    }
-
-    "net.createmod.ponder:Ponder-NeoForge-$minecraft:${common.mod.dep("ponder")}".let {
-        modImplementation(it)
-        include(it)
-    }
-    compileOnly("dev.engine-room.flywheel:flywheel-neoforge-api-$minecraft:${common.mod.dep("flywheel")}")
-    "dev.engine-room.flywheel:flywheel-neoforge-$minecraft:${common.mod.dep("flywheel")}".let {
-        modImplementation(it)
-        include(it)
-    }
-    "foundry.veil:veil-neoforge-$minecraft:${common.mod.dep("veil")}".let {
-        implementation(it)
-        include(it)
-    }
 
     "io.github.llamalad7:mixinextras-neoforge:${mod.dep("mixin_extras")}".let {
         implementation(it)
@@ -158,11 +139,7 @@ tasks.processResources {
     properties(listOf("META-INF/neoforge.mods.toml", "pack.mcmeta"),
         "id" to mod.id, "name" to mod.name, "license" to mod.license,
         "version" to mod.version, "minecraft" to common.mod.prop("mc_dep_forgelike"),
-        "authors" to mod.authors, "description" to mod.description,
-        "archApi" to common.mod.dep("archApi_range_forge"),
-        "flywheel" to common.mod.dep("flywheel_range_forge"),
-        "veil" to common.mod.dep("veil_range_forge"),
-        "ponder" to common.mod.dep("ponder_range_forge")
+        "authors" to mod.authors, "description" to mod.description
     )
 }
 
@@ -206,20 +183,11 @@ publishMods {
         projectId = "publish.curseforge"
         accessToken = System.getenv("CURSEFORGE_TOKEN")
         minecraftVersions.add(minecraft)
-
-        embeds (
-            "architectury-api"
-        )
     }
     modrinth {
         projectId = "publish.modrinth"
         accessToken = System.getenv("MODRINTH_TOKEN")
         minecraftVersions.add(minecraft)
-
-        embeds(
-            "architectury-api",
-            "veil"
-        )
     }
 
     dryRun = System.getenv("DRYRUN")?.toBoolean() ?: true

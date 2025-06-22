@@ -14,21 +14,17 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.electrisoma.resotech.fabric.ResoTechImpl"
+      "net.electrisoma.visceralib.fabric.VisceraLibImpl"
     ],
     "client": [
-      "net.electrisoma.resotech.client.fabric.ResoTechClientImpl"
+      "net.electrisoma.visceralib.client.fabric.VisceraLibClientImpl"
     ]
   },
   "mixins": [
-    "resotech.fabric.mixins.json"
+    "visceralib.fabric.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.15",
-    "minecraft": "${minecraft}",
-    "architectury": "${archApi}",
-    "flywheel": "${flywheel}",
-    "veil": "${veil}",
-    "ponder": "${ponder}"
+    "minecraft": "${minecraft}"
   }
 }

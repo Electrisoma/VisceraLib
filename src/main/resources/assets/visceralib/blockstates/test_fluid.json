@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "visceralib:block/test_fluid"
+    }
+  }
+}

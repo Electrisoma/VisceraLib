@@ -22,4 +22,4 @@ stonecutter {
     }
 }
 
-rootProject.name = "ResoTech"
+rootProject.name = "VisceraLib"
