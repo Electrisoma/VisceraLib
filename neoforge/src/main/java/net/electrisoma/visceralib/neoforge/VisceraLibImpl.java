@@ -29,9 +29,8 @@ public class VisceraLibImpl {
 
 		VisceraLib.init();
 
-		for (VisceralDeferredRegister<?> deferred : VisceralRegistries.getAllForMod(VisceraLib.MOD_ID)) {
-			deferred.registerToEventBus(eventBus);
-		}
+		for (VisceralDeferredRegister<?> deferred : VisceralRegistries.getAllForMod(VisceraLib.MOD_ID))
+            deferred.registerToEventBus(eventBus);
 	}
 
 	@SubscribeEvent

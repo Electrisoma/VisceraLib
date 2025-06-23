@@ -19,6 +19,6 @@ public class VisceraLibFluids {
             REGISTRAR.fluid("test_fluid")
                     .lang("Test Fluid")
                     .tags(FluidTags.WATER)
-                    .tab(VisceraLibTabs.BASE.get())
+                    .tab(VisceraLibTabs.MACHINES::get)
                     .register();
 }

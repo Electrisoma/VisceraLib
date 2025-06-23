@@ -8,160 +8,122 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 
+import java.util.function.Supplier;
+
 public abstract class VisceralFlowingFluid extends FlowingFluid {
     protected final VisceralFluidAttributes attributes;
+    protected final Supplier<Fluid> sourceFluidSupplier;
+    protected final Supplier<Fluid> flowingFluidSupplier;
+    protected final Supplier<Item> bucketSupplier;
 
-    protected VisceralFlowingFluid(VisceralFluidAttributes attributes) {
+    protected VisceralFlowingFluid(VisceralFluidAttributes attributes, Supplier<Fluid> sourceFluidSupplier, Supplier<Fluid> flowingFluidSupplier, Supplier<Item> bucketSupplier) {
         this.attributes = attributes;
+        this.sourceFluidSupplier = sourceFluidSupplier;
+        this.flowingFluidSupplier = flowingFluidSupplier;
+        this.bucketSupplier = bucketSupplier;
     }
 
     public VisceralFluidAttributes getAttributes() {
         return attributes;
     }
 
+    @Override
+    public Fluid getSource() {
+        return sourceFluidSupplier.get();
+    }
+
+    @Override
+    public Item getBucket() {
+        return bucketSupplier.get();
+    }
+
     public static class Source extends VisceralFlowingFluid {
-        public Source(VisceralFluidAttributes attributes) {
-            super(attributes);
+        public Source(VisceralFluidAttributes attributes, Supplier<Fluid> sourceFluidSupplier, Supplier<Fluid> flowingFluidSupplier, Supplier<Item> bucketSupplier) {
+            super(attributes, sourceFluidSupplier, flowingFluidSupplier, bucketSupplier);
         }
-
-        @Override
-        public Item getBucket() {
-            return null;
-        }
-
-        @Override
-        protected boolean canBeReplacedWith(FluidState state, BlockGetter level, BlockPos pos, Fluid fluid, Direction direction) {
+        @Override protected boolean canBeReplacedWith(FluidState state, BlockGetter level, BlockPos pos, Fluid fluid, Direction direction) {
             return false;
         }
-
-        @Override
-        public int getTickDelay(LevelReader level) {
-            return 0;
+        @Override public int getTickDelay(LevelReader level) {
+            return 5;
         }
-
-        @Override
-        protected float getExplosionResistance() {
-            return 0;
+        @Override protected float getExplosionResistance() {
+            return 100f;
         }
-
-        @Override
-        protected BlockState createLegacyBlock(FluidState state) {
+        @Override protected BlockState createLegacyBlock(FluidState state) {
             return null;
         }
-
-        @Override
-        public boolean isSource(FluidState state) {
+        @Override public boolean isSource(FluidState state) {
             return true;
         }
-
-        @Override
-        public Fluid getFlowing() {
-            return null;
+        @Override public Fluid getFlowing() {
+            return flowingFluidSupplier.get();
         }
-
-        @Override
-        public Fluid getSource() {
-            return null;
+        @Override protected boolean canConvertToSource(Level level) {
+            return true;
         }
-
-        @Override
-        protected boolean canConvertToSource(Level level) {
-            return false;
+        @Override protected void beforeDestroyingBlock(LevelAccessor level, BlockPos pos, BlockState state) {
         }
-
-        @Override
-        protected void beforeDestroyingBlock(LevelAccessor level, BlockPos pos, BlockState state) {
-
+        @Override protected int getSlopeFindDistance(LevelReader level) {
+            return 4;
         }
-
-        @Override
-        protected int getSlopeFindDistance(LevelReader level) {
-            return 0;
+        @Override protected int getDropOff(LevelReader level) {
+            return 1;
         }
-
-        @Override
-        protected int getDropOff(LevelReader level) {
-            return 0;
-        }
-
-        @Override
-        public int getAmount(FluidState state) {
+        @Override public int getAmount(FluidState state) {
             return 8;
+        }
+        @Override protected void createFluidStateDefinition(StateDefinition.Builder<Fluid, FluidState> builder) {
+            super.createFluidStateDefinition(builder);
+            builder.add(LEVEL);
         }
     }
 
     public static class Flowing extends VisceralFlowingFluid {
-        public Flowing(VisceralFluidAttributes attributes) {
-            super(attributes);
+        public Flowing(VisceralFluidAttributes attributes, Supplier<Fluid> sourceFluidSupplier, Supplier<Fluid> flowingFluidSupplier, Supplier<Item> bucketSupplier) {
+            super(attributes, sourceFluidSupplier, flowingFluidSupplier, bucketSupplier);
         }
-
-        @Override
-        public Item getBucket() {
-            return null;
-        }
-
-        @Override
-        protected boolean canBeReplacedWith(FluidState state, BlockGetter level, BlockPos pos, Fluid fluid, Direction direction) {
+        @Override protected boolean canBeReplacedWith(FluidState state, BlockGetter level, BlockPos pos, Fluid fluid, Direction direction) {
             return false;
         }
-
-        @Override
-        public int getTickDelay(LevelReader level) {
-            return 0;
+        @Override public int getTickDelay(LevelReader level) {
+            return 5;
         }
-
-        @Override
-        protected float getExplosionResistance() {
-            return 0;
+        @Override protected float getExplosionResistance() {
+            return 100f;
         }
-
-        @Override
-        protected BlockState createLegacyBlock(FluidState state) {
+        @Override protected BlockState createLegacyBlock(FluidState state) {
             return null;
         }
-
-        @Override
-        public boolean isSource(FluidState state) {
+        @Override public boolean isSource(FluidState state) {
             return false;
         }
-
-        @Override
-        public Fluid getFlowing() {
-            return null;
+        @Override public Fluid getFlowing() {
+            return flowingFluidSupplier.get();
         }
-
-        @Override
-        public Fluid getSource() {
-            return null;
-        }
-
-        @Override
-        protected boolean canConvertToSource(Level level) {
+        @Override protected boolean canConvertToSource(Level level) {
             return false;
         }
-
-        @Override
-        protected void beforeDestroyingBlock(LevelAccessor level, BlockPos pos, BlockState state) {
-
+        @Override protected void beforeDestroyingBlock(LevelAccessor level, BlockPos pos, BlockState state) {
+            // Your logic here
         }
-
-        @Override
-        protected int getSlopeFindDistance(LevelReader level) {
-            return 0;
+        @Override protected int getSlopeFindDistance(LevelReader level) {
+            return 4;
         }
-
-        @Override
-        protected int getDropOff(LevelReader level) {
-            return 0;
+        @Override protected int getDropOff(LevelReader level) {
+            return 1;
         }
-
-        @Override
-        public int getAmount(FluidState state) {
+        @Override public int getAmount(FluidState state) {
             return state.getValue(LEVEL);
+        }
+        @Override protected void createFluidStateDefinition(StateDefinition.Builder<Fluid, FluidState> builder) {
+            super.createFluidStateDefinition(builder);
+            builder.add(LEVEL);
         }
     }
 }

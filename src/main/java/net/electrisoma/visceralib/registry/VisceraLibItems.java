@@ -21,5 +21,6 @@ public class VisceraLibItems {
                     .rarity(Rarity.COMMON)
             )
             .lang("Test Item")
+            .tab(VisceraLibTabs.MACHINES::getKey)
             .register();
 }

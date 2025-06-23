@@ -4,6 +4,7 @@ import net.electrisoma.visceralib.VisceraLib;
 import net.electrisoma.visceralib.api.registration.VisceralRegistrar;
 import net.electrisoma.visceralib.api.registration.entry.BlockEntry;
 
+import net.electrisoma.visceralib.api.registration.helpers.SharedProperties;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
@@ -24,6 +25,7 @@ public class VisceraLibBlocks {
 
     public static final BlockEntry<Block> MACHINE_BLOCK = REGISTRAR
             .block("machine_block", Block::new)
+            .initialProperties(SharedProperties.netheriteMetal())
             .properties(p -> p
                     .strength(1.0F, 10000.0F)
                     .mapColor(MapColor.COLOR_GRAY))

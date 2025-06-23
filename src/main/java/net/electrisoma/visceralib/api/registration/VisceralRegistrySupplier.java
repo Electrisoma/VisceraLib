@@ -36,9 +36,8 @@ public class VisceralRegistrySupplier<T> {
     public void notifyListeners() {
         if (notified) return;
         T value = get();
-        for (Consumer<T> consumer : listeners) {
+        for (Consumer<T> consumer : listeners)
             consumer.accept(value);
-        }
         notified = true;
         listeners.clear();
     }

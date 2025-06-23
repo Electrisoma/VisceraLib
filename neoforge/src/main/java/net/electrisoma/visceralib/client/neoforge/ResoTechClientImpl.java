@@ -1,6 +1,7 @@
 package net.electrisoma.visceralib.client.neoforge;
 
 import net.electrisoma.visceralib.VisceraLib;
+import net.electrisoma.visceralib.api.registration.builders.FluidBuilder;
 import net.electrisoma.visceralib.client.ResoTechClient;
 
 import net.minecraft.resources.ResourceLocation;

@@ -1,6 +1,6 @@
 package net.electrisoma.visceralib.core.block;
-import java.util.function.Supplier;
 
+import java.util.function.Supplier;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.FlowingFluid;

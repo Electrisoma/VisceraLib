@@ -12,19 +12,15 @@ public class BuilderTransforms {
     public static <T extends Block, R extends AbstractVisceralRegistrar<R>> Function<BlockBuilder<T, R>, BlockBuilder<T, R>> pickaxeOnly() {
         return b -> b.tag(BlockTags.MINEABLE_WITH_PICKAXE);
     }
-
     public static <T extends Block, R extends AbstractVisceralRegistrar<R>> Function<BlockBuilder<T, R>, BlockBuilder<T, R>> axeOnly() {
         return b -> b.tag(BlockTags.MINEABLE_WITH_AXE);
     }
-
     public static <T extends Block, R extends AbstractVisceralRegistrar<R>> Function<BlockBuilder<T, R>, BlockBuilder<T, R>> hoeOnly() {
         return b -> b.tag(BlockTags.MINEABLE_WITH_HOE);
     }
-
     public static <T extends Block, R extends AbstractVisceralRegistrar<R>> Function<BlockBuilder<T, R>, BlockBuilder<T, R>> shovelOnly() {
         return b -> b.tag(BlockTags.MINEABLE_WITH_SHOVEL);
     }
-
     public static <T extends Block, R extends AbstractVisceralRegistrar<R>> Function<BlockBuilder<T, R>, BlockBuilder<T, R>> axeOrPickaxe() {
         return b -> b
                 .tag(BlockTags.MINEABLE_WITH_AXE)
