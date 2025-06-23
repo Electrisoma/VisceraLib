@@ -10,7 +10,9 @@ pluginManagement {
     }
 }
 
-plugins { id("dev.kikugie.stonecutter") version "0.6-beta.2" }
+plugins { id("dev.kikugie.stonecutter") version "0.7-beta.4" }
+
+include("testmod")
 
 stonecutter {
     centralScript = "build.gradle.kts"
@@ -18,6 +20,11 @@ stonecutter {
     create(rootProject) { // Root `src/` functions as the 'common' project
         versions("1.21.1")
         branch("fabric") // Copies versions from root
+        branch("neoforge") { versions("1.21.1") }
+    }
+    create(project(":testmod")) {
+        versions("1.21.1")
+        branch("fabric")
         branch("neoforge") { versions("1.21.1") }
     }
 }

@@ -1,6 +1,4 @@
-package net.electrisoma.visceralib.api.registration;
-
-import net.electrisoma.visceralib.api.registration.helpers.ICreativeTabOutputs;
+package net.electrisoma.visceralib.api.registration.helpers;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,9 +15,8 @@ public class CreativeTabBuilderRegistry {
 
     public static Collection<ICreativeTabOutputs> getAllBuilders() {
         List<ICreativeTabOutputs> all = new ArrayList<>();
-        for (Supplier<Collection<? extends ICreativeTabOutputs>> provider : PROVIDERS) {
+        for (Supplier<Collection<? extends ICreativeTabOutputs>> provider : PROVIDERS)
             all.addAll(provider.get());
-        }
         return Collections.unmodifiableList(all);
     }
 }

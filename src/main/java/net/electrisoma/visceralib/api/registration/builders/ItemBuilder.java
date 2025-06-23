@@ -1,6 +1,6 @@
 package net.electrisoma.visceralib.api.registration.builders;
 
-import net.electrisoma.visceralib.api.registration.CreativeTabBuilderRegistry;
+import net.electrisoma.visceralib.api.registration.helpers.CreativeTabBuilderRegistry;
 import net.electrisoma.visceralib.api.registration.entry.ItemEntry;
 import net.electrisoma.visceralib.api.registration.VisceralRegistrySupplier;
 import net.electrisoma.visceralib.api.registration.VisceralDeferredRegister;

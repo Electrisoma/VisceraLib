@@ -23,6 +23,7 @@ architectury.common(stonecutter.tree.branches.mapNotNull {
     if (stonecutter.current.project !in it) null
     else it.project.prop("loom.platform")
 })
+
 loom {
     decompilers {
         get("vineflower").apply { // Adds names to lambdas - useful for mixins
@@ -65,24 +66,5 @@ java {
         JavaVersion.VERSION_21 else JavaVersion.VERSION_17
     targetCompatibility = java
     sourceCompatibility = java
-}
-
-tasks.build {
-    group = "versioned"
-    description = "Must run through 'chiseledBuild'"
-}
-
-// Global control over Modmuss Publish
-tasks.register("templatePublish") {
-    when (val platform = System.getenv("PLATFORM")) {
-        "all" -> {
-            dependsOn(tasks.build,
-                ":fabric:publish", ":neoforge:publish", ":common:publish",
-                ":fabric:publishMods", ":neoforge:publishMods")
-        }
-        "fabric", "neoforge" -> {
-            dependsOn("${platform}:build", "${platform}:publish", "${platform}:publishMods")
-        }
-    }
 }
 

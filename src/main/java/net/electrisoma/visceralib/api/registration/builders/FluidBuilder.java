@@ -4,6 +4,8 @@ import net.electrisoma.visceralib.api.registration.AbstractVisceralRegistrar;
 import net.electrisoma.visceralib.api.registration.VisceralDeferredRegister;
 import net.electrisoma.visceralib.api.registration.VisceralRegistrySupplier;
 import net.electrisoma.visceralib.api.registration.entry.FluidEntry;
+import net.electrisoma.visceralib.api.registration.helpers.CreativeTabBuilderRegistry;
+import net.electrisoma.visceralib.api.registration.helpers.ICreativeTabOutputs;
 import net.electrisoma.visceralib.core.block.VisceralLiquidBlock;
 import net.electrisoma.visceralib.core.fluid.VisceralFlowingFluid;
 import net.electrisoma.visceralib.core.fluid.VisceralFluidAttributes;
@@ -15,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.FlowingFluid;
@@ -23,16 +26,23 @@ import net.minecraft.world.level.material.Fluid;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static net.electrisoma.visceralib.VisceraLib.path;
 
-public class FluidBuilder<R extends AbstractVisceralRegistrar<R>> {
+public class FluidBuilder<R extends AbstractVisceralRegistrar<R>> implements ICreativeTabOutputs {
+    private static final List<FluidBuilder<?>> ALL_BUILDERS = new ArrayList<>();
+
+    static {
+        CreativeTabBuilderRegistry.registerBuilderProvider(FluidBuilder::getAllBuilders);
+    }
+
     private final R registrar;
     private final String name;
 
-    private String langEntry = null;
+    private String langEntry;
 
-    private final Set<Supplier<CreativeModeTab>> creativeTabs = new HashSet<>();
+    private final Set<Supplier<ResourceKey<CreativeModeTab>>> creativeTabs = new HashSet<>();
     private final List<TagKey<Fluid>> fluidTags = new ArrayList<>();
 
     private VisceralRegistrySupplier<VisceralFlowingFluid.Source> stillFluidSupplier;
@@ -61,6 +71,7 @@ public class FluidBuilder<R extends AbstractVisceralRegistrar<R>> {
     public FluidBuilder(R registrar, String name) {
         this.registrar = registrar;
         this.name = name;
+        ALL_BUILDERS.add(this);
     }
 
     public FluidBuilder<R> textures(ResourceLocation still, ResourceLocation flowing) {
@@ -104,14 +115,13 @@ public class FluidBuilder<R extends AbstractVisceralRegistrar<R>> {
         return this;
     }
 
-    public FluidBuilder<R> tab(Supplier<CreativeModeTab> tabSupplier) {
-        if (tabSupplier == null) throw new IllegalArgumentException("tabSupplier cannot be null");
-        this.creativeTabs.add(tabSupplier);
+    public FluidBuilder<R> tab(Supplier<ResourceKey<CreativeModeTab>> tab) {
+        creativeTabs.add(tab);
         return this;
     }
 
-    public FluidBuilder<R> tab(CreativeModeTab tab) {
-        this.creativeTabs.add(() -> tab);
+    public FluidBuilder<R> tab(ResourceKey<CreativeModeTab> tab) {
+        creativeTabs.add(() -> tab);
         return this;
     }
 
@@ -145,18 +155,6 @@ public class FluidBuilder<R extends AbstractVisceralRegistrar<R>> {
         return this;
     }
 
-    public List<TagKey<Fluid>> getFluidTags() {
-        return Collections.unmodifiableList(fluidTags);
-    }
-
-    public Optional<String> getLangEntry() {
-        return Optional.ofNullable(langEntry);
-    }
-
-    public Set<Supplier<CreativeModeTab>> getTabs() {
-        return Collections.unmodifiableSet(creativeTabs);
-    }
-
     public FluidEntry<VisceralFlowingFluid.Flowing> register() {
         if (stillTexture == null) stillTexture = path("fluid/" + name + "_still");
         if (flowTexture == null) flowTexture = path("fluid/" + name + "_flow");
@@ -174,7 +172,6 @@ public class FluidBuilder<R extends AbstractVisceralRegistrar<R>> {
 
         if (registerBucket && bucketBuilder != null) {
             bucketBuilder.register();
-
             bucketItemSupplier = () -> bucketBuilder.getRegisteredSupplier()
                     .map(VisceralRegistrySupplier::get)
                     .orElse(null);
@@ -198,8 +195,7 @@ public class FluidBuilder<R extends AbstractVisceralRegistrar<R>> {
 
         attributesHolder[0] = VisceralFluidAttributes.builder(
                         () -> stillFluidSupplier.get(),
-                        () -> flowingFluidSupplier.get()
-                )
+                        () -> flowingFluidSupplier.get())
                 .textures(stillTexture, flowTexture)
                 .color(color)
                 .luminosity(luminance)
@@ -219,23 +215,28 @@ public class FluidBuilder<R extends AbstractVisceralRegistrar<R>> {
         return new FluidEntry<>(flowingFluidSupplier);
     }
 
-    public Supplier<FlowingFluid> getStill() {
-        return stillFluidSupplier::get;
+    public Optional<Supplier<Item>> getBucketItemSupplier() {
+        return bucketBuilder != null
+                ? bucketBuilder.getRegisteredSupplier().map(supplier -> (Supplier<Item>) supplier)
+                : Optional.empty();
     }
 
-    public Supplier<FlowingFluid> getFlowing() {
-        return flowingFluidSupplier::get;
+    public Optional<String> getLangEntry() {
+        return Optional.ofNullable(langEntry);
     }
 
-    public Optional<Supplier<Block>> getBlock() {
-        if (blockBuilder == null) return Optional.empty();
-        return blockBuilder.getRegisteredSupplier()
-                .map(supplier -> (Supplier<Block>) supplier);
+    public Set<ResourceKey<CreativeModeTab>> getTabs() {
+        return creativeTabs.stream().map(Supplier::get).collect(Collectors.toUnmodifiableSet());
     }
 
-    public Optional<Supplier<Item>> getBucket() {
-        if (bucketBuilder == null) return Optional.empty();
-        return bucketBuilder.getRegisteredSupplier()
-                .map(supplier -> (Supplier<Item>) supplier);
+    @Override
+    public Collection<ItemStack> getTabContents() {
+        return getBucketItemSupplier()
+                .map(supplier -> List.of(new ItemStack(supplier.get())))
+                .orElse(Collections.emptyList());
+    }
+
+    public static List<FluidBuilder<?>> getAllBuilders() {
+        return Collections.unmodifiableList(ALL_BUILDERS);
     }
 }

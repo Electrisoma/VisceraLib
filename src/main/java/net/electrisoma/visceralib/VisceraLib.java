@@ -10,7 +10,6 @@ import net.minecraft.resources.ResourceLocation;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 
-@SuppressWarnings("unused")
 public class VisceraLib {
 	public static final String MOD_ID = "visceralib";
 	public static final String NAME = "VisceraLib";

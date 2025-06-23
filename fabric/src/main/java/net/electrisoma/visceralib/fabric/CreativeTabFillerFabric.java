@@ -1,6 +1,6 @@
 package net.electrisoma.visceralib.fabric;
 
-import net.electrisoma.visceralib.api.registration.CreativeTabBuilderRegistry;
+import net.electrisoma.visceralib.api.registration.helpers.CreativeTabBuilderRegistry;
 import net.electrisoma.visceralib.api.registration.helpers.ICreativeTabOutputs;
 
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;

@@ -15,10 +15,10 @@ public class VisceraLibFluids {
         VisceraLib.LOGGER.info("Registering Fluids for " + VisceraLib.NAME);
     }
 
-    public static final FluidEntry<VisceralFlowingFluid.Flowing> TEST_FLUID =
-            REGISTRAR.fluid("test_fluid")
-                    .lang("Test Fluid")
-                    .tags(FluidTags.WATER)
-                    .tab(VisceraLibTabs.MACHINES::get)
-                    .register();
+    public static final FluidEntry<VisceralFlowingFluid.Flowing> TEST_FLUID = REGISTRAR
+            .fluid("test_fluid")
+            .lang("Test Fluid")
+            .tags(FluidTags.WATER)
+            .tab(VisceraLibTabs.MACHINES::getKey)
+            .register();
 }

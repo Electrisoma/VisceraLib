@@ -12,8 +12,6 @@ public class VisceraLibImpl implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		VisceraLib.init();
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
-			CreativeTabFillerFabric.register();
-		});
+		ClientLifecycleEvents.CLIENT_STARTED.register(client -> CreativeTabFillerFabric.register());
 	}
 }

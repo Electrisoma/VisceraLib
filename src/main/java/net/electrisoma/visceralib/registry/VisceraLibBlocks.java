@@ -28,7 +28,8 @@ public class VisceraLibBlocks {
             .initialProperties(SharedProperties.netheriteMetal())
             .properties(p -> p
                     .strength(1.0F, 10000.0F)
-                    .mapColor(MapColor.COLOR_GRAY))
+                    .mapColor(MapColor.COLOR_GRAY)
+            )
             .onRegister(block -> VisceraLib.LOGGER.info("Machine block is: {}", block.getName()))
             .transform(pickaxeOnly())
             .lang("Machine Thing")

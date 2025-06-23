@@ -1,6 +1,7 @@
 package net.electrisoma.visceralib.api.registration.builders;
 
 import net.electrisoma.visceralib.api.registration.AbstractVisceralRegistrar;
+
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;

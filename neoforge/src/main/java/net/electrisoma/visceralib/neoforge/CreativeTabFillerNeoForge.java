@@ -1,7 +1,7 @@
 package net.electrisoma.visceralib.neoforge;
 
 import net.electrisoma.visceralib.VisceraLib;
-import net.electrisoma.visceralib.api.registration.CreativeTabBuilderRegistry;
+import net.electrisoma.visceralib.api.registration.helpers.CreativeTabBuilderRegistry;
 import net.electrisoma.visceralib.api.registration.helpers.ICreativeTabOutputs;
 
 import net.minecraft.resources.ResourceKey;
