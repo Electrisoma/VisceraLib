@@ -90,8 +90,6 @@ dependencies {
 
     "neoForge"("net.neoforged:neoforge:${common.mod.dep("neoforge_loader")}")
 
-    modImplementation(project(":neoforge"))
-
     "io.github.llamalad7:mixinextras-neoforge:${mod.dep("mixin_extras")}".let {
         implementation(it)
         include(it)

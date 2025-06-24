@@ -7,12 +7,12 @@ plugins {
 }
 
 val minecraft = stonecutter.current.version
+val testMod = ":testmod"
 
 val ci = System.getenv("CI")?.toBoolean() ?: false
 val release = System.getenv("RELEASE")?.toBoolean() ?: false
 val nightly = ci && !release
 val buildNumber = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull()
-val testProject = project(":testmod")
 
 version = "${mod.version}${if (release) "" else "-dev"}+mc.${minecraft}-common${if (nightly) "-build.${buildNumber}" else ""}"
 group = "${group}.common"
@@ -50,7 +50,7 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:${mod.dep("fabric_loader")}")
     modApi("net.fabricmc.fabric-api:fabric-api:${mod.dep("fabric_api_version")}")
 
-    implementation(project(":"))
+    implementation(project(path = project.path.removePrefix(testMod), configuration = "namedElements"))
 
     "io.github.llamalad7:mixinextras-common:${mod.dep("mixin_extras")}".let {
         annotationProcessor(it)
@@ -65,4 +65,3 @@ java {
     targetCompatibility = java
     sourceCompatibility = java
 }
-
