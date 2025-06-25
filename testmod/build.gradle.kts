@@ -50,7 +50,7 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:${mod.dep("fabric_loader")}")
     modApi("net.fabricmc.fabric-api:fabric-api:${mod.dep("fabric_api_version")}")
 
-    implementation(project(path = project.path.removePrefix(testMod), configuration = "namedElements"))
+    implementation(project(path = project.path.removePrefix(":testmod"), configuration = "namedElements"))
 
     "io.github.llamalad7:mixinextras-common:${mod.dep("mixin_extras")}".let {
         annotationProcessor(it)

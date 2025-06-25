@@ -8,6 +8,7 @@ plugins {
     id("com.gradleup.shadow")
     id("me.modmuss50.mod-publish-plugin")
     id("dev.ithundxr.silk")
+    `java-library`
 }
 
 val loader = prop("loom.platform")!!
@@ -43,6 +44,10 @@ configurations {
     compileClasspath.get().extendsFrom(commonBundle)
     runtimeClasspath.get().extendsFrom(commonBundle)
     get("developmentNeoForge").extendsFrom(commonBundle)
+}
+
+artifacts {
+    add("namedElements", tasks.remapJar)
 }
 
 //sourceSets {

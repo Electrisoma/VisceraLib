@@ -1,6 +1,7 @@
-package electrisoma.testmod.neoforge;
+package net.electrisoma.electrisoma.testmod.neoforge;
 
 import net.electrisoma.testmod.TestMod;
+
 import net.electrisoma.visceralib.VisceraLib;
 import net.electrisoma.visceralib.api.neoforge.registration.VisceralDeferredRegisterNeoForge;
 import net.electrisoma.visceralib.api.registration.VisceralDeferredRegister;
@@ -24,7 +25,7 @@ public class TestModImpl {
 
         TestMod.init();
 
-        for (VisceralDeferredRegister<?> deferred : VisceralRegistries.getAllForMod(VisceraLib.MOD_ID))
+        for (VisceralDeferredRegister<?> deferred : VisceralRegistries.getAllForMod(TestMod.MOD_ID))
             deferred.registerToEventBus(eventBus);
     }
 

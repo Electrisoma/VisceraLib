@@ -1,7 +1,6 @@
 package net.electrisoma.testmod.registry;
 
 import net.electrisoma.testmod.TestMod;
-import net.electrisoma.visceralib.VisceraLib;
 import net.electrisoma.visceralib.api.registration.VisceralRegistrar;
 import net.electrisoma.visceralib.api.registration.entry.FluidEntry;
 import net.electrisoma.visceralib.core.fluid.VisceralFlowingFluid;

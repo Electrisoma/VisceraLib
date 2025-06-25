@@ -8,6 +8,7 @@ plugins {
     id("com.gradleup.shadow")
     id("me.modmuss50.mod-publish-plugin")
     id("dev.ithundxr.silk")
+    `java-library`
 }
 
 val loader = prop("loom.platform")!!
@@ -35,12 +36,10 @@ val commonBundle: Configuration by configurations.creating {
     isCanBeConsumed = false
     isCanBeResolved = true
 }
-
 val shadowBundle: Configuration by configurations.creating {
     isCanBeConsumed = false
     isCanBeResolved = true
 }
-
 configurations {
     compileClasspath.get().extendsFrom(commonBundle)
     runtimeClasspath.get().extendsFrom(commonBundle)

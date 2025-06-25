@@ -1,6 +1,7 @@
 @file:Suppress("UnstableApiUsage")
 
 plugins {
+    `java-library`
     id("dev.architectury.loom")
     id("architectury-plugin")
     id("com.gradleup.shadow")
@@ -32,12 +33,10 @@ val commonBundle: Configuration by configurations.creating {
     isCanBeConsumed = false
     isCanBeResolved = true
 }
-
 val shadowBundle: Configuration by configurations.creating {
     isCanBeConsumed = false
     isCanBeResolved = true
 }
-
 configurations {
     compileClasspath.get().extendsFrom(commonBundle)
     runtimeClasspath.get().extendsFrom(commonBundle)
@@ -64,6 +63,7 @@ loom {
 
 dependencies {
     commonBundle(project(common.path, "namedElements")) { isTransitive = false }
+    commonBundle(project(path = project.path.removePrefix(":testmod"), configuration = "namedElements")) { isTransitive = false }
     shadowBundle(project(common.path, "transformProductionFabric")) { isTransitive = false }
 
     minecraft("com.mojang:minecraft:$minecraft")
@@ -74,6 +74,8 @@ dependencies {
 
     modApi("net.fabricmc.fabric-api:fabric-api:${common.mod.dep("fabric_api_version")}")
     modImplementation("net.fabricmc:fabric-loader:${mod.dep("fabric_loader")}")
+
+    implementation(project(path = project.path.removePrefix(":testmod"), configuration = "namedElements")) { isTransitive = false }
 
     "io.github.llamalad7:mixinextras-fabric:${mod.dep("mixin_extras")}".let {
         annotationProcessor(it)
@@ -105,9 +107,13 @@ tasks.jar { archiveClassifier = "dev" }
 
 tasks.processResources {
     properties(listOf("fabric.mod.json"),
-        "id" to mod.id, "name" to mod.name, "license" to mod.license,
-        "version" to mod.version, "minecraft" to common.mod.prop("mc_dep_fabric"),
-        "authors" to mod.authors, "description" to mod.description
+        "id" to mod.id,
+        "name" to mod.name,
+        "license" to mod.license,
+        "version" to mod.version,
+        "minecraft" to common.mod.prop("mc_dep_fabric"),
+        "authors" to mod.authors,
+        "description" to mod.description
     )
 }
 

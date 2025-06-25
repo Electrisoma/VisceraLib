@@ -80,6 +80,7 @@ configurations {
 
 dependencies {
     commonBundle(project(common.path, "namedElements")) { isTransitive = false }
+    commonBundle(project(path = project.path.removePrefix(":testmod"), configuration = "namedElements")) { isTransitive = false }
     shadowBundle(project(common.path, "transformProductionNeoForge")) { isTransitive = false }
 
     minecraft("com.mojang:minecraft:$minecraft")
@@ -88,7 +89,9 @@ dependencies {
         parchment("org.parchmentmc.data:parchment-$minecraft:${common.mod.dep("parchment_version")}@zip")
     })
 
-    "neoForge"("net.neoforged:neoforge:${common.mod.dep("neoforge_loader")}")
+    neoForge("net.neoforged:neoforge:${common.mod.dep("neoforge_loader")}")
+
+    implementation(project(path = project.path.removePrefix(":testmod"), configuration = "namedElements")) { isTransitive = false }
 
     "io.github.llamalad7:mixinextras-neoforge:${mod.dep("mixin_extras")}".let {
         implementation(it)

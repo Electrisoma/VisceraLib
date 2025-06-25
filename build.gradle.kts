@@ -6,6 +6,7 @@ plugins {
     id("architectury-plugin")
     id("me.modmuss50.mod-publish-plugin")
     id("dev.ithundxr.silk")
+    `java-library`
 }
 
 val minecraft = stonecutter.current.version
