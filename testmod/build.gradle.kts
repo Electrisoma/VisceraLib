@@ -39,6 +39,8 @@ loom {
     }
 }
 
+print(project.path.removePrefix(":testmod"))
+
 dependencies {
     minecraft("com.mojang:minecraft:$minecraft")
     mappings(loom.layered {

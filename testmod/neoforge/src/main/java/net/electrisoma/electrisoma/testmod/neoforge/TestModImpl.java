@@ -2,7 +2,6 @@ package net.electrisoma.electrisoma.testmod.neoforge;
 
 import net.electrisoma.testmod.TestMod;
 
-import net.electrisoma.visceralib.VisceraLib;
 import net.electrisoma.visceralib.api.neoforge.registration.VisceralDeferredRegisterNeoForge;
 import net.electrisoma.visceralib.api.registration.VisceralDeferredRegister;
 import net.electrisoma.visceralib.api.registration.VisceralRegistries;

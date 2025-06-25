@@ -78,10 +78,15 @@ configurations {
     get("developmentNeoForge").extendsFrom(commonBundle)
 }
 
+print(common.path + "namedElements")
+
 dependencies {
+    //common actual
+    commonBundle(project(path = common.path.removeSuffix(":testmod"), configuration = "namedElements")) { isTransitive = false }
+    commonBundle(project(project.path.removeSuffix(":testmod"), "namedElements")) { isTransitive = false }
+    //testmod common
     commonBundle(project(common.path, "namedElements")) { isTransitive = false }
-    commonBundle(project(path = project.path.removePrefix(":testmod"), configuration = "namedElements")) { isTransitive = false }
-    shadowBundle(project(common.path, "transformProductionNeoForge")) { isTransitive = false }
+    shadowBundle(project(project.path, "transformProductionNeoForge")) { isTransitive = false }
 
     minecraft("com.mojang:minecraft:$minecraft")
     mappings(loom.layered {
@@ -91,7 +96,10 @@ dependencies {
 
     neoForge("net.neoforged:neoforge:${common.mod.dep("neoforge_loader")}")
 
-    implementation(project(path = project.path.removePrefix(":testmod"), configuration = "namedElements")) { isTransitive = false }
+    // implements visceralib common
+    implementation(project(path = common.path.removePrefix(":testmod"), configuration = "namedElements"))
+    // trying to implement visceralib neoforge :person_shrugging:
+    modImplementation(project(path = project.path.removePrefix(":testmod"), configuration = "namedElements")) { isTransitive = false }
 
     "io.github.llamalad7:mixinextras-neoforge:${mod.dep("mixin_extras")}".let {
         implementation(it)

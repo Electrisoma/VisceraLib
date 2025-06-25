@@ -1,10 +1,10 @@
 @file:Suppress("UnstableApiUsage")
 
 plugins {
-    `java-library`
     id("dev.architectury.loom")
     id("architectury-plugin")
     id("com.gradleup.shadow")
+    `java-library`
 }
 
 val loader = prop("loom.platform")!!
@@ -63,7 +63,7 @@ loom {
 
 dependencies {
     commonBundle(project(common.path, "namedElements")) { isTransitive = false }
-    commonBundle(project(path = project.path.removePrefix(":testmod"), configuration = "namedElements")) { isTransitive = false }
+    commonBundle(project(path = common.path.removeSuffix(":testmod"), configuration = "namedElements")) { isTransitive = false }
     shadowBundle(project(common.path, "transformProductionFabric")) { isTransitive = false }
 
     minecraft("com.mojang:minecraft:$minecraft")
@@ -75,7 +75,7 @@ dependencies {
     modApi("net.fabricmc.fabric-api:fabric-api:${common.mod.dep("fabric_api_version")}")
     modImplementation("net.fabricmc:fabric-loader:${mod.dep("fabric_loader")}")
 
-    implementation(project(path = project.path.removePrefix(":testmod"), configuration = "namedElements")) { isTransitive = false }
+    implementation(project(path = common.path.removePrefix(":testmod"), configuration = "namedElements"))
 
     "io.github.llamalad7:mixinextras-fabric:${mod.dep("mixin_extras")}".let {
         annotationProcessor(it)
