@@ -99,7 +99,9 @@ dependencies {
     // implements visceralib common
     implementation(project(path = common.path.removePrefix(":testmod"), configuration = "namedElements"))
     // trying to implement visceralib neoforge :person_shrugging:
-    modImplementation(project(path = project.path.removePrefix(":testmod"), configuration = "namedElements")) { isTransitive = false }
+    modImplementation(project(path = project.path.removePrefix(":testmod"), configuration = "namedElements")) {
+        isTransitive = false
+    }
 
     "io.github.llamalad7:mixinextras-neoforge:${mod.dep("mixin_extras")}".let {
         implementation(it)
