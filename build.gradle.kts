@@ -61,6 +61,13 @@ dependencies {
     }
 }
 
+sourceSets {
+    create("testmod") {
+        runtimeClasspath += sourceSets["main"].runtimeClasspath
+        compileClasspath += sourceSets["main"].compileClasspath
+    }
+}
+
 java {
     withSourcesJar()
     val java = if (stonecutter.eval(minecraft, ">=1.20.5"))

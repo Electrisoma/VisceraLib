@@ -113,10 +113,16 @@ tasks.processResources {
     )
 }
 
-sourceSets.main {
-    resources { // include generated resources in resources
-        srcDir("src/generated/resources")
-        exclude("src/generated/resources/.cache")
+sourceSets {
+    main {
+        resources { // include generated resources in resources
+            srcDir("src/generated/resources")
+            exclude("src/generated/resources/.cache")
+        }
+    }
+    create("testmod") {
+        runtimeClasspath += sourceSets["main"].runtimeClasspath
+        compileClasspath += sourceSets["main"].compileClasspath
     }
 }
 

@@ -1,0 +1,12 @@
+modLoader="javafml"
+loaderVersion="*"
+license="${license}"
+
+[[mods]]
+modId="${id}"
+displayName="${name}"
+description="${description}"
+authors="${authors}"
+version="${version}"
+logoFile="icon.png"
+logoBlur=false
