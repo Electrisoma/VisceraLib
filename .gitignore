@@ -43,4 +43,4 @@ replay_*.log
 
 # tokens
 
-#local.properties
+local.properties
