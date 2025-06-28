@@ -33,6 +33,7 @@ bin/
 
 run/
 .cache/
+local.properties
 
 # java
 
