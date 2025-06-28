@@ -41,6 +41,22 @@ loom {
     }
 }
 
+val testmod: SourceSet by sourceSets.creating {
+    compileClasspath += sourceSets["main"].output
+    runtimeClasspath += sourceSets["main"].output
+}
+val testmodJar by tasks.registering(Jar::class) {
+    archiveClassifier.set("testmod")
+    from(testmod.output)
+}
+val testmodElements: Configuration by configurations.creating {
+    isCanBeConsumed = true
+    isCanBeResolved = false
+    outgoing.artifact(testmodJar)
+}
+
+//tasks.named("jar").configure { dependsOn.remove("testmodJar") }
+
 dependencies {
     minecraft("com.mojang:minecraft:$minecraft")
     mappings(loom.layered {
@@ -53,18 +69,11 @@ dependencies {
     modApi("net.fabricmc.fabric-api:fabric-api:${mod.dep("fabric_api_version")}")
 
     // general stuff
-    //modImplementation("dev.architectury:architectury:${mod.dep("archApi")}")
+    implementation(project(path = project.path, configuration = "namedElements"))
 
     "io.github.llamalad7:mixinextras-common:${mod.dep("mixin_extras")}".let {
         annotationProcessor(it)
         implementation(it)
-    }
-}
-
-sourceSets {
-    create("testmod") {
-        runtimeClasspath += sourceSets["main"].runtimeClasspath
-        compileClasspath += sourceSets["main"].compileClasspath
     }
 }
 
@@ -75,4 +84,3 @@ java {
     targetCompatibility = java
     sourceCompatibility = java
 }
-

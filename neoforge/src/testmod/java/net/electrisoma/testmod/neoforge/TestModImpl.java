@@ -1,8 +1,9 @@
 package net.electrisoma.testmod.neoforge;
 
-import net.electrisoma.visceralib.api.neoforge.registration.VisceralDeferredRegisterNeoForge;
-import net.electrisoma.visceralib.api.registration.VisceralDeferredRegister;
+import net.electrisoma.testmod.TestMod;
 import net.electrisoma.visceralib.api.registration.VisceralRegistries;
+import net.electrisoma.visceralib.api.registration.VisceralDeferredRegister;
+import net.electrisoma.visceralib.api.neoforge.registration.VisceralDeferredRegisterNeoForge;
 
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModLoadingContext;

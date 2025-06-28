@@ -46,6 +46,19 @@ configurations {
     get("developmentFabric").extendsFrom(commonBundle)
 }
 
+sourceSets {
+    main {
+        resources { // include generated resources in resources
+            srcDir("src/generated/resources")
+            exclude("src/generated/resources/.cache")
+        }
+    }
+    create("testmod") {
+        compileClasspath += sourceSets["main"].compileClasspath
+        runtimeClasspath += sourceSets["main"].runtimeClasspath
+    }
+}
+
 loom {
     decompilers {
         get("vineflower").apply { // Adds names to lambdas - useful for mixins
@@ -56,6 +69,18 @@ loom {
     silentMojangMappingsLicense()
     accessWidenerPath = common.loom.accessWidenerPath
     runConfigs {
+        create("testmodClient") {
+            client()
+            source(sourceSets["testmod"])
+            runDir = "../../../run/testmodClient"
+            vmArgs("-Dmixin.debug.export=true")
+        }
+        create("testmodServer") {
+            server()
+            source(sourceSets["testmod"])
+            runDir = "../../../run/testmodServer"
+            vmArgs("-Dmixin.debug.export=true")
+        }
         all {
             isIdeConfigGenerated = true
             runDir = "../../../run"
@@ -66,6 +91,7 @@ loom {
 
 dependencies {
     commonBundle(project(common.path, "namedElements")) { isTransitive = false }
+    commonBundle(project(common.path, "testmodElements")) { isTransitive = false }
     shadowBundle(project(common.path, "transformProductionFabric")) { isTransitive = false }
 
     minecraft("com.mojang:minecraft:$minecraft")
@@ -76,6 +102,8 @@ dependencies {
 
     modApi("net.fabricmc.fabric-api:fabric-api:${common.mod.dep("fabric_api_version")}")
     modImplementation("net.fabricmc:fabric-loader:${mod.dep("fabric_loader")}")
+
+    implementation(project(path = project.path))
 
     "io.github.llamalad7:mixinextras-fabric:${mod.dep("mixin_extras")}".let {
         annotationProcessor(it)
@@ -95,35 +123,19 @@ tasks.shadowJar {
     configurations = listOf(shadowBundle)
     archiveClassifier = "dev-shadow"
 }
-
 tasks.remapJar {
     injectAccessWidener = true
     input = tasks.shadowJar.get().archiveFile
     archiveClassifier = null
     dependsOn(tasks.shadowJar)
 }
-
 tasks.jar { archiveClassifier = "dev" }
-
 tasks.processResources {
     properties(listOf("fabric.mod.json"),
         "id" to mod.id, "name" to mod.name, "license" to mod.license,
         "version" to mod.version, "minecraft" to common.mod.prop("mc_dep_fabric"),
         "authors" to mod.authors, "description" to mod.description
     )
-}
-
-sourceSets {
-    main {
-        resources { // include generated resources in resources
-            srcDir("src/generated/resources")
-            exclude("src/generated/resources/.cache")
-        }
-    }
-    create("testmod") {
-        runtimeClasspath += sourceSets["main"].runtimeClasspath
-        compileClasspath += sourceSets["main"].compileClasspath
-    }
 }
 
 tasks.register<Copy>("buildAndCollect") {

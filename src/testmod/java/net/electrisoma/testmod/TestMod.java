@@ -6,8 +6,9 @@ import net.electrisoma.visceralib.api.registration.VisceralRegistrar;
 import net.electrisoma.visceralib.multiloader.PlatformInfo;
 import net.electrisoma.visceralib.multiloader.VisceralRegistrySetup;
 
-import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
+
+import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 
 public class TestMod {

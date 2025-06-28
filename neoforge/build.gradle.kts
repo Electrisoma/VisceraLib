@@ -44,6 +44,7 @@ configurations {
     compileClasspath.get().extendsFrom(commonBundle)
     runtimeClasspath.get().extendsFrom(commonBundle)
     get("developmentNeoForge").extendsFrom(commonBundle)
+    create("testmodImplementation") { extendsFrom(configurations.implementation.get()) }
 }
 
 //sourceSets {
@@ -58,6 +59,19 @@ configurations {
 //        }
 //    }
 //}
+
+sourceSets {
+    main {
+        resources { // include generated resources in resources
+            srcDir("src/generated/resources")
+            exclude("src/generated/resources/.cache")
+        }
+    }
+    create("testmod") {
+        compileClasspath += sourceSets["main"].compileClasspath
+        runtimeClasspath += sourceSets["main"].runtimeClasspath
+    }
+}
 
 loom {
     decompilers {
@@ -87,6 +101,18 @@ loom {
             programArgs("--existing", "${project.rootProject.file("src/main/resources")}")
             vmArg("-Dvisceralib.datagen.platform=neoforge")
         }
+        create("testmodClient") {
+            client()
+            source(sourceSets["testmod"])
+            runDir = "../../../run/testmodClient"
+            vmArgs("-Dmixin.debug.export=true")
+        }
+        create("testmodServer") {
+            server()
+            source(sourceSets["testmod"])
+            runDir = "../../../run/testmodServer"
+            vmArgs("-Dmixin.debug.export=true")
+        }
         all {
             isIdeConfigGenerated = true
             runDir = "../../../run"
@@ -97,6 +123,7 @@ loom {
 
 dependencies {
     commonBundle(project(common.path, "namedElements")) { isTransitive = false }
+    commonBundle(project(common.path, "testmodElements")) { isTransitive = false }
     shadowBundle(project(common.path, "transformProductionNeoForge")) { isTransitive = false }
 
     minecraft("com.mojang:minecraft:$minecraft")
@@ -106,6 +133,8 @@ dependencies {
     })
 
     "neoForge"("net.neoforged:neoforge:${common.mod.dep("neoforge_loader")}")
+
+    implementation(project(path = project.path))
 
     "io.github.llamalad7:mixinextras-neoforge:${mod.dep("mixin_extras")}".let {
         implementation(it)
@@ -122,20 +151,17 @@ java {
 }
 
 tasks.jar { archiveClassifier = "dev" }
-
 tasks.remapJar {
     injectAccessWidener = true
     input = tasks.shadowJar.get().archiveFile
     archiveClassifier = null
     dependsOn(tasks.shadowJar)
 }
-
 tasks.shadowJar {
     configurations = listOf(shadowBundle)
     archiveClassifier = "dev-shadow"
     exclude("fabric.mod.json", "architectury.common.json")
 }
-
 tasks.processResources {
     properties(listOf("META-INF/neoforge.mods.toml", "pack.mcmeta"),
         "id" to mod.id, "name" to mod.name, "license" to mod.license,
@@ -144,26 +170,12 @@ tasks.processResources {
     )
 }
 
-sourceSets {
-    main {
-        resources { // include generated resources in resources
-            srcDir("src/generated/resources")
-            exclude("src/generated/resources/.cache")
-        }
-    }
-    create("testmod") {
-        runtimeClasspath += sourceSets["main"].runtimeClasspath
-        compileClasspath += sourceSets["main"].compileClasspath
-    }
-}
-
 tasks.register<Copy>("buildAndCollect") {
     group = "build"
     from(tasks.remapJar.get().archiveFile, tasks.remapSourcesJar.get().archiveFile)
     into(rootProject.layout.buildDirectory.file("libs/${mod.version}/$loader"))
     dependsOn("build")
 }
-
 tasks.register("runDataGen") {
     group = "loom"
     description = "Generate data for " + mod.id
