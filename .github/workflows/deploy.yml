@@ -1,0 +1,33 @@
+name: Deploy to Maven GitHub Pages
+
+on:
+  push:
+    branches: [ main ] # or trigger on tag if you prefer releases
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17' # or whatever version your mod uses
+
+      - name: Grant execute permission to gradlew
+        run: chmod +x ./gradlew
+
+      - name: Build and publish to local repo
+        run: ./gradlew publish
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: build/ElectrisomaMaven
+          publish_branch: gh-pages
+          keep_files: true

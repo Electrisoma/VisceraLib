@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "visceralib:block/machine_block"
+    }
+  }
+}
