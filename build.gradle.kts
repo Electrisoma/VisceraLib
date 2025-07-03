@@ -22,7 +22,7 @@ val minecraft = stonecutter.current.version
 val ci = localProperties.getProperty("ci", "")?.toBoolean() ?: false
 val release = localProperties.getProperty("release", "")?.toBoolean() ?: false
 val nightly = ci && !release
-val buildNumber = localProperties.getProperty("build", "")?.toIntOrNull()
+val buildNumber = mod.build.toInt()
 
 version = "${mod.version}${if (release) "" else "-dev"}+mc.${minecraft}-common${if (nightly) "-build.${buildNumber}" else ""}"
 group = "${group}.common"
@@ -49,22 +49,6 @@ loom {
     }
 }
 
-val testmod: SourceSet by sourceSets.creating {
-    compileClasspath += sourceSets["main"].output
-    runtimeClasspath += sourceSets["main"].output
-}
-val testmodJar by tasks.registering(Jar::class) {
-    archiveClassifier.set("testmod")
-    from(testmod.output)
-}
-val testmodElements: Configuration by configurations.creating {
-    isCanBeConsumed = true
-    isCanBeResolved = false
-    outgoing.artifact(testmodJar)
-}
-
-//tasks.named("jar").configure { dependsOn.remove("testmodJar") }
-
 dependencies {
     minecraft("com.mojang:minecraft:$minecraft")
     mappings(loom.layered {
@@ -72,12 +56,8 @@ dependencies {
         parchment("org.parchmentmc.data:parchment-$minecraft:${mod.dep("parchment_version")}@zip")
     })
 
-    // fabric stuffs
     modImplementation("net.fabricmc:fabric-loader:${mod.dep("fabric_loader")}")
     modApi("net.fabricmc.fabric-api:fabric-api:${mod.dep("fabric_api_version")}")
-
-    // general stuff
-    //implementation(project(path = project.path, configuration = "namedElements"))
 
     "io.github.llamalad7:mixinextras-common:${mod.dep("mixin_extras")}".let {
         annotationProcessor(it)

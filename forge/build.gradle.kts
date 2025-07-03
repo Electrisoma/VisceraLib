@@ -36,7 +36,7 @@ base.archivesName = mod.id
 
 architectury {
     platformSetupLoomIde()
-    neoForge()
+    forge()
 }
 
 val commonBundle: Configuration by configurations.creating {
@@ -50,7 +50,7 @@ val shadowBundle: Configuration by configurations.creating {
 configurations {
     compileClasspath.get().extendsFrom(commonBundle)
     runtimeClasspath.get().extendsFrom(commonBundle)
-    get("developmentNeoForge").extendsFrom(commonBundle)
+    get("developmentForge").extendsFrom(commonBundle)
 }
 
 sourceSets {
@@ -82,7 +82,7 @@ loom {
 
 dependencies {
     commonBundle(project(common.path, "namedElements")) { isTransitive = false }
-    shadowBundle(project(common.path, "transformProductionNeoForge")) { isTransitive = false }
+    shadowBundle(project(common.path, "transformProductionForge")) { isTransitive = false }
 
     minecraft("com.mojang:minecraft:$minecraft")
     mappings(loom.layered {
@@ -90,9 +90,9 @@ dependencies {
         parchment("org.parchmentmc.data:parchment-$minecraft:${common.mod.dep("parchment_version")}@zip")
     })
 
-    "neoForge"("net.neoforged:neoforge:${common.mod.dep("neoforge_loader")}")
+    "forge"("net.minecraftforge:forge:$minecraft-${common.mod.dep("forge_loader")}")
 
-    "io.github.llamalad7:mixinextras-neoforge:${mod.dep("mixin_extras")}".let {
+    "io.github.llamalad7:mixinextras-forge:${mod.dep("mixin_extras")}".let {
         implementation(it)
         include(it)
     }
@@ -130,7 +130,7 @@ tasks.shadowJar {
     exclude("fabric.mod.json", "architectury.common.json")
 }
 tasks.processResources {
-    properties(listOf("META-INF/neoforge.mods.toml", "pack.mcmeta"),
+    properties(listOf("META-INF/mods.toml", "pack.mcmeta"),
         "id" to mod.id, "name" to mod.name, "license" to mod.license,
         "version" to mod.version, "minecraft" to common.mod.prop("mc_dep_forgelike"),
         "authors" to mod.authors, "description" to mod.description
@@ -149,7 +149,7 @@ publishMods {
     file = tasks.remapJar.get().archiveFile
     changelog = ChangelogText.getChangelogText(rootProject).toString()
     displayName = "${common.mod.version} for $loaderCap $minecraft"
-    modLoaders.add("neoforge")
+    modLoaders.add("forge")
     type = ALPHA
 
     curseforge {

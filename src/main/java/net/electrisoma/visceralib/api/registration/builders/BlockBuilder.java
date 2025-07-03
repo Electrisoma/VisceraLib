@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -30,11 +31,11 @@ public class BlockBuilder<T extends Block, R extends AbstractVisceralRegistrar<R
         extends AbstractBuilder<T, R, BlockBuilder<T, R>>
         implements TaggableBuilder<Block>, ICreativeTabOutputs {
 
+
+
     private static final List<BlockBuilder<?, ?>> ALL_BUILDERS = new ArrayList<>();
 
-    static {
-        CreativeTabBuilderRegistry.registerBuilderProvider(BlockBuilder::getAllBuilders);
-    }
+    static {CreativeTabBuilderRegistry.registerBuilderProvider(BlockBuilder::getAllBuilders);}
 
     private final VisceralDeferredRegister<Block> blockRegister;
     private final Function<BlockBehaviour.Properties, T> constructor;
@@ -48,7 +49,7 @@ public class BlockBuilder<T extends Block, R extends AbstractVisceralRegistrar<R
     private Item.Properties itemProperties = new Item.Properties();
     private Function<T, BlockItem> blockItemFactory = block -> new BlockItem(block, itemProperties);
 
-    private VisceralRegistrySupplier<Item> blockItemSupplier; // <-- track BlockItem supplier here
+    private VisceralRegistrySupplier<Item> blockItemSupplier;
 
     private final List<TagKey<Block>> tags = new ArrayList<>();
     private RenderType renderLayer;
@@ -72,7 +73,11 @@ public class BlockBuilder<T extends Block, R extends AbstractVisceralRegistrar<R
     }
 
     public BlockBuilder<T, R> initialProperties(Block base) {
+        //? if = 1.21.1
         this.properties = BlockBehaviour.Properties.ofFullCopy(base);
+        //? if < 1.21.1
+        /*this.properties = BlockBehaviour.Properties.copy(base);*/
+
         return this;
     }
 

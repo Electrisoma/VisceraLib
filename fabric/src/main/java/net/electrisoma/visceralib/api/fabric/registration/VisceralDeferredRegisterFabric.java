@@ -1,5 +1,6 @@
 package net.electrisoma.visceralib.api.fabric.registration;
 
+import net.electrisoma.visceralib.VisceraLib;
 import net.electrisoma.visceralib.api.registration.VisceralDeferredRegister;
 import net.electrisoma.visceralib.api.registration.VisceralRegistrySupplier;
 import net.minecraft.core.Registry;
@@ -47,6 +48,6 @@ public class VisceralDeferredRegisterFabric<T> extends VisceralDeferredRegister<
     }
 
     private ResourceLocation createId(String name) {
-        return ResourceLocation.fromNamespaceAndPath(modId, name);
+        return VisceraLib.path(modId, name);
     }
 }

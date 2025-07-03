@@ -1,16 +1,20 @@
 package net.electrisoma.visceralib.api.registration.builders;
 
+import net.electrisoma.visceralib.VisceraLib;
 import net.electrisoma.visceralib.api.registration.AbstractVisceralRegistrar;
 import net.electrisoma.visceralib.api.registration.VisceralDeferredRegister;
 import net.electrisoma.visceralib.api.registration.VisceralRegistrySupplier;
 import net.electrisoma.visceralib.api.registration.entry.FluidEntry;
 import net.electrisoma.visceralib.api.registration.helpers.CreativeTabBuilderRegistry;
 import net.electrisoma.visceralib.api.registration.helpers.ICreativeTabOutputs;
+import net.electrisoma.visceralib.api.registration.helpers.TaggableBuilder;
 import net.electrisoma.visceralib.core.block.VisceralLiquidBlock;
 import net.electrisoma.visceralib.core.fluid.VisceralFlowingFluid;
 import net.electrisoma.visceralib.core.fluid.VisceralFluidAttributes;
 import net.electrisoma.visceralib.core.item.VisceralBucketItem;
 
+import net.electrisoma.visceralib.data.providers.VisceralLangProvider;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -20,22 +24,20 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static net.electrisoma.visceralib.VisceraLib.path;
+public class FluidBuilder<R extends AbstractVisceralRegistrar<R>> implements
+        TaggableBuilder<Fluid>, ICreativeTabOutputs {
 
-public class FluidBuilder<R extends AbstractVisceralRegistrar<R>> implements ICreativeTabOutputs {
     private static final List<FluidBuilder<?>> ALL_BUILDERS = new ArrayList<>();
 
-    static {
-        CreativeTabBuilderRegistry.registerBuilderProvider(FluidBuilder::getAllBuilders);
-    }
+    static {CreativeTabBuilderRegistry.registerBuilderProvider(FluidBuilder::getAllBuilders);}
 
     private final R registrar;
     private final String name;
@@ -64,6 +66,7 @@ public class FluidBuilder<R extends AbstractVisceralRegistrar<R>> implements ICr
 
     private Consumer<Item.Properties> itemProperties = props -> {};
     private Consumer<BlockBehaviour.Properties> blockProperties = props -> {};
+    private Consumer<ItemBuilder<VisceralBucketItem, R>> bucketSetup = builder -> {};
 
     private boolean registerBlock = false;
     private boolean registerBucket = false;
@@ -148,29 +151,36 @@ public class FluidBuilder<R extends AbstractVisceralRegistrar<R>> implements ICr
         return this;
     }
 
-    public FluidBuilder<R> withBucket(Consumer<ItemBuilder<VisceralBucketItem, R>> bucketSetup) {
+    public FluidBuilder<R> withBucket(Consumer<ItemBuilder<VisceralBucketItem, R>> setup) {
         this.registerBucket = true;
-        this.bucketBuilder = new ItemBuilder<>(registrar, name + "_bucket", props -> new VisceralBucketItem(() -> stillFluidSupplier.get(), props));
-        bucketSetup.accept(this.bucketBuilder);
+        this.bucketSetup = setup;
         return this;
     }
 
+    public FluidBuilder<R> withBucket() {
+        return withBucket(builder -> {});
+    }
+
     public FluidEntry<VisceralFlowingFluid.Flowing> register() {
-        if (stillTexture == null) stillTexture = path("fluid/" + name + "_still");
-        if (flowTexture == null) flowTexture = path("fluid/" + name + "_flow");
-        if (overlayTexture == null) overlayTexture = path("gui/" + name + "_overlay");
+        if (stillTexture == null) stillTexture = VisceraLib.path(registrar.getModId(), ("fluid/" + name + "_still"));
+        if (flowTexture == null) flowTexture = VisceraLib.path(registrar.getModId(), ("fluid/" + name + "_flow"));
+        if (overlayTexture == null) overlayTexture = VisceraLib.path(registrar.getModId(), ("gui/" + name + "_overlay"));
 
         VisceralDeferredRegister<Fluid> fluidRegister = registrar.deferredRegister(Registries.FLUID);
 
-        ResourceLocation stillLoc = ResourceLocation.fromNamespaceAndPath(registrar.getModId(), name);
-        ResourceLocation flowingLoc = ResourceLocation.fromNamespaceAndPath(registrar.getModId(), "flowing_" + name);
+        ResourceLocation stillLoc = VisceraLib.path(registrar.getModId(), name);
+        ResourceLocation flowingLoc = VisceraLib.path(registrar.getModId(), "flowing_" + name);
 
         ResourceKey<VisceralFlowingFluid.Source> stillKey =
                 (ResourceKey<VisceralFlowingFluid.Source>) (ResourceKey<?>) ResourceKey.create(Registries.FLUID, stillLoc);
         ResourceKey<VisceralFlowingFluid.Flowing> flowingKey =
                 (ResourceKey<VisceralFlowingFluid.Flowing>) (ResourceKey<?>) ResourceKey.create(Registries.FLUID, flowingLoc);
 
-        if (registerBucket && bucketBuilder != null) {
+        if (registerBucket) {
+            this.bucketBuilder = new ItemBuilder<>(registrar, name + "_bucket",
+                    props -> new VisceralBucketItem(() -> stillFluidSupplier.get(), props));
+            bucketSetup.accept(this.bucketBuilder);
+
             bucketBuilder.register();
             bucketItemSupplier = () -> bucketBuilder.getRegisteredSupplier()
                     .map(VisceralRegistrySupplier::get)
@@ -215,6 +225,11 @@ public class FluidBuilder<R extends AbstractVisceralRegistrar<R>> implements ICr
         return new FluidEntry<>(flowingFluidSupplier);
     }
 
+    @Override
+    public List<TagKey<Fluid>> getTags() {
+        return List.copyOf(fluidTags);
+    }
+
     public Optional<Supplier<Item>> getBucketItemSupplier() {
         return bucketBuilder != null
                 ? bucketBuilder.getRegisteredSupplier().map(supplier -> (Supplier<Item>) supplier)
@@ -238,5 +253,35 @@ public class FluidBuilder<R extends AbstractVisceralRegistrar<R>> implements ICr
 
     public static List<FluidBuilder<?>> getAllBuilders() {
         return Collections.unmodifiableList(ALL_BUILDERS);
+    }
+
+    public static void provideLang(VisceralLangProvider provider) {
+        for (FluidBuilder<?> builder : getAllBuilders()) {
+            var flowingSupplier = builder.flowingFluidSupplier;
+            var stillSupplier = builder.stillFluidSupplier;
+
+            if (flowingSupplier == null || stillSupplier == null)
+                continue;
+
+            var fluid = flowingSupplier.get();
+            var id = BuiltInRegistries.FLUID.getKey(fluid);
+
+            if (!id.getNamespace().equals(provider.getModId()))
+                continue;
+
+            String langKey = "fluid." + id.getNamespace() + "." + builder.name;
+            String langValue = builder.getLangEntry().orElse(VisceralLangProvider.toEnglishName(builder.name));
+            provider.add(langKey, langValue);
+
+            builder.getBucketItemSupplier().ifPresent(bucketSupplier -> {
+                Item bucketItem = bucketSupplier.get();
+                if (bucketItem != null) {
+                    var bucketId = BuiltInRegistries.ITEM.getKey(bucketItem);
+                    String bucketLangKey = "item." + bucketId.getNamespace() + "." + bucketId.getPath();
+                    String bucketLangValue = langValue + " Bucket";
+                    provider.add(bucketLangKey, bucketLangValue);
+                }
+            });
+        }
     }
 }

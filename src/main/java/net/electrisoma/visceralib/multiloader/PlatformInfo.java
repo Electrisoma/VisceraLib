@@ -6,7 +6,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 @SuppressWarnings({"unused", "UnimplementedExpectPlatform"})
 public enum PlatformInfo {
-    NEOFORGE, FABRIC;
+    NEOFORGE, FORGE, FABRIC;
 
     public static final PlatformInfo CURRENT = getCurrent();
 

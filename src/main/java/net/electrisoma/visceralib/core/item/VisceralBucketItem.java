@@ -11,7 +11,7 @@ public class VisceralBucketItem extends BucketItem {
     private final Supplier<? extends Fluid> fluidSupplier;
 
     public VisceralBucketItem(Supplier<? extends Fluid> fluidSupplier, Properties properties) {
-        super(Fluids.EMPTY, properties);
+        super(fluidSupplier.get(), properties);
         this.fluidSupplier = fluidSupplier;
     }
 

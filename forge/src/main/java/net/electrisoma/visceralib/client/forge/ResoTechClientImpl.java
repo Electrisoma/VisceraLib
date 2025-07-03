@@ -1,16 +1,15 @@
-package net.electrisoma.visceralib.client.neoforge;
+package net.electrisoma.visceralib.client.forge;
 
 import net.electrisoma.visceralib.VisceraLib;
 import net.electrisoma.visceralib.client.VisceralLibClient;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
-import net.neoforged.neoforge.common.NeoForge;
 
-@EventBusSubscriber(modid = VisceraLib.MOD_ID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
+@Mod.EventBusSubscriber(modid = VisceraLib.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ResoTechClientImpl {
     @SubscribeEvent
     public static void clientSetup(FMLClientSetupEvent event) {
@@ -19,11 +18,11 @@ public class ResoTechClientImpl {
     }
 
     private static void registerClientEvents() {
-        NeoForge.EVENT_BUS.register(ClientEventsImpl.class);
+        MinecraftForge.EVENT_BUS.register(ClientEventsImpl.class);
     }
 
-    @SubscribeEvent
-    private static void initializeClient(RegisterClientExtensionsEvent event) {
+//    @SubscribeEvent
+//    private static void initializeClient(IClientFluidTypeExtensions event) {
 //        FluidBuilder.getAllAttributes().forEach((attributes ->
 //                event.registerFluidType(new IClientFluidTypeExtensions() {
 //            @Override public @NotNull ResourceLocation getStillTexture() {
@@ -33,5 +32,5 @@ public class ResoTechClientImpl {
 //                return attributes.getFlowingTexture();
 //            }
 //        }, attributes.getFlowingFluid().getFluidType())));
-    }
+//    }
 }

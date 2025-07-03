@@ -28,7 +28,7 @@ val common: Project = requireNotNull(stonecutter.node.sibling("")) {
 val ci = localProperties.getProperty("ci", "")?.toBoolean() ?: false
 val release = localProperties.getProperty("release", "")?.toBoolean() ?: false
 val nightly = ci && !release
-val buildNumber = localProperties.getProperty("build", "")?.toIntOrNull()
+val buildNumber = mod.build.toInt()
 
 version = "${mod.version}${if (release) "" else "-dev"}+mc.${minecraft}-${loader}${if (nightly) "-build.${buildNumber}" else ""}"
 group = "${mod.group}.$loader"
@@ -76,18 +76,6 @@ loom {
     silentMojangMappingsLicense()
     accessWidenerPath = common.loom.accessWidenerPath
     runConfigs {
-//        create("testmodClient") {
-//            client()
-//            source(sourceSets["testmod"])
-//            runDir = "../../../run/testmodClient"
-//            vmArgs("-Dmixin.debug.export=true")
-//        }
-//        create("testmodServer") {
-//            server()
-//            source(sourceSets["testmod"])
-//            runDir = "../../../run/testmodServer"
-//            vmArgs("-Dmixin.debug.export=true")
-//        }
         all {
             isIdeConfigGenerated = true
             runDir = "../../../run"
@@ -98,7 +86,6 @@ loom {
 
 dependencies {
     commonBundle(project(common.path, "namedElements")) { isTransitive = false }
-    //commonBundle(project(common.path, "testmodElements")) { isTransitive = false }
     shadowBundle(project(common.path, "transformProductionFabric")) { isTransitive = false }
 
     minecraft("com.mojang:minecraft:$minecraft")
@@ -109,8 +96,6 @@ dependencies {
 
     modApi("net.fabricmc.fabric-api:fabric-api:${common.mod.dep("fabric_api_version")}")
     modImplementation("net.fabricmc:fabric-loader:${mod.dep("fabric_loader")}")
-
-    //implementation(project(path = project.path))
 
     "io.github.llamalad7:mixinextras-fabric:${mod.dep("mixin_extras")}".let {
         annotationProcessor(it)

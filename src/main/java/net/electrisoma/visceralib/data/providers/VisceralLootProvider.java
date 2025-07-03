@@ -24,12 +24,23 @@ import java.util.stream.Collectors;
 
 public class VisceralLootProvider extends LootTableProvider {
     public VisceralLootProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture, String modid) {
+        //? if = 1.21.1 {
         super(
                 output,
                 Set.of(),
                 List.of(new SubProviderEntry(registries -> new BlockLootTables(registries, modid), LootContextParamSets.BLOCK)),
                 registriesFuture
         );
+        //?} else if < 1.21.1 {
+        /*super(
+                output,
+                Set.of(),
+                List.of(new SubProviderEntry(() -> {
+                    HolderLookup.Provider registries = registriesFuture.join();
+                    return new BlockLootTables(registries, modid);
+                }, LootContextParamSets.BLOCK))
+        );
+        *///?}
     }
 
     private static class BlockLootTables extends BlockLootSubProvider {
@@ -37,9 +48,13 @@ public class VisceralLootProvider extends LootTableProvider {
         private final String modid;
 
         public BlockLootTables(HolderLookup.Provider registries, String modid) {
+            //? if = 1.21.1
             super(Set.of(), FeatureFlags.REGISTRY.allFlags(), registries);
-            this.modid = modid;
 
+            //? if < 1.21.1
+            /*super(Set.of(), FeatureFlags.REGISTRY.allFlags(), null);*/
+
+            this.modid = modid;
             this.knownBlocks = BlockBuilder.getAllBuilders().stream()
                     .map(BlockBuilder::getRegisteredSupplier)
                     .flatMap(Optional::stream)

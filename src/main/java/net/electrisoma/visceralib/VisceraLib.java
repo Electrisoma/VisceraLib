@@ -20,7 +20,10 @@ public class VisceraLib {
 		VisceralRegistrySetup.init();
 	}
 
-	public static ResourceLocation path(String path) {
-		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+	public static ResourceLocation path(String id, String path) {
+		//? if = 1.21.1
+		return ResourceLocation.fromNamespaceAndPath(id, path);
+		//? if < 1.21.1
+		/*return new ResourceLocation(id, path);*/
 	}
 }
