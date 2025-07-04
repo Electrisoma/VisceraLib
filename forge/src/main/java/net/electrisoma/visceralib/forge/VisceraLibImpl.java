@@ -29,11 +29,9 @@ public class VisceraLibImpl {
 
 	@SubscribeEvent
 	public void onCommonSetup(FMLCommonSetupEvent event) {
-		for (BlockBuilder<?, ?> builder : BlockBuilder.getAllBuilders()) {
-			builder.getRegisteredSupplier().ifPresent(VisceralRegistrySupplier::notifyListeners);
-		}
-//		for (TabBuilder<?> builder : TabBuilder.getAllBuilders()) {
+		for (BlockBuilder<?, ?> builder : BlockBuilder.getAllBuilders())
+            builder.getRegisteredSupplier().ifPresent(VisceralRegistrySupplier::notifyListeners);
+//		for (TabBuilder<?> builder : TabBuilder.getAllBuilders())
 //			builder.getRegisteredSupplier().ifPresent(VisceralRegistrySupplier::notifyListeners);
-//		}
 	}
 }

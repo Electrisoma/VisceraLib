@@ -26,11 +26,9 @@ public class VisceralRegistrySupplier<T> {
     }
 
     public void listen(Consumer<T> consumer) {
-        if (notified) {
+        if (notified)
             consumer.accept(get());
-        } else {
-            listeners.add(consumer);
-        }
+        else listeners.add(consumer);
     }
 
     public void notifyListeners() {

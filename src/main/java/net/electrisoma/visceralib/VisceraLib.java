@@ -15,15 +15,11 @@ public class VisceraLib {
 	public static final Logger LOGGER = LogUtils.getLogger();
 
 	public static void init() {
-		LOGGER.info("{} {} initializing! on platform: {}", NAME, VERSION, LOADER);
-
 		VisceralRegistrySetup.init();
 	}
 
 	public static ResourceLocation path(String id, String path) {
-		//? if = 1.21.1
-		return ResourceLocation.fromNamespaceAndPath(id, path);
-		//? if < 1.21.1
-		/*return new ResourceLocation(id, path);*/
+		return /*? =1.21.1 {*/ResourceLocation.fromNamespaceAndPath
+				/*?} else {*//*new ResourceLocation*//*?}*/(id, path);
 	}
 }

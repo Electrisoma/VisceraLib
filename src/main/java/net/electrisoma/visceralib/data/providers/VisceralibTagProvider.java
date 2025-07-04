@@ -15,17 +15,17 @@ import org.jetbrains.annotations.NotNull;
 import java.util.concurrent.CompletableFuture;
 
 public class VisceralibTagProvider {
-    public static TagsProvider<Block> createBlockTags(PackOutput output, CompletableFuture<HolderLookup.Provider> lookup, String modId, Object fileHelper) {
-        return createBlockTagsImpl(output, lookup, modId, fileHelper);
+    public static TagsProvider<Block> genBlockTags(PackOutput output, CompletableFuture<HolderLookup.Provider> lookup, String modId, Object fileHelper) {
+        return genBlockTagsImpl(output, lookup, modId, fileHelper);
     }
-    public static TagsProvider<Item> createItemTags(PackOutput output, CompletableFuture<HolderLookup.Provider> lookup, String modId, Object fileHelper) {
-        return createItemTagsImpl(output, lookup, modId, fileHelper);
+    public static TagsProvider<Item> genItemTags(PackOutput output, CompletableFuture<HolderLookup.Provider> lookup, String modId, Object fileHelper) {
+        return genItemTagsImpl(output, lookup, modId, fileHelper);
     }
 
-    @ExpectPlatform public static TagsProvider<Block> createBlockTagsImpl(PackOutput output, CompletableFuture<HolderLookup.Provider> lookup, String modId, Object fileHelper) {
+    @ExpectPlatform public static TagsProvider<Block> genBlockTagsImpl(PackOutput output, CompletableFuture<HolderLookup.Provider> lookup, String modId, Object fileHelper) {
         throw new AssertionError();
     }
-    @ExpectPlatform public static TagsProvider<Item> createItemTagsImpl(PackOutput output, CompletableFuture<HolderLookup.Provider> lookup, String modId, Object fileHelper) {
+    @ExpectPlatform public static TagsProvider<Item> genItemTagsImpl(PackOutput output, CompletableFuture<HolderLookup.Provider> lookup, String modId, Object fileHelper) {
         throw new AssertionError();
     }
 

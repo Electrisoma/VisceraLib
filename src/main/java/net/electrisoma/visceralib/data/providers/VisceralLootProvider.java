@@ -6,6 +6,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.data.loot.LootTableProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -24,23 +25,14 @@ import java.util.stream.Collectors;
 
 public class VisceralLootProvider extends LootTableProvider {
     public VisceralLootProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture, String modid) {
-        //? if = 1.21.1 {
-        super(
-                output,
-                Set.of(),
-                List.of(new SubProviderEntry(registries -> new BlockLootTables(registries, modid), LootContextParamSets.BLOCK)),
+        super(output, Set.of(),/*? =1.21.1 {*/
+                List.of(new SubProviderEntry(registries ->
+                        new BlockLootTables(registries, modid), LootContextParamSets.BLOCK)),
                 registriesFuture
-        );
-        //?} else if < 1.21.1 {
-        /*super(
-                output,
-                Set.of(),
-                List.of(new SubProviderEntry(() -> {
+                /*?} else {*//*List.of(new SubProviderEntry(() -> {
                     HolderLookup.Provider registries = registriesFuture.join();
                     return new BlockLootTables(registries, modid);
-                }, LootContextParamSets.BLOCK))
-        );
-        *///?}
+                }, LootContextParamSets.BLOCK))*//*?}*/);
     }
 
     private static class BlockLootTables extends BlockLootSubProvider {
@@ -48,12 +40,9 @@ public class VisceralLootProvider extends LootTableProvider {
         private final String modid;
 
         public BlockLootTables(HolderLookup.Provider registries, String modid) {
-            //? if = 1.21.1
-            super(Set.of(), FeatureFlags.REGISTRY.allFlags(), registries);
-
-            //? if < 1.21.1
-            /*super(Set.of(), FeatureFlags.REGISTRY.allFlags(), null);*/
-
+            super(Set.of(), FeatureFlags.REGISTRY.allFlags(), /*? =1.21.1 {*/
+                    registries/*?} else {*//*null*//*?}*/);
+            
             this.modid = modid;
             this.knownBlocks = BlockBuilder.getAllBuilders().stream()
                     .map(BlockBuilder::getRegisteredSupplier)
@@ -72,14 +61,10 @@ public class VisceralLootProvider extends LootTableProvider {
                         LootTable.Builder lootTableBuilder = LootTable.lootTable();
                         builder.getLootTableProvider().get().accept(lootTableBuilder, block);
                         this.add(block, lootTableBuilder);
-
                     } else if (builder.getLootDrop().isPresent()) {
                         BlockBuilder.LootDrop drop = builder.getLootDrop().get();
                         this.add(block, createLootTableFromDrop(drop));
-
-                    } else {
-                        this.dropSelf(block);
-                    }
+                    } else this.dropSelf(block);
                 });
             }
         }

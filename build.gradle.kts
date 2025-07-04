@@ -35,7 +35,7 @@ architectury.common(stonecutter.tree.branches.mapNotNull {
 
 loom {
     decompilers {
-        get("vineflower").apply { // Adds names to lambdas - useful for mixins
+        get("vineflower").apply {
             options.put("mark-corresponding-synthetics", "1")
         }
     }
@@ -71,4 +71,17 @@ java {
         JavaVersion.VERSION_21 else JavaVersion.VERSION_17
     targetCompatibility = java
     sourceCompatibility = java
+}
+
+tasks.register("${mod.id}Publish") {
+    when (val platform = System.getenv("PLATFORM")) {
+        "all" -> {
+            dependsOn(tasks.build,
+                ":fabric:publish", ":forge:publish", ":neoforge:publish", ":common:publish",
+                ":fabric:publishMods", ":forge:publishMods", ":neoforge:publishMods")
+        }
+        "fabric", "forge", "neoforge" -> {
+            dependsOn("${platform}:build", "${platform}:publish", "${platform}:publishMods")
+        }
+    }
 }

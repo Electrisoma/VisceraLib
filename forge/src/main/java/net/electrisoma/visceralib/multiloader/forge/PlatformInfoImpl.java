@@ -11,7 +11,7 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class PlatformInfoImpl {
     public static PlatformInfo getCurrent() {
-        return PlatformInfo.NEOFORGE;
+        return PlatformInfo.FORGE;
     }
 
     public static String findVersion() {

@@ -11,10 +11,10 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import java.util.concurrent.CompletableFuture;
 
 public class VisceralibTagProviderImpl {
-    public static TagsProvider<Block> createBlockTagsImpl(PackOutput output, CompletableFuture<HolderLookup.Provider> lookup, String modId, Object fileHelper) {
+    public static TagsProvider<Block> genBlockTagsImpl(PackOutput output, CompletableFuture<HolderLookup.Provider> lookup, String modId, Object fileHelper) {
         return new BlockTagsImpl(output, lookup, modId, (ExistingFileHelper) fileHelper);
     }
-    public static TagsProvider<Item> createItemTagsImpl(PackOutput output, CompletableFuture<HolderLookup.Provider> lookup, String modId, Object fileHelper) {
+    public static TagsProvider<Item> genItemTagsImpl(PackOutput output, CompletableFuture<HolderLookup.Provider> lookup, String modId, Object fileHelper) {
         return new ItemTagsImpl(output, lookup, modId, (ExistingFileHelper) fileHelper);
     }
 
