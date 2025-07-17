@@ -1,6 +1,7 @@
 package net.electrisoma.visceralib.api.registration.builders;
 
 import net.electrisoma.visceralib.data.providers.VisceralLangProvider;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -62,7 +63,7 @@ public class TabBuilder {
 
     public TabEntry<CreativeModeTab> register() {
         VisceralDeferredRegister<CreativeModeTab> tabRegister =
-                registrar.deferredRegister(net.minecraft.core.registries.Registries.CREATIVE_MODE_TAB);
+                registrar.deferredRegister(Registries.CREATIVE_MODE_TAB);
 
         Supplier<CreativeModeTab> supplier = () -> CreativeModeTab.builder(CreativeModeTab.Row.TOP, 1)
                 .title(title != null ? title : Component.literal(name))

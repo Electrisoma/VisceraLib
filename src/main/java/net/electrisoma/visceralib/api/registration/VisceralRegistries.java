@@ -1,5 +1,6 @@
 package net.electrisoma.visceralib.api.registration;
 
+import net.electrisoma.visceralib.multiloader.VisceralInitHook;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 
@@ -13,6 +14,10 @@ import java.util.Map;
  * Platform-specific code must provide the factory implementation.
  */
 public final class VisceralRegistries {
+    static {
+        VisceralInitHook.bootstrap();
+    }
+
     private static final Map<String, Map<ResourceKey<?>, VisceralDeferredRegister<?>>> REGISTRIES = new HashMap<>();
 
     @FunctionalInterface

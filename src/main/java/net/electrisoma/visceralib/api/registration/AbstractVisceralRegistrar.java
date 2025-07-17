@@ -1,12 +1,10 @@
 package net.electrisoma.visceralib.api.registration;
 
-import net.electrisoma.visceralib.api.registration.builders.BlockBuilder;
-import net.electrisoma.visceralib.api.registration.builders.FluidBuilder;
-import net.electrisoma.visceralib.api.registration.builders.ItemBuilder;
-import net.electrisoma.visceralib.api.registration.builders.TabBuilder;
+import net.electrisoma.visceralib.api.registration.builders.*;
 import net.electrisoma.visceralib.api.registration.entry.TabEntry;
 
 import net.minecraft.core.Registry;
+import net.minecraft.core.particles.ParticleType;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -59,6 +57,10 @@ public abstract class AbstractVisceralRegistrar<T extends AbstractVisceralRegist
 
     public FluidBuilder<T> fluid(String name) {
         return new FluidBuilder<>(self(), name);
+    }
+
+    public <P extends ParticleType<?>> ParticleBuilder<P, T> particle(String name, Supplier<P> supplier) {
+        return new ParticleBuilder<>(self(), name, supplier);
     }
 
     public TabBuilder tab(String name) {

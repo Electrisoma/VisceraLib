@@ -8,6 +8,7 @@ import net.electrisoma.visceralib.api.registration.AbstractVisceralRegistrar;
 
 import net.electrisoma.visceralib.api.registration.helpers.ICreativeTabOutputs;
 import net.electrisoma.visceralib.data.providers.VisceralLangProvider;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -36,6 +37,7 @@ public class ItemBuilder<T extends Item, R extends AbstractVisceralRegistrar<R>>
     private Item.Properties properties = new Item.Properties();
     private VisceralRegistrySupplier<T> registeredSupplier;
     private final List<TagKey<Item>> tags = new ArrayList<>();
+    private Supplier<Supplier<? extends ItemRenderer>> customRendererFactory;
 
     private Integer burnTime;
     private Float compostChance;
@@ -59,6 +61,11 @@ public class ItemBuilder<T extends Item, R extends AbstractVisceralRegistrar<R>>
 
     public ItemBuilder<T, R> compostChance(float chance) {
         this.compostChance = chance;
+        return self();
+    }
+
+    public ItemBuilder<T, R> setCustomRendererFactory(Supplier<Supplier<? extends ItemRenderer>> factory) {
+        this.customRendererFactory = factory;
         return self();
     }
 
@@ -94,6 +101,10 @@ public class ItemBuilder<T extends Item, R extends AbstractVisceralRegistrar<R>>
 
     public List<TagKey<Item>> getTags() {
         return List.copyOf(tags);
+    }
+
+    public Optional<Supplier<? extends ItemRenderer>> getCustomRendererFactory() {
+        return Optional.ofNullable(customRendererFactory).map(Supplier::get);
     }
 
     public Optional<Integer> getBurnTime() {
@@ -140,5 +151,4 @@ public class ItemBuilder<T extends Item, R extends AbstractVisceralRegistrar<R>>
             });
         }
     }
-
 }

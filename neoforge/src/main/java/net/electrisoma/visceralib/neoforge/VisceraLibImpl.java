@@ -27,7 +27,7 @@ public class VisceraLibImpl {
 		neoforgeBus = NeoForge.EVENT_BUS;
 
 		VisceraLib.init();
-		VisceralBootstrapNeoForge.init(eventBus);
+		//VisceralBootstrapNeoForge.init(eventBus);
 	}
 
 	@SubscribeEvent
