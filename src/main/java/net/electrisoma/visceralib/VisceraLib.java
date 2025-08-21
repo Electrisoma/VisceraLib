@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import net.electrisoma.visceralib.api.registration.VisceralRegistrar;
 import net.electrisoma.visceralib.multiloader.PlatformInfo;
 import net.electrisoma.visceralib.multiloader.VisceralRegistrySetup;
-import net.electrisoma.visceralib.testreg.VisceralibModSetup;
 import net.electrisoma.visceralib.testreg.VisceralibTabs;
 import net.minecraft.resources.ResourceLocation;
 
