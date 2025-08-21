@@ -6,12 +6,15 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
 
 import net.electrisoma.visceralib.api.registration.builders.BlockBuilder;
+import net.electrisoma.visceralib.api.registration.builders.CreativeTabBuilder;
 import net.electrisoma.visceralib.api.registration.builders.ItemBuilder;
 import net.minecraft.core.Registry;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
+import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.ApiStatus.Internal;
 
 import java.util.function.Function;
@@ -38,5 +41,9 @@ public class VisceralRegistry {
 
     public <T extends Item> ItemBuilder<T> item(String id, Supplier<T> supplier) {
         return new ItemBuilder<>(this, id, supplier);
+    }
+
+    public CreativeTabBuilder creativeTab(String id, CreativeModeTab.Row row, int column) {
+        return new CreativeTabBuilder(this, id, row, column);
     }
 }

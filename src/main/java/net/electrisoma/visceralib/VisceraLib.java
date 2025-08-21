@@ -3,7 +3,7 @@ package net.electrisoma.visceralib;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.electrisoma.visceralib.multiloader.PlatformInfo;
-import net.electrisoma.visceralib.testreg.VisceralibBlocks;
+import net.electrisoma.visceralib.testreg.VisceralibReg;
 import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.logging.LogUtils;
@@ -18,7 +18,7 @@ public class VisceraLib {
 	public static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
 	public static void init() {
-		VisceralibBlocks.init();
+		VisceralibReg.init();
 	}
 
 	public static ResourceLocation path(String id, String path) {
