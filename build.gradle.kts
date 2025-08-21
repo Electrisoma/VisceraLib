@@ -24,7 +24,7 @@ val release = localProperties.getProperty("release", "")?.toBoolean() ?: false
 val nightly = ci && !release
 val buildNumber = mod.build.toInt()
 
-version = "${mod.version}${if (release) "" else "-dev"}+mc.${minecraft}-common${if (nightly) "-build.${buildNumber}" else ""}"
+version = "${mod.version}${if (release) "" else "-dev"}+mc.${minecraft}-common${if (nightly) "-build.${buildNumber}"+"b" else ""}"
 group = "${group}.common"
 base.archivesName.set(mod.id)
 
