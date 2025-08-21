@@ -4,7 +4,9 @@ import net.electrisoma.visceralib.api.fabric.registration.VisceralDeferredRegist
 import net.electrisoma.visceralib.api.registration.VisceralRegistries;
 
 public class VisceralRegistrySetupImpl {
-    static {VisceralRegistries.setFactory(VisceralDeferredRegisterFabric::new);}
+    static {
+        VisceralRegistries.setFactory(VisceralDeferredRegisterFabric::new);
+    }
 
     public static VisceralRegistries.DeferredRegisterFactory createFactory() {
         return VisceralDeferredRegisterFabric::new;

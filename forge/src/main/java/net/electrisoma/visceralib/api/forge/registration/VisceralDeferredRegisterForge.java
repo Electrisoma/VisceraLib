@@ -29,10 +29,15 @@ public class VisceralDeferredRegisterForge<T> extends VisceralDeferredRegister<T
     }
 
     @Override
-    public VisceralRegistrySupplier<T> register(@NotNull String name, @NotNull Supplier<T> supplier) {
-        RegistryObject<T> registryObject = deferred.register(name, supplier);
-        ResourceKey<T> key = ResourceKey.create(this.registryKey, VisceraLib.path(modId, name));
-        VisceralRegistrySupplier<T> wrapped = new VisceralRegistrySupplier<>(key, registryObject::get);
+    public <I extends T> VisceralRegistrySupplier<I> register(@NotNull String name, @NotNull Supplier<I> supplier) {
+        RegistryObject<I> registryObject = deferred.register(name, supplier);
+
+        ResourceKey<I> key = ResourceKey.create(
+                VisceralDeferredRegister.castKey(registryKey),
+                VisceraLib.path(modId, name)
+        );
+
+        VisceralRegistrySupplier<I> wrapped = new VisceralRegistrySupplier<>(key, registryObject::get);
         entries.put(name, wrapped);
         return wrapped;
     }

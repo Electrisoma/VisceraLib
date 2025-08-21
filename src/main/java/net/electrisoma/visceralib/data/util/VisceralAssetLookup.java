@@ -23,4 +23,10 @@ public class VisceralAssetLookup {
             consumer.accept(item, VisceraLib.path(modId, "block/" + name + suffix));
         };
     }
+
+    public static BiConsumer<Item, String> spawnEggModel(BiConsumer<Item, ResourceLocation> consumer, String modId) {
+        return (item, name) -> {
+            consumer.accept(item, VisceraLib.path("minecraft", "item/template_spawn_egg"));
+        };
+    }
 }

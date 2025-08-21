@@ -7,9 +7,9 @@ import net.electrisoma.visceralib.testreg.particles.TestParticleProvider;
 
 import net.minecraft.core.particles.SimpleParticleType;
 
-public class Particles {
+public class VisceralibParticles {
     public static void init() {
-        VisceraLib.LOGGER.info("Registering Particles for " + VisceraLib.NAME);
+        VisceraLib.LOGGER.info("Registering VisceralibParticles for " + VisceraLib.NAME);
     }
 
     private static final VisceralRegistrar REGISTRAR = VisceraLib.registrar();

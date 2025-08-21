@@ -9,7 +9,7 @@ import net.minecraft.world.level.material.MapColor;
 
 import static net.electrisoma.visceralib.api.registration.helpers.BuilderTransforms.pickaxeOnly;
 
-public class Blocks {
+public class VisceralibBlocks {
     public static void init() {
         VisceraLib.LOGGER.info("Registering Blocks for " + VisceraLib.NAME);
     }

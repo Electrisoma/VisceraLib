@@ -15,26 +15,28 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class VisceralDeferredRegisterFabric<T> extends VisceralDeferredRegister<T> {
-    private final Map<String, VisceralRegistrySupplier<T>> entries = new HashMap<>();
-
     public VisceralDeferredRegisterFabric(String modId, ResourceKey<? extends Registry<T>> registryKey) {
         super(modId, registryKey);
     }
 
     @Override
-    public VisceralRegistrySupplier<T> register(@NotNull String name, @NotNull Supplier<T> supplier) {
+    public <I extends T> VisceralRegistrySupplier<I> register(@NotNull String name, @NotNull Supplier<I> supplier) {
         ResourceLocation id = createId(name);
         Registry<T> registry = getRegistryInstance(registryKey);
 
-        T value = supplier.get();
+        I value = supplier.get();
 
-        Registry.register(registry, id, value);
+        Registry<I> castedRegistry = (Registry<I>) registry;
+        Registry.register(castedRegistry, id, value);
 
-        ResourceKey<T> key = ResourceKey.create(registryKey, id);
-        VisceralRegistrySupplier<T> wrapped = new VisceralRegistrySupplier<>(key, () -> value);
+        ResourceKey<I> key = ResourceKey.create(
+                VisceralDeferredRegister.castKey(registryKey),
+                VisceraLib.path(modId, name)
+        );
+
+        VisceralRegistrySupplier<I> wrapped = new VisceralRegistrySupplier<>(key, () -> value);
 
         entries.put(name, wrapped);
-
         return wrapped;
     }
 

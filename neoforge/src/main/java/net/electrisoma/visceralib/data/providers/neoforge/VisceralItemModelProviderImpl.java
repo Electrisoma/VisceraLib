@@ -1,5 +1,6 @@
 package net.electrisoma.visceralib.data.providers.neoforge;
 
+import net.electrisoma.visceralib.VisceraLib;
 import net.electrisoma.visceralib.data.providers.VisceralItemModelProvider;
 import net.electrisoma.visceralib.data.util.VisceralAssetLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -23,8 +24,13 @@ public class VisceralItemModelProviderImpl extends ItemModelProvider {
         VisceralItemModelProvider.generateItemModels(
                 modId,
                 VisceralAssetLookup.simpleBlockItemModel(this::registerBlockItemModel, modId),
-                VisceralAssetLookup.generatedItemModel(this::registerGeneratedItemModel, modId)
+                VisceralAssetLookup.generatedItemModel(this::registerGeneratedItemModel, modId),
+                VisceralAssetLookup.spawnEggModel(this::registerSpawnEggModel, modId)
         );
+    }
+
+    private void registerSpawnEggModel(Item item, ResourceLocation modelPath) {
+        withExistingParent(itemName(item), mcLoc("item/template_spawn_egg"));
     }
 
     private void registerBlockItemModel(Item item, ResourceLocation modelPath) {
@@ -32,13 +38,17 @@ public class VisceralItemModelProviderImpl extends ItemModelProvider {
     }
 
     private void registerGeneratedItemModel(Item item, ResourceLocation texturePath) {
-        try {
-            ModelFile parentModel = getExistingFile(modLoc(texturePath.getPath() + "/item"));
-            getBuilder(itemName(item)).parent(parentModel);
-        } catch (IllegalStateException e) {
-            getBuilder(itemName(item))
-                    .parent(getExistingFile(mcLoc("item/generated")))
-                    .texture("layer0", modLoc(texturePath.getPath()));
+        if ("minecraft".equals(texturePath.getNamespace()) && "item/template_spawn_egg".equals(texturePath.getPath())) {
+            withExistingParent(itemName(item), VisceraLib.path("minecraft", "item/template_spawn_egg"));
+        } else {
+            try {
+                ModelFile parentModel = getExistingFile(modLoc(texturePath.getPath() + "/item"));
+                getBuilder(itemName(item)).parent(parentModel);
+            } catch (IllegalStateException e) {
+                getBuilder(itemName(item))
+                        .parent(getExistingFile(mcLoc("item/generated")))
+                        .texture("layer0", modLoc(texturePath.getPath()));
+            }
         }
     }
 

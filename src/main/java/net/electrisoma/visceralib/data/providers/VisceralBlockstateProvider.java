@@ -26,13 +26,17 @@ public class VisceralBlockstateProvider {
             String modId,
             BiConsumer<Block, String> simpleBlock,
             BiConsumer<Block, String> fluidBlock) {
-        for (var deferred : VisceralRegistries.getAllForMod(modId))
+        for (var deferred : VisceralRegistries.getAllForMod(modId)) {
             if (deferred.getRegistryKey().equals(Registries.BLOCK)) {
+                @SuppressWarnings("unchecked")
                 VisceralDeferredRegister<Block> blockRegister = (VisceralDeferredRegister<Block>) deferred;
 
-                blockRegister.getEntries().forEach((id, blockSupplier) -> {
+                blockRegister.getEntries().forEach(blockSupplier -> {
                     Block block = blockSupplier.get();
-                    ResourceKey<Block> key = blockSupplier.getKey();
+
+                    @SuppressWarnings("unchecked")
+                    ResourceKey<Block> key = (ResourceKey<Block>) blockSupplier.getKey();
+
                     String blockName = key.location().getPath();
 
                     if (isFluidBlock(block)) {
@@ -42,6 +46,7 @@ public class VisceralBlockstateProvider {
                     }
                 });
             }
+        }
     }
 
     private static boolean isFluidBlock(Block block) {

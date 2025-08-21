@@ -1,5 +1,6 @@
 package net.electrisoma.visceralib.api.neoforge.registration;
 
+import net.electrisoma.visceralib.VisceraLib;
 import net.electrisoma.visceralib.api.registration.VisceralDeferredRegister;
 import net.electrisoma.visceralib.api.registration.VisceralRegistrySupplier;
 import net.minecraft.core.Registry;
@@ -22,7 +23,7 @@ public class VisceralDeferredRegisterNeoForge<T> extends VisceralDeferredRegiste
 
     public VisceralDeferredRegisterNeoForge(String modId, ResourceKey<? extends Registry<T>> registryKey) {
         super(modId, registryKey);
-        this.deferred = DeferredRegister.create(registryKey, modId);
+        this.deferred = DeferredRegister.create(castKey(registryKey), modId);
 
         if (EVENT_BUS != null) {
             this.deferred.register(EVENT_BUS);
@@ -32,10 +33,15 @@ public class VisceralDeferredRegisterNeoForge<T> extends VisceralDeferredRegiste
     }
 
     @Override
-    public VisceralRegistrySupplier<T> register(@NotNull String name, @NotNull Supplier<T> supplier) {
-        DeferredHolder<T, T> holder = deferred.register(name, supplier);
-        ResourceKey<T> key = ResourceKey.create(this.registryKey, ResourceLocation.fromNamespaceAndPath(modId, name));
-        VisceralRegistrySupplier<T> wrapped = new VisceralRegistrySupplier<>(key, holder);
+    public <I extends T> VisceralRegistrySupplier<I> register(String name, Supplier<I> supplier) {
+        DeferredHolder<T, I> holder = deferred.register(name, supplier);
+
+        ResourceKey<I> key = ResourceKey.create(
+                VisceralDeferredRegister.castKey(registryKey),
+                VisceraLib.path(modId, name)
+        );
+
+        VisceralRegistrySupplier<I> wrapped = new VisceralRegistrySupplier<>(key, holder);
         entries.put(name, wrapped);
         return wrapped;
     }

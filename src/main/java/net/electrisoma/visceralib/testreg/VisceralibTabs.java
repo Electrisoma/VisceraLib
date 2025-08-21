@@ -4,11 +4,12 @@ import net.electrisoma.visceralib.VisceraLib;
 import net.electrisoma.visceralib.api.registration.VisceralRegistrar;
 import net.electrisoma.visceralib.api.registration.entry.TabEntry;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public class Tabs {
+public class VisceralibTabs {
     public static void init() {
-        VisceraLib.LOGGER.info("Registering Tabs for " + VisceraLib.NAME);
+        VisceraLib.LOGGER.info("Registering VisceralibTabs for " + VisceraLib.NAME);
     }
 
     private static final VisceralRegistrar REGISTRAR = VisceraLib.registrar();
@@ -16,6 +17,6 @@ public class Tabs {
     public static final TabEntry<CreativeModeTab> BASE = REGISTRAR
             .tab(VisceraLib.MOD_ID)
             .lang(VisceraLib.NAME)
-            .icon(Items.IRON_INGOT)
+            .icon(() -> new ItemStack(VisceralibBlocks.MACHINE_BLOCK.get()))
             .register();
 }

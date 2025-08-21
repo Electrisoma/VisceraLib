@@ -5,6 +5,7 @@ import net.minecraft.resources.ResourceKey;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,11 +17,10 @@ import java.util.function.Supplier;
  */
 public abstract class VisceralDeferredRegister<T> {
     protected final String modId;
+    protected final Map<String, VisceralRegistrySupplier<? extends T>> entries = new HashMap<>();
     protected final ResourceKey<? extends Registry<T>> registryKey;
-    protected final Map<String, VisceralRegistrySupplier<T>> entries = new HashMap<>();
 
-    protected VisceralDeferredRegister(@NotNull String modId,
-                                       @NotNull ResourceKey<? extends Registry<T>> registryKey) {
+    protected VisceralDeferredRegister(String modId, ResourceKey<? extends Registry<T>> registryKey) {
         this.modId = modId;
         this.registryKey = registryKey;
     }
@@ -28,7 +28,7 @@ public abstract class VisceralDeferredRegister<T> {
     /**
      * Factory method to create a deferred register. Mod ID must be provided explicitly.
      */
-    public static <T> VisceralDeferredRegister<T> create(ResourceKey<? extends Registry<T>> registryKey, String modId) {
+    public static <T> VisceralDeferredRegister<T> create(ResourceKey<Registry<T>> registryKey, String modId) {
         return VisceralRegistries.getOrCreate(registryKey, modId);
     }
 
@@ -39,7 +39,7 @@ public abstract class VisceralDeferredRegister<T> {
      * @param supplier supplier of the registered object
      * @return a supplier wrapper around the registered object
      */
-    public abstract VisceralRegistrySupplier<T> register(@NotNull String name, @NotNull Supplier<T> supplier);
+    public abstract <I extends T> VisceralRegistrySupplier<I> register(String name, Supplier<I> supplier);
 
     /**
      * Register this deferred register to the mod event bus (Forge-specific).
@@ -51,11 +51,16 @@ public abstract class VisceralDeferredRegister<T> {
     /**
      * Get an unmodifiable view of all registered entries.
      */
-    public Map<String, VisceralRegistrySupplier<T>> getEntries() {
-        return Collections.unmodifiableMap(entries);
+    public Collection<VisceralRegistrySupplier<? extends T>> getEntries() {
+        return Collections.unmodifiableCollection(entries.values());
     }
     public ResourceKey<? extends Registry<T>> getRegistryKey() {
         return registryKey;
+    }
+
+    public static <R> ResourceKey<R> castKey(ResourceKey<?> key) {
+        //noinspection unchecked
+        return (ResourceKey<R>) key;
     }
 
     public String getModId() {

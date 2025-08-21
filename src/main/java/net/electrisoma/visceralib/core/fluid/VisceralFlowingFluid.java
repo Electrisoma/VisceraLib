@@ -110,7 +110,7 @@ public abstract class VisceralFlowingFluid extends FlowingFluid {
             return false;
         }
         @Override protected void beforeDestroyingBlock(LevelAccessor level, BlockPos pos, BlockState state) {
-            // Your logic here
+            // idk
         }
         @Override protected int getSlopeFindDistance(LevelReader level) {
             return 4;

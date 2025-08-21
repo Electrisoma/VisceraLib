@@ -47,7 +47,6 @@ public abstract class AbstractBuilder<T, R extends AbstractVisceralRegistrar<R>,
         return self();
     }
 
-    @SuppressWarnings("unchecked")
     public S transform(Function<S, S> fn) {
         return fn.apply(self());
     }

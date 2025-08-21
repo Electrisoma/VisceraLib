@@ -74,9 +74,9 @@ public class BlockBuilder<T extends Block, R extends AbstractVisceralRegistrar<R
 
     public BlockBuilder<T, R> initialProperties(Block base) {
         //? if = 1.21.1
-        this.properties = BlockBehaviour.Properties.ofFullCopy(base);
+        /*this.properties = BlockBehaviour.Properties.ofFullCopy(base);*/
         //? if < 1.21.1
-        /*this.properties = BlockBehaviour.Properties.copy(base);*/
+        this.properties = BlockBehaviour.Properties.copy(base);
 
         return this;
     }

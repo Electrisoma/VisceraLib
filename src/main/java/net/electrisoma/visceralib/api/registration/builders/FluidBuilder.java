@@ -24,6 +24,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
@@ -32,6 +33,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unused")
 public class FluidBuilder<R extends AbstractVisceralRegistrar<R>> implements
         TaggableBuilder<Fluid>, ICreativeTabOutputs {
 
@@ -146,7 +148,7 @@ public class FluidBuilder<R extends AbstractVisceralRegistrar<R>> implements
 
     public FluidBuilder<R> withBlock(Consumer<BlockBuilder<VisceralLiquidBlock, R>> blockSetup) {
         this.registerBlock = true;
-        this.blockBuilder = new BlockBuilder<>(registrar, name, props -> new VisceralLiquidBlock(() -> stillFluidSupplier.get(), props));
+        this.blockBuilder = new BlockBuilder<>(registrar, name, props -> null);
         blockSetup.accept(this.blockBuilder);
         return this;
     }
@@ -218,7 +220,9 @@ public class FluidBuilder<R extends AbstractVisceralRegistrar<R>> implements
         fluidRegister.register("flowing_" + name, flowingFluidSupplier::get);
 
         if (registerBlock && blockBuilder != null) {
-            blockBuilder.blockSupplier(() -> new VisceralLiquidBlock(() -> stillFluidSupplier.get(), blockBuilder.getProperties()));
+            blockBuilder.blockSupplier(() ->
+                    new VisceralLiquidBlock(stillFluidSupplier.get(), blockBuilder.getProperties())
+            );
             blockBuilder.register();
         }
 

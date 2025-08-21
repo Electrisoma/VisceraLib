@@ -24,7 +24,9 @@ public class VisceralItemModelProviderImpl {
                     (item, name) -> ThrowingBiConsumer.unchecked(this::writeBlockModelJson)
                             .accept(item, VisceraLib.path(modId, name)),
                     (item, name) -> ThrowingBiConsumer.unchecked(this::writeGeneratedModelJson)
-                            .accept(item, VisceraLib.path(modId, name))
+                            .accept(item, VisceraLib.path(modId, name)),
+                    (item, name) -> ThrowingBiConsumer.unchecked(this::writeSpawnEggModelJson)
+                            .accept(item, VisceraLib.path("minecraft", "item/template_spawn_egg"))
             );
         }
 
@@ -33,8 +35,13 @@ public class VisceralItemModelProviderImpl {
         }
 
         private void writeGeneratedModelJson(Item item, ResourceLocation texturePath) throws IOException {
-            var model = new ModelJson("item/generated", texturePath.toString());
+            ModelJson model = new ModelJson("item/generated", texturePath.toString());
             writeJson(model, "models/item/" + texturePath.getPath() + ".json");
+        }
+
+        private void writeSpawnEggModelJson(Item item, ResourceLocation modelPath) throws IOException {
+            ModelJson model = new ModelJson("item/template_spawn_egg");
+            writeJson(model, "models/item/template_spawn_egg.json");
         }
 
         private void writeJson(Object data, String path) throws IOException {
