@@ -2,20 +2,15 @@ package net.electrisoma.visceralib.neoforge;
 
 import net.electrisoma.visceralib.VisceraLib;
 
-import net.electrisoma.visceralib.api.neoforge.registration.VisceralBootstrapNeoForge;
-import net.electrisoma.visceralib.api.neoforge.registration.VisceralDeferredRegisterNeoForge;
-import net.electrisoma.visceralib.api.registration.VisceralDeferredRegister;
-import net.electrisoma.visceralib.api.registration.VisceralRegistrar;
-import net.electrisoma.visceralib.api.registration.VisceralRegistries;
-import net.electrisoma.visceralib.api.registration.VisceralRegistrySupplier;
-import net.electrisoma.visceralib.api.registration.builders.BlockBuilder;
-import net.electrisoma.visceralib.api.registration.builders.TabBuilder;
+import net.electrisoma.visceralib.api.registration.*;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModLoadingContext;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.registries.RegisterEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.EventBusSubscriber.Bus;
 
 @Mod(VisceraLib.MOD_ID)
 public class VisceraLibImpl {
@@ -27,15 +22,17 @@ public class VisceraLibImpl {
 		neoforgeBus = NeoForge.EVENT_BUS;
 
 		VisceraLib.init();
-		//VisceralBootstrapNeoForge.init(eventBus);
 	}
 
-	@SubscribeEvent
-	public void onCommonSetup(FMLCommonSetupEvent event) {
-		for (BlockBuilder<?, ?> builder : BlockBuilder.getAllBuilders())
-			builder.getRegisteredSupplier().ifPresent(VisceralRegistrySupplier::notifyListeners);
+	@EventBusSubscriber(bus = Bus.MOD)
+	public static class ModBusEvents {
 
-//		for (TabBuilder builder : TabBuilder.getAllBuilders())
-//			builder.getTabEntry().ifPresent(tabEntry -> tabEntry.get().ifPresent(VisceralRegistrySupplier::notifyListeners));
+		@SubscribeEvent
+		public static void onRegister(RegisterEvent event) {
+			var registrations = VisceralRegistry.REGISTRATIONS_VIEW.get(event.getRegistry());
+			for (Registration<?, ?> registration : registrations) {
+				registration.register();
+			}
+		}
 	}
 }

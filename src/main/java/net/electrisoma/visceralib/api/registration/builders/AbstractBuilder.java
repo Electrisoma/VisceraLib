@@ -1,74 +1,40 @@
 package net.electrisoma.visceralib.api.registration.builders;
 
-import net.electrisoma.visceralib.api.registration.AbstractVisceralRegistrar;
-
-import net.electrisoma.visceralib.api.registration.VisceralRegistrySupplier;
+import net.electrisoma.visceralib.api.registration.VisceralRegistry;
+import net.electrisoma.visceralib.api.registration.Registration;
+import net.electrisoma.visceralib.multiloader.PlatformInfo;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderOwner;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.resources.ResourceLocation;
 
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
+public abstract class AbstractBuilder<R, T extends R, H extends Holder.Reference<T>> {
+    private final VisceralRegistry owner;
+    private final ResourceLocation id;
+    private final Registry<R> registry;
 
-public abstract class AbstractBuilder<T, R extends AbstractVisceralRegistrar<R>, S extends AbstractBuilder<T, R, S>> {
-    protected final R registrar;
-    protected final String name;
-    protected String langName;
-
-    protected final Set<Supplier<ResourceKey<CreativeModeTab>>> creativeTabs = new HashSet<>();
-    protected final List<Consumer<T>> postRegisterTasks = new ArrayList<>();
-
-    public abstract Optional<VisceralRegistrySupplier<T>> getRegisteredSupplier();
-
-    protected AbstractBuilder(R registrar, String name) {
-        this.registrar = Objects.requireNonNull(registrar);
-        this.name = Objects.requireNonNull(name);
+    public AbstractBuilder(VisceralRegistry owner, String name, Registry<R> registry) {
+        this.owner = owner;
+        this.id = ResourceLocation.fromNamespaceAndPath(owner.modId, name);
+        this.registry = registry;
     }
 
-    public S lang(String langName) {
-        this.langName = langName;
-        return self();
-    }
+    abstract T build();
 
-    public S tab(Supplier<ResourceKey<CreativeModeTab>> tabKeySupplier) {
-        creativeTabs.add(tabKeySupplier);
-        return self();
-    }
+    abstract H getHolder(HolderOwner<R> owner, ResourceKey<R> key);
 
-    public S tab(Holder.Reference<CreativeModeTab> tabHolder) {
-        return tab(tabHolder::key);
-    }
+    public H register() {
+        ResourceKey<R> key = ResourceKey.create(registry.key(), id);
+        H holder = getHolder(registry.holderOwner(), key);
+        Registration<R, T> registration = new Registration<>(id, registry, this::build, holder);
 
-    public S onRegister(Consumer<T> consumer) {
-        postRegisterTasks.add(consumer);
-        return self();
-    }
+        if (PlatformInfo.FABRIC.isCurrent()) {
+            registration.register();
+        } else {
+            VisceralRegistry.addToRegistrationMap(registry, registration);
+        }
 
-    public S transform(Function<S, S> fn) {
-        return fn.apply(self());
-    }
-
-    public Optional<String> getLangEntry() {
-        return Optional.ofNullable(langName);
-    }
-
-    public Set<ResourceKey<CreativeModeTab>> getTabs() {
-        return creativeTabs.stream().map(Supplier::get).collect(Collectors.toUnmodifiableSet());
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public R getRegistrar() {
-        return registrar;
-    }
-
-    @SuppressWarnings("unchecked")
-    protected S self() {
-        return (S) this;
+        return holder;
     }
 }
