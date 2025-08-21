@@ -22,9 +22,9 @@ val minecraft = stonecutter.current.version
 val ci = localProperties.getProperty("ci", "")?.toBoolean() ?: false
 val release = localProperties.getProperty("release", "")?.toBoolean() ?: false
 val nightly = ci && !release
-val buildNumber = mod.build.toInt()
+val buildNumber = mod.build
 
-version = "${mod.version}${if (release) "" else "-dev"}+mc.${minecraft}-common${if (nightly) "-build.${buildNumber}"+"b" else ""}"
+version = "${mod.version}${if (release) "" else "-dev"}+mc.${minecraft}-common${if (nightly) "-build.${buildNumber}" else ""}"
 group = "${group}.common"
 base.archivesName.set(mod.id)
 
