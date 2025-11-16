@@ -46,17 +46,12 @@ subprojects {
         repositories {
             maven {
                 name = "GitHubPackages"
-                url = uri("https://maven.pkg.github.com/electrisoma/ElectrisomaMaven")
+                url = uri("https://maven.pkg.github.com/electrisoma/VisceraLib")
                 credentials {
                     username = System.getenv("GITHUB_USERNAME") ?: localProperties.getProperty("mavenUsername", "")
                     password = System.getenv("GITHUB_TOKEN") ?: localProperties.getProperty("mavenToken", "")
                 }
             }
-//            maven {
-//                name = "realRobotixMaven"
-//                url = uri("https://maven.realrobotix.me/createbigcannons")
-//                credentials(PasswordCredentials::class)
-//            }
             mavenLocal()
         }
     }
