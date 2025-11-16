@@ -31,6 +31,6 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: build/ElectrisomaMaven
+          publish_dir: build/VisceraLib
           publish_branch: gh-pages
           keep_files: true
