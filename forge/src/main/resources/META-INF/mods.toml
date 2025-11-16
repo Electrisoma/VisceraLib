@@ -10,3 +10,9 @@ authors="${authors}"
 version="${version}"
 logoFile="icon.png"
 logoBlur=false
+
+[[mixins]]
+config = "visceralib-common.mixins.json"
+
+[[mixins]]
+config = "visceralib-forge.mixins.json"

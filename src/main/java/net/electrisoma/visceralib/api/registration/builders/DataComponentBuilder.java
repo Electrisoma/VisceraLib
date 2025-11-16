@@ -1,7 +1,7 @@
 package net.electrisoma.visceralib.api.registration.builders;
 
 /*? >=1.21.1 {*/
-/*import com.mojang.serialization.Codec;
+import com.mojang.serialization.Codec;
 import net.electrisoma.visceralib.api.registration.AbstractVisceralRegistrar;
 import net.electrisoma.visceralib.api.registration.VisceralDeferredRegister;
 import net.electrisoma.visceralib.api.registration.VisceralRegistrySupplier;
@@ -69,4 +69,4 @@ public class DataComponentBuilder<T, R extends AbstractVisceralRegistrar<R>>
         return Optional.ofNullable(registeredSupplier);
     }
 }
-*//*?}*/
+/*?}*/

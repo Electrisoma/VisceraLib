@@ -1,5 +1,6 @@
 package net.electrisoma.visceralib.api.registration.builders;
 
+import net.electrisoma.visceralib.api.registration.entry.TabEntry;
 import net.electrisoma.visceralib.api.registration.helpers.CreativeTabBuilderRegistry;
 import net.electrisoma.visceralib.api.registration.entry.ItemEntry;
 import net.electrisoma.visceralib.api.registration.VisceralRegistrySupplier;
@@ -8,10 +9,12 @@ import net.electrisoma.visceralib.api.registration.AbstractVisceralRegistrar;
 
 import net.electrisoma.visceralib.api.registration.helpers.ICreativeTabOutputs;
 import net.electrisoma.visceralib.data.providers.VisceralLangProvider;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -38,6 +41,7 @@ public class ItemBuilder<T extends Item, R extends AbstractVisceralRegistrar<R>>
     private VisceralRegistrySupplier<T> registeredSupplier;
     private final List<TagKey<Item>> tags = new ArrayList<>();
     private Supplier<Supplier<? extends ItemRenderer>> customRendererFactory;
+    private ResourceLocation customParentModel;
 
     private Integer burnTime;
     private Float compostChance;
@@ -69,10 +73,21 @@ public class ItemBuilder<T extends Item, R extends AbstractVisceralRegistrar<R>>
         return self();
     }
 
+    public ItemBuilder<T, R> model(ResourceLocation parent) {
+        this.customParentModel = parent;
+        return self();
+    }
+
     @SuppressWarnings("unchecked")
     public ItemEntry<T> register() {
-        if (creativeTabs.isEmpty())
-            registrar.getDefaultTabEntry().ifPresent(entry -> creativeTabs.add(entry::getKey));
+        if (isNoTab())
+            creativeTabs.clear();
+        else if (creativeTabs.isEmpty()) {
+            Optional<TabEntry<CreativeModeTab>> maybeTab = AbstractVisceralRegistrar.getThreadTab();
+            if (maybeTab.isPresent())
+                creativeTabs.add(maybeTab.get()::getKey);
+            else registrar.getDefaultTabEntry().ifPresent(entry -> creativeTabs.add(entry::getKey));
+        }
 
         VisceralRegistrySupplier<Item> raw =
                 register.register(name, () -> constructor.apply(properties));
@@ -133,6 +148,10 @@ public class ItemBuilder<T extends Item, R extends AbstractVisceralRegistrar<R>>
 
     public static List<ItemBuilder<?, ?>> getAllBuilders() {
         return Collections.unmodifiableList(ALL_BUILDERS);
+    }
+
+    public Optional<ResourceLocation> getCustomParentModel() {
+        return Optional.ofNullable(customParentModel);
     }
 
     public static void provideLang(VisceralLangProvider provider) {

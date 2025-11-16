@@ -1,6 +1,7 @@
 package net.electrisoma.visceralib.data.providers.fabric;
 
 import net.electrisoma.visceralib.VisceraLib;
+import net.electrisoma.visceralib.api.registration.builders.ItemBuilder;
 import net.electrisoma.visceralib.data.providers.VisceralItemModelProvider;
 import net.electrisoma.visceralib.data.util.ThrowingBiConsumer;
 
@@ -11,6 +12,8 @@ import net.minecraft.world.item.Item;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 public class VisceralItemModelProviderImpl {
     public static void registerStatesAndModels(String modId, PackOutput output) {
@@ -31,10 +34,37 @@ public class VisceralItemModelProviderImpl {
         }
 
         private void writeBlockModelJson(Item item, ResourceLocation modelPath) throws IOException {
-            writeJson(new ModelJson("block/" + modelPath.getPath()), "models/item/" + modelPath.getPath() + ".json");
+            Optional<ResourceLocation> customParent = VisceralItemModelProvider.getCustomParentModel(modId, item);
+            if (customParent.isPresent()) {
+                ResourceLocation parentLoc = customParent.get();
+                writeJson(new ModelJson(parentLoc.toString()), "models/item/" + modelPath.getPath() + ".json");
+                return;
+            }
+
+            String basePath = modelPath.getPath();
+            String itemModelPath = "models/block/" + basePath + "/item.json";
+            String fallbackParent = "block/" + basePath;
+
+            Path itemModelFile = output.getOutputFolder().resolve(itemModelPath);
+
+            String parent;
+            if (Files.exists(itemModelFile)) {
+                parent = fallbackParent + "/item";
+            } else {
+                parent = fallbackParent;
+            }
+
+            writeJson(new ModelJson(parent), "models/item/" + basePath + ".json");
         }
 
         private void writeGeneratedModelJson(Item item, ResourceLocation texturePath) throws IOException {
+            Optional<ResourceLocation> customParent = VisceralItemModelProvider.getCustomParentModel(modId, item);
+            if (customParent.isPresent()) {
+                ResourceLocation parentLoc = customParent.get();
+                writeJson(new ModelJson(parentLoc.toString()), "models/item/" + texturePath.getPath() + ".json");
+                return;
+            }
+
             ModelJson model = new ModelJson("item/generated", texturePath.toString());
             writeJson(model, "models/item/" + texturePath.getPath() + ".json");
         }

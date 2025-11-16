@@ -10,7 +10,7 @@ plugins {
     id("dev.ithundxr.silk") version "0.11.+"
 }
 
-stonecutter active "1.20.1" /* [SC] DO NOT EDIT */
+stonecutter active "1.21.1" /* [SC] DO NOT EDIT */
 
 val localProperties = Properties()
 val localPropertiesFile = rootProject.file("local.properties")

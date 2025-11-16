@@ -27,15 +27,11 @@ public class VisceraLibImpl {
 		neoforgeBus = NeoForge.EVENT_BUS;
 
 		VisceraLib.init();
-		//VisceralBootstrapNeoForge.init(eventBus);
 	}
 
 	@SubscribeEvent
 	public void onCommonSetup(FMLCommonSetupEvent event) {
 		for (BlockBuilder<?, ?> builder : BlockBuilder.getAllBuilders())
 			builder.getRegisteredSupplier().ifPresent(VisceralRegistrySupplier::notifyListeners);
-
-//		for (TabBuilder builder : TabBuilder.getAllBuilders())
-//			builder.getTabEntry().ifPresent(tabEntry -> tabEntry.get().ifPresent(VisceralRegistrySupplier::notifyListeners));
 	}
 }

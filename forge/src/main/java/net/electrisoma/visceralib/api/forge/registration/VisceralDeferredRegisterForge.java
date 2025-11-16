@@ -37,7 +37,7 @@ public class VisceralDeferredRegisterForge<T> extends VisceralDeferredRegister<T
                 VisceraLib.path(modId, name)
         );
 
-        VisceralRegistrySupplier<I> wrapped = new VisceralRegistrySupplier<>(key, registryObject::get);
+        VisceralRegistrySupplier<I> wrapped = new VisceralRegistrySupplier<>(key, registryObject);
         entries.put(name, wrapped);
         return wrapped;
     }

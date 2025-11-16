@@ -19,6 +19,7 @@ public class VisceralBlockstateProviderImpl {
         protected void registerStatesAndModels() {
             VisceralBlockstateProvider.generateBlockStates(
                     modId,
+                    this,
                     (block, name) -> simpleBlock(block),
                     (block, name) -> {
                         BlockModelBuilder model = models().getBuilder(name)

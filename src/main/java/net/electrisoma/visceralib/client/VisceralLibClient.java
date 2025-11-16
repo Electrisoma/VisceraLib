@@ -1,8 +1,9 @@
 package net.electrisoma.visceralib.client;
 
-import net.electrisoma.visceralib.annotations.Env;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
-@Env(Env.EnvType.CLIENT)
+@Environment(EnvType.CLIENT)
 public class VisceralLibClient {
     public static void init() {
 

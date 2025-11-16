@@ -73,6 +73,15 @@ java {
     sourceCompatibility = java
 }
 
+tasks.processResources {
+    val java = if (stonecutter.eval(minecraft, ">=1.20.5"))
+        "JAVA_21" else "JAVA_17"
+
+    properties(listOf("visceralib-common.mixins.json"),
+        "compatibilityLevel" to java
+    )
+}
+
 tasks.register("${mod.id}Publish") {
     when (val platform = System.getenv("PLATFORM")) {
         "all" -> {

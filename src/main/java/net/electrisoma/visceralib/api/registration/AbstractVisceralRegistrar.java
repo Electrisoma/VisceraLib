@@ -1,13 +1,16 @@
 package net.electrisoma.visceralib.api.registration;
 
 import com.mojang.serialization.Codec;
+import net.electrisoma.visceralib.VisceraLib;
 import net.electrisoma.visceralib.api.registration.builders.*;
 import net.electrisoma.visceralib.api.registration.entry.TabEntry;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -18,14 +21,16 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 /*? >=1.21.1 {*/
-/*import net.minecraft.network.codec.StreamCodec;
-*//*?}*/
+import net.minecraft.network.codec.StreamCodec;
+/*?}*/
 
 public abstract class AbstractVisceralRegistrar<T extends AbstractVisceralRegistrar<T>> {
     protected final String modId;
@@ -54,10 +59,26 @@ public abstract class AbstractVisceralRegistrar<T extends AbstractVisceralRegist
     }
 
     public Optional<TabEntry<CreativeModeTab>> getDefaultTabEntry() {
-        if (defaultTabEntrySupplier != null) {
+        if (defaultTabEntrySupplier != null)
             return Optional.ofNullable(defaultTabEntrySupplier.get());
-        }
         return Optional.ofNullable(defaultTabEntry);
+    }
+
+    private static final ThreadLocal<TabEntry<CreativeModeTab>> THREAD_TAB = new ThreadLocal<>();
+
+    public T setCreativeTab(TabEntry<CreativeModeTab> tab) {
+        THREAD_TAB.set(tab);
+        return self();
+    }
+
+    public static Optional<TabEntry<CreativeModeTab>> getThreadTab() {
+        return Optional.ofNullable(THREAD_TAB.get());
+    }
+
+    public static Optional<TabEntry<CreativeModeTab>> consumeThreadTab() {
+        TabEntry<CreativeModeTab> tab = THREAD_TAB.get();
+        THREAD_TAB.remove();
+        return Optional.ofNullable(tab);
     }
 
     public <I extends Item> ItemBuilder<I, T> item(
@@ -82,21 +103,22 @@ public abstract class AbstractVisceralRegistrar<T extends AbstractVisceralRegist
     public <E extends Entity> EntityBuilder<E, T> entity(
             String name,
             EntityType.EntityFactory<E> factory,
-            MobCategory category
-    ) {
+            MobCategory category) {
         EntityType.Builder<E> builder = EntityType.Builder.of(factory, category);
         return new EntityBuilder<>(self(), name, builder);
     }
 
-
     public <B extends BlockEntity> BlockEntityBuilder<B, T> blockEntity(
-            String name, BlockEntityType.BlockEntitySupplier<B> constructor) {
-        return new BlockEntityBuilder<>(self(), name, constructor);
+            String name, BlockEntityType.BlockEntitySupplier<? extends B> constructor) {
+        @SuppressWarnings("unchecked")
+        BlockEntityType.BlockEntitySupplier<B> safeConstructor = (BlockEntityType.BlockEntitySupplier<B>) constructor;
+        return new BlockEntityBuilder<>(self(), name, safeConstructor);
     }
 
-    public FluidBuilder<T> fluid(String name) {
-        return new FluidBuilder<>(self(), name);
-    }
+//    public <B extends BlockEntity> BlockEntityBuilder<B, T> blockEntity(
+//            String name, BlockEntityType.BlockEntitySupplier<B> constructor) {
+//        return new BlockEntityBuilder<>(self(), name, constructor);
+//    }
 
     public <P extends ParticleType<?>> ParticleBuilder<P, T> particle(
             String name, Supplier<P> supplier) {
@@ -108,16 +130,20 @@ public abstract class AbstractVisceralRegistrar<T extends AbstractVisceralRegist
     }
 
     /*? >=1.21.1 {*/
-    /*public <D> DataComponentBuilder<D, T> dataComponent(String name, Codec<D> codec) {
+    public <D> DataComponentBuilder<D, T> dataComponent(String name, Codec<D> codec) {
         return new DataComponentBuilder<>(self(), name, codec);
     }
     public <D> DataComponentBuilder<D, T> dataComponent(String name, Codec<D> codec, StreamCodec<? super FriendlyByteBuf, D> streamCodec) {
         return new DataComponentBuilder<>(self(), name, codec, streamCodec);
     }
-    *//*?}*/
+    /*?}*/
 
     public String getModId() {
         return modId;
+    }
+
+    public ResourceLocation mcLoc(String path) {
+        return VisceraLib.path("minecraft", path);
     }
 
     @SuppressWarnings("unchecked")

@@ -27,13 +27,24 @@ public class SoundEventBuilder<R extends AbstractVisceralRegistrar<R>>
     private final List<ConfiguredSoundEvent> wrappedEvents = new ArrayList<>();
     public record ConfiguredSoundEvent(SoundEvent event, float volume, float pitch) {}
     private final List<SoundVariant> variants = new ArrayList<>();
-    public record SoundVariant(ResourceLocation path, SoundType type) {}
+    public record SoundVariant(
+            ResourceLocation path,
+            SoundType type,
+            Float volume,
+            Float pitch,
+            Integer weight,
+            Boolean stream,
+            Integer attenuationDistance,
+            Boolean preload
+    ) {}
 
     private final VisceralDeferredRegister<SoundEvent> register;
     private VisceralRegistrySupplier<SoundEvent> registeredSupplier;
 
     private String subtitle;
     public String soundPath;
+    private SoundSource category;
+    private Integer attenuationDistance;
 
     public SoundEventBuilder(R registrar, String name) {
         super(registrar, name);
@@ -42,16 +53,39 @@ public class SoundEventBuilder<R extends AbstractVisceralRegistrar<R>>
     }
 
     public SoundEventBuilder<R> attenuationDistance(int distance) {
+        this.attenuationDistance = distance;
         return self();
     }
 
     public SoundEventBuilder<R> addVariant(String path) {
-        return addVariant(path, SoundType.FILE);
+        return addVariant(path, SoundType.FILE, null, null, null, null, null, null);
     }
 
     public SoundEventBuilder<R> addVariant(String path, SoundType type) {
-        variants.add(new SoundVariant(VisceraLib.path(registrar.getModId(), path), type));
+        return addVariant(path, type, null, null, null, null, null, null);
+    }
+
+    public SoundEventBuilder<R> addVariant(String path,
+                                           SoundType type,
+                                           Float volume,
+                                           Float pitch,
+                                           Integer weight,
+                                           Boolean stream,
+                                           Integer attenuationDistance,
+                                           Boolean preload) {
+        variants.add(new SoundVariant(VisceraLib.path(registrar.getModId(), path), type, volume, pitch, weight, stream, attenuationDistance, preload));
         return self();
+    }
+
+    public SoundEventBuilder<R> addVariantWithAttenuation(String path, int distance) {
+        return addVariant(path, SoundType.FILE, null, null, null, null, distance, null);
+    }
+    public SoundEventBuilder<R> addWeightedVariant(String path, int weight) {
+        return addVariant(path, SoundType.FILE, null, null, weight, null, null, null);
+    }
+
+    public SoundEventBuilder<R> addVariantWithVolume(String path, float volume) {
+        return addVariant(path, SoundType.FILE, volume, null, null, null, null, null);
     }
 
     public SoundEventBuilder<R> playExisting(SoundEvent event, float volume, float pitch) {
@@ -60,6 +94,7 @@ public class SoundEventBuilder<R extends AbstractVisceralRegistrar<R>>
     }
 
     public SoundEventBuilder<R> category(SoundSource source) {
+        this.category = source;
         return self();
     }
 
@@ -76,7 +111,9 @@ public class SoundEventBuilder<R extends AbstractVisceralRegistrar<R>>
     public SoundEntry register() {
         ResourceLocation id = VisceraLib.path(registrar.getModId(), name);
 
-        VisceralRegistrySupplier<SoundEvent> raw = register.register(name, () -> SoundEvent.createVariableRangeEvent(id));
+        VisceralRegistrySupplier<SoundEvent> raw = register.register(name, () ->
+                SoundEvent.createVariableRangeEvent(id)
+        );
 
         VisceralRegistrySupplier<SoundEvent> typed = new VisceralRegistrySupplier<>(
                 raw.getKey(), raw::get
@@ -105,6 +142,12 @@ public class SoundEventBuilder<R extends AbstractVisceralRegistrar<R>>
     }
     public List<ConfiguredSoundEvent> getWrappedEvents() {
         return Collections.unmodifiableList(wrappedEvents);
+    }
+    public Optional<SoundSource> getCategory() {
+        return Optional.ofNullable(category);
+    }
+    public Optional<Integer> getAttenuationDistance() {
+        return Optional.ofNullable(attenuationDistance);
     }
 
     public static void provideLang(VisceralLangProvider provider) {

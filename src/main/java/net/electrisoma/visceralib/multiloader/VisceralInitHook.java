@@ -3,9 +3,7 @@ package net.electrisoma.visceralib.multiloader;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 
 public class VisceralInitHook {
-    static {
-        bootstrap();
-    }
+    static { bootstrap(); }
 
     @ExpectPlatform
     public static void bootstrap() {

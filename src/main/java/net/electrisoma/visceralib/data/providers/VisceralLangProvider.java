@@ -1,9 +1,8 @@
 package net.electrisoma.visceralib.data.providers;
 
 import com.google.gson.JsonObject;
-import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.electrisoma.visceralib.VisceraLib;
 import net.electrisoma.visceralib.api.registration.builders.AbstractBuilder;
-import net.electrisoma.visceralib.api.registration.helpers.LangContributor;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
@@ -34,16 +33,9 @@ public class VisceralLangProvider implements DataProvider {
 
     private final VisceralLangProvider upsideDownLang;
 
-    private static final List<LangContributor> CONTRIBUTORS = new ArrayList<>();
-
-    public static void registerLangContributor(LangContributor contributor) {
-        CONTRIBUTORS.add(contributor);
-    }
-
     public VisceralLangProvider(PackOutput output, String modid, String locale) {
         this(output, modid, locale, "en_us".equals(locale));
     }
-
     private VisceralLangProvider(PackOutput output, String modid, String locale, boolean createUpsideDown) {
         this.output = output;
         this.modid = modid;
@@ -70,7 +62,7 @@ public class VisceralLangProvider implements DataProvider {
 
     public void add(@NotNull String key, @NotNull String value) {
         if (!addedKeys.add(key)) {
-            System.err.println("Duplicate lang key detected (ignored): " + key);
+            VisceraLib.LOGGER.info("Duplicate lang key detected (ignored): {}", key);
             return;
         }
         entries.put(key, value);
@@ -82,7 +74,6 @@ public class VisceralLangProvider implements DataProvider {
     public void addBlock(Supplier<? extends Block> block) {
         addBlock(block.get(), autoName(block.get()));
     }
-
     public void addBlock(Block block, @NotNull String name) {
         add(block.getDescriptionId(), name);
     }
@@ -91,7 +82,6 @@ public class VisceralLangProvider implements DataProvider {
         addBlock(block);
         addTooltip(block, tooltip);
     }
-
     public void addBlockWithTooltip(Supplier<? extends Block> block, String name, String tooltip) {
         addBlock(block.get(), name);
         addTooltip(block, tooltip);
@@ -100,7 +90,6 @@ public class VisceralLangProvider implements DataProvider {
     public void addItem(Supplier<? extends Item> item) {
         addItem(item.get(), autoName(item.get()));
     }
-
     public void addItem(Item item, @NotNull String name) {
         add(item.getDescriptionId(), name);
     }
@@ -109,7 +98,6 @@ public class VisceralLangProvider implements DataProvider {
         addItem(item);
         addTooltip(item, tooltip);
     }
-
     public void addItemWithTooltip(Supplier<? extends Item> item, String name, String tooltip) {
         addItem(item.get(), name);
         addTooltip(item, tooltip);
@@ -118,17 +106,14 @@ public class VisceralLangProvider implements DataProvider {
     public void addTooltip(Supplier<? extends ItemLike> item, String tooltip) {
         add(item.get().asItem().getDescriptionId() + ".desc", tooltip);
     }
-
     public void addTooltip(Supplier<? extends ItemLike> item, List<String> lines) {
-        for (int i = 0; i < lines.size(); i++) {
+        for (int i = 0; i < lines.size(); i++)
             add(item.get().asItem().getDescriptionId() + ".desc." + i, lines.get(i));
-        }
     }
 
     public void addEntity(Supplier<? extends EntityType<?>> entity) {
         addEntity(entity.get(), autoName(entity.get()));
     }
-
     public void addEntity(EntityType<?> entity, @NotNull String name) {
         add(entity.getDescriptionId(), name);
     }
@@ -136,7 +121,6 @@ public class VisceralLangProvider implements DataProvider {
     public void addEnchantment(Supplier<? extends Enchantment> ench) {
         addEnchantment(ench.get(), autoName(ench.get()));
     }
-
     public void addEnchantment(Enchantment ench, @NotNull String name) {
         ResourceLocation key = Registries.ENCHANTMENT.registry();
         add("enchantment." + key.getNamespace() + "." + key.getPath(), name);
@@ -145,7 +129,6 @@ public class VisceralLangProvider implements DataProvider {
     public void addEffect(Supplier<? extends MobEffect> effect) {
         addEffect(effect.get(), autoName(effect.get()));
     }
-
     public void addEffect(MobEffect effect, @NotNull String name) {
         add(effect.getDescriptionId(), name);
     }
@@ -153,20 +136,16 @@ public class VisceralLangProvider implements DataProvider {
     private String autoName(Item item) {
         return toEnglishName(BuiltInRegistries.ITEM.getKey(item).getPath());
     }
-
     private String autoName(Block block) {
         return toEnglishName(BuiltInRegistries.BLOCK.getKey(block).getPath());
     }
-
     private String autoName(EntityType<?> entity) {
         return toEnglishName(BuiltInRegistries.ENTITY_TYPE.getKey(entity).getPath());
     }
-
     private String autoName(Enchantment ench) {
         ResourceLocation key = Registries.ENCHANTMENT.registry();
         return toEnglishName(key.getPath());
     }
-
     private String autoName(MobEffect effect) {
         return toEnglishName(Objects.requireNonNull(BuiltInRegistries.MOB_EFFECT.getKey(effect)).getPath());
     }
@@ -176,7 +155,6 @@ public class VisceralLangProvider implements DataProvider {
                 .map(s -> s.substring(0, 1).toUpperCase(Locale.ROOT) + s.substring(1))
                 .collect(Collectors.joining(" "));
     }
-
     private String toUpsideDown(String str) {
         StringBuilder result = new StringBuilder(str.length());
         for (int i = str.length() - 1; i >= 0; i--) {
@@ -219,12 +197,8 @@ public class VisceralLangProvider implements DataProvider {
 
     @Override
     public CompletableFuture<?> run(CachedOutput cache) {
-        System.out.println("[VisceralLangProvider] run() called for locale " + locale + ", entries count: " + entries.size());
+        VisceraLib.LOGGER.info("[VisceralLangProvider] run() called for locale {}, entries count: {}", locale, entries.size());
         CompletableFuture<?> mainSave = saveLang(modid, locale, entries, output, cache);
-
-        for (LangContributor contributor : CONTRIBUTORS) {
-            contributor.contributeToLang(this);
-        }
 
         if (upsideDownLang == null) {
             return mainSave;

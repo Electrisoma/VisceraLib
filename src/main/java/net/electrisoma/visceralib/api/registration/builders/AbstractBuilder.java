@@ -17,6 +17,7 @@ public abstract class AbstractBuilder<T, R extends AbstractVisceralRegistrar<R>,
     protected final R registrar;
     protected final String name;
     protected String langName;
+    private boolean noTab = false;
 
     protected final Set<Supplier<ResourceKey<CreativeModeTab>>> creativeTabs = new HashSet<>();
     protected final List<Consumer<T>> postRegisterTasks = new ArrayList<>();
@@ -37,9 +38,14 @@ public abstract class AbstractBuilder<T, R extends AbstractVisceralRegistrar<R>,
         creativeTabs.add(tabKeySupplier);
         return self();
     }
-
     public S tab(Holder.Reference<CreativeModeTab> tabHolder) {
         return tab(tabHolder::key);
+    }
+
+    public S noTab() {
+        this.noTab = true;
+        this.creativeTabs.clear();
+        return self();
     }
 
     public S onRegister(Consumer<T> consumer) {
@@ -57,6 +63,9 @@ public abstract class AbstractBuilder<T, R extends AbstractVisceralRegistrar<R>,
 
     public Set<ResourceKey<CreativeModeTab>> getTabs() {
         return creativeTabs.stream().map(Supplier::get).collect(Collectors.toUnmodifiableSet());
+    }
+    public boolean isNoTab() {
+        return noTab;
     }
 
     public String getName() {

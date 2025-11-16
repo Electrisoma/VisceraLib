@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "priority": 1100,
+  "package": "net.electrisoma.visceralib.mixin.neoforge",
+  "compatibilityLevel": "${compatibilityLevel}",
+  "refmap": "visceralib.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

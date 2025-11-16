@@ -1,14 +1,17 @@
 package net.electrisoma.visceralib.api.registration.builders;
 
 import net.electrisoma.visceralib.api.registration.AbstractVisceralRegistrar;
+import net.electrisoma.visceralib.api.registration.entry.TabEntry;
 import net.electrisoma.visceralib.api.registration.helpers.CreativeTabBuilderRegistry;
 import net.electrisoma.visceralib.api.registration.VisceralDeferredRegister;
 import net.electrisoma.visceralib.api.registration.VisceralRegistrySupplier;
 import net.electrisoma.visceralib.api.registration.entry.BlockEntry;
 import net.electrisoma.visceralib.api.registration.helpers.ICreativeTabOutputs;
 import net.electrisoma.visceralib.api.registration.helpers.TaggableBuilder;
-
+import net.electrisoma.visceralib.data.providers.VisceralBlockstateProvider;
 import net.electrisoma.visceralib.data.providers.VisceralLangProvider;
+
+import net.electrisoma.visceralib.data.util.ICustomBlockstateGenerator;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -21,21 +24,22 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 import net.minecraft.world.level.storage.loot.LootTable;
 
 import java.util.*;
-import java.util.function.*;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class BlockBuilder<T extends Block, R extends AbstractVisceralRegistrar<R>>
         extends AbstractBuilder<T, R, BlockBuilder<T, R>>
         implements TaggableBuilder<Block>, ICreativeTabOutputs {
-
-
-
     private static final List<BlockBuilder<?, ?>> ALL_BUILDERS = new ArrayList<>();
 
     static {CreativeTabBuilderRegistry.registerBuilderProvider(BlockBuilder::getAllBuilders);}
+    public static final ICustomBlockstateGenerator NO_GENERATION_MARKER = (block, provider) -> {};
 
     private final VisceralDeferredRegister<Block> blockRegister;
     private final Function<BlockBehaviour.Properties, T> constructor;
@@ -55,6 +59,7 @@ public class BlockBuilder<T extends Block, R extends AbstractVisceralRegistrar<R
     private RenderType renderLayer;
     private LootDrop lootDrop;
     private LootTableProvider lootTableProvider;
+    private ICustomBlockstateGenerator blockStateMarker;
 
     public record LootDrop(Item item, int minCount, int maxCount) {}
     @FunctionalInterface public interface LootTableProvider {
@@ -74,9 +79,9 @@ public class BlockBuilder<T extends Block, R extends AbstractVisceralRegistrar<R
 
     public BlockBuilder<T, R> initialProperties(Block base) {
         //? if = 1.21.1
-        /*this.properties = BlockBehaviour.Properties.ofFullCopy(base);*/
+        this.properties = BlockBehaviour.Properties.ofFullCopy(base);
         //? if < 1.21.1
-        this.properties = BlockBehaviour.Properties.copy(base);
+        /*this.properties = BlockBehaviour.Properties.copy(base);*/
 
         return this;
     }
@@ -127,13 +132,30 @@ public class BlockBuilder<T extends Block, R extends AbstractVisceralRegistrar<R
         return this;
     }
 
+    public BlockBuilder<T, R> blockstate(ICustomBlockstateGenerator generator) {
+        this.blockStateMarker = generator;
+        return this;
+    }
+
+    public Optional<ICustomBlockstateGenerator> getBlockStateMarker() {
+        return Optional.ofNullable(blockStateMarker);
+    }
+
     @SuppressWarnings("unchecked")
     public BlockEntry<T> register() {
         if (blockSupplier == null)
             blockSupplier = () -> constructor.apply(properties);
 
-        if (creativeTabs.isEmpty())
-            registrar.getDefaultTabEntry().ifPresent(entry -> creativeTabs.add(entry::getKey));
+        if (isNoTab())
+            creativeTabs.clear();
+        else if (creativeTabs.isEmpty()) {
+            Optional<TabEntry<CreativeModeTab>> maybeTab = AbstractVisceralRegistrar.getThreadTab();
+            if (maybeTab.isPresent()) {
+                creativeTabs.add(maybeTab.get()::getKey);
+            } else {
+                registrar.getDefaultTabEntry().ifPresent(entry -> creativeTabs.add(entry::getKey));
+            }
+        }
 
         VisceralRegistrySupplier<Block> raw = blockRegister.register(name, () -> blockSupplier.get());
 
@@ -223,4 +245,5 @@ public class BlockBuilder<T extends Block, R extends AbstractVisceralRegistrar<R
             });
         }
     }
+    public static record Context<T extends Block>(T getEntry, ResourceLocation getId, Object provider) { }
 }

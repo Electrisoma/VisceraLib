@@ -130,10 +130,14 @@ tasks.shadowJar {
     exclude("fabric.mod.json", "architectury.common.json")
 }
 tasks.processResources {
-    properties(listOf("META-INF/mods.toml", "pack.mcmeta"),
+    val java = if (stonecutter.eval(minecraft, ">=1.20.5"))
+        "JAVA_21" else "JAVA_17"
+
+    properties(listOf("META-INF/mods.toml", "pack.mcmeta", "visceralib-forge.mixins.json"),
         "id" to mod.id, "name" to mod.name, "license" to mod.license,
         "version" to mod.version, "minecraft" to common.mod.prop("mc_dep_forgelike"),
-        "authors" to mod.authors, "description" to mod.description
+        "authors" to mod.authors, "description" to mod.description,
+        "compatibilityLevel" to java
     )
 }
 

@@ -5,6 +5,7 @@ import net.electrisoma.visceralib.data.providers.VisceralBlockstateProvider;
 
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.levelgen.feature.stateproviders.BlockStateProvider;
 
 import java.nio.file.Path;
 import java.nio.file.Files;
@@ -19,9 +20,10 @@ public class VisceralBlockstateProviderImpl {
         public void run() {
             VisceralBlockstateProvider.generateBlockStates(
                     modId,
+                    null,
                     (block, name) -> {
                         try {
-                            generateSimpleBlockstate(block, name);
+                            generateSimpleBlockstateNoModel(block, name);
                         } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
@@ -36,11 +38,16 @@ public class VisceralBlockstateProviderImpl {
             );
         }
 
-        private void generateSimpleBlockstate(Block block, String name) throws IOException {
+        private void generateSimpleBlockstateNoModel(Block block, String name) throws IOException {
+            Object blockstateJson = createSimpleBlockstateJson(name);
+            writeJson(blockstateJson, "blockstates/" + name + ".json");
+        }
+
+        private void generateSimpleBlockstateWithModel(Block block, String name) throws IOException {
             Object blockstateJson = createSimpleBlockstateJson(name);
             writeJson(blockstateJson, "blockstates/" + name + ".json");
 
-            Object modelJson = createSimpleModelJson(name);
+            Object modelJson = createSimpleModelJson(name); // <-- This generates the model
             writeJson(modelJson, "models/block/" + name + ".json");
         }
 

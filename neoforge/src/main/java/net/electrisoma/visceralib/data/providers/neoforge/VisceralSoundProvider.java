@@ -57,8 +57,23 @@ public class VisceralSoundProvider implements DataProvider {
             JsonArray soundsArray = new JsonArray();
 
             List<SoundEventBuilder.SoundVariant> variants = builder.getVariants();
+            List<SoundEventBuilder.ConfiguredSoundEvent> wrapped = builder.getWrappedEvents();
 
-            if (variants.isEmpty()) {
+            for (SoundEventBuilder.ConfiguredSoundEvent wrappedEvent : wrapped) {
+                ResourceLocation wrappedId = BuiltInRegistries.SOUND_EVENT.getKey(wrappedEvent.event());
+                if (wrappedId != null) {
+                    JsonObject wrappedJson = createSoundJson(wrappedId.toString(), SoundEventBuilder.SoundType.EVENT);
+
+                    if (wrappedEvent.volume() != 1.0F)
+                        wrappedJson.addProperty("volume", wrappedEvent.volume());
+                    if (wrappedEvent.pitch() != 1.0F)
+                        wrappedJson.addProperty("pitch", wrappedEvent.pitch());
+
+                    soundsArray.add(wrappedJson);
+                }
+            }
+
+            if (variants.isEmpty() && wrapped.isEmpty()) {
                 String fallback = builder.soundPath != null ? builder.soundPath : id.getPath();
                 if (exists(fallback)) {
                     soundsArray.add(createSoundJson(fallback, SoundEventBuilder.SoundType.FILE));
@@ -70,12 +85,31 @@ public class VisceralSoundProvider implements DataProvider {
                 for (SoundEventBuilder.SoundVariant variant : variants) {
                     String soundPath = variant.path().getPath();
                     if (exists(soundPath)) {
-                        soundsArray.add(createSoundJson(soundPath, SoundEventBuilder.SoundType.FILE));
+                        JsonObject soundJson = createSoundJson(soundPath, variant.type());
+
+                        if (variant.volume() != null && variant.volume() != 1.0F)
+                            soundJson.addProperty("volume", variant.volume());
+                        if (variant.pitch() != null && variant.pitch() != 1.0F)
+                            soundJson.addProperty("pitch", variant.pitch());
+                        if (variant.weight() != null && variant.weight() != 1)
+                            soundJson.addProperty("weight", variant.weight());
+                        if (variant.stream() != null)
+                            soundJson.addProperty("stream", variant.stream());
+                        if (variant.attenuationDistance() != null)
+                            soundJson.addProperty("attenuation_distance", variant.attenuationDistance());
+                        if (variant.preload() != null)
+                            soundJson.addProperty("preload", variant.preload());
+
+                        soundsArray.add(soundJson);
                     } else {
                         System.err.println("Missing variant sound: " + soundPath + ".ogg");
                     }
                 }
             }
+
+            builder.getCategory().ifPresent(source ->
+                    soundDef.addProperty("category", source.getName())
+            );
 
             soundDef.add("sounds", soundsArray);
 
@@ -93,7 +127,8 @@ public class VisceralSoundProvider implements DataProvider {
 
     private JsonObject createSoundJson(String path, SoundEventBuilder.SoundType type) {
         JsonObject sound = new JsonObject();
-        sound.addProperty("name", modId + ":" + path);
+        String name = type == SoundEventBuilder.SoundType.FILE ? modId + ":" + path : path;
+        sound.addProperty("name", name);
         sound.addProperty("type", type.getId());
         return sound;
     }

@@ -13,26 +13,25 @@ import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
 public class BuilderTransforms {
-    public static <T extends Block, R extends AbstractVisceralRegistrar<R>> Function<BlockBuilder<T, R>, BlockBuilder<T, R>> pickaxeOnly() {
+    public static <T extends Block, R extends AbstractVisceralRegistrar<R>> BuilderTransform<BlockBuilder<T, R>> pickaxeOnly() {
         return b -> b.tag(BlockTags.MINEABLE_WITH_PICKAXE);
     }
-    public static <T extends Block, R extends AbstractVisceralRegistrar<R>> Function<BlockBuilder<T, R>, BlockBuilder<T, R>> axeOnly() {
+    public static <T extends Block, R extends AbstractVisceralRegistrar<R>> BuilderTransform<BlockBuilder<T, R>> axeOnly() {
         return b -> b.tag(BlockTags.MINEABLE_WITH_AXE);
     }
-    public static <T extends Block, R extends AbstractVisceralRegistrar<R>> Function<BlockBuilder<T, R>, BlockBuilder<T, R>> hoeOnly() {
+    public static <T extends Block, R extends AbstractVisceralRegistrar<R>> BuilderTransform<BlockBuilder<T, R>> hoeOnly() {
         return b -> b.tag(BlockTags.MINEABLE_WITH_HOE);
     }
-    public static <T extends Block, R extends AbstractVisceralRegistrar<R>> Function<BlockBuilder<T, R>, BlockBuilder<T, R>> shovelOnly() {
+    public static <T extends Block, R extends AbstractVisceralRegistrar<R>> BuilderTransform<BlockBuilder<T, R>> shovelOnly() {
         return b -> b.tag(BlockTags.MINEABLE_WITH_SHOVEL);
     }
-    public static <T extends Block, R extends AbstractVisceralRegistrar<R>> Function<BlockBuilder<T, R>, BlockBuilder<T, R>> axeOrPickaxe() {
+    public static <T extends Block, R extends AbstractVisceralRegistrar<R>> BuilderTransform<BlockBuilder<T, R>> axeOrPickaxe() {
         return b -> b
                 .tag(BlockTags.MINEABLE_WITH_AXE)
                 .tag(BlockTags.MINEABLE_WITH_PICKAXE);
     }
 
-    public static <T extends Item, R extends AbstractVisceralRegistrar<R>> Function<ItemBuilder<T, R>, ItemBuilder<T, R>> CustomRenderedItem(Supplier<? extends ItemRenderer> rendererSupplier) {
-        return builder -> builder.setCustomRendererFactory(() -> rendererSupplier);
-    }
-
+//    public static <T extends Item, R extends AbstractVisceralRegistrar<R>> Function<ItemBuilder<T, R>, ItemBuilder<T, R>> CustomRenderedItem(Supplier<? extends ItemRenderer> rendererSupplier) {
+//        return builder -> builder.setCustomRendererFactory(() -> rendererSupplier);
+//    }
 }
