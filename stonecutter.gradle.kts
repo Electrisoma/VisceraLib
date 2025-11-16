@@ -48,8 +48,8 @@ subprojects {
                 name = "GitHubPackages"
                 url = uri("https://maven.pkg.github.com/electrisoma/ElectrisomaMaven")
                 credentials {
-                    username = localProperties.getProperty("mavenUsername", "")
-                    password = localProperties.getProperty("mavenToken", "")
+                    username = System.getenv("GITHUB_USERNAME") ?: localProperties.getProperty("mavenUsername", "")
+                    password = System.getenv("GITHUB_TOKEN") ?: localProperties.getProperty("mavenToken", "")
                 }
             }
 //            maven {
