@@ -23,6 +23,7 @@ val forgeVersions = providers.gradleProperty("stonecutter_enabled_forge_versions
     .orNull?.split(",")?.map { it.trim() } ?: emptyList()
 val neoforgeVersions = providers.gradleProperty("stonecutter_enabled_neoforge_versions")
     .orNull?.split(",")?.map { it.trim() } ?: emptyList()
+
 val dists = mapOf(
     "common" to commonVersions,
     "forge" to forgeVersions,
