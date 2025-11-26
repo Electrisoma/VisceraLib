@@ -3,9 +3,8 @@ import dev.kikugie.stonecutter.controller.StonecutterControllerExtension
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.*
 
-val Project.mod: ModData get() = ModData(this)
+fun Project.getMod(): ModData = ModData(this)
 fun Project.prop(key: String): String? = findProperty(key)?.toString()
-
 
 val Project.stonecutterBuild get() = extensions.getByType<StonecutterBuildExtension>()
 val Project.stonecutterController get() = extensions.getByType<StonecutterControllerExtension>()
@@ -13,22 +12,27 @@ val Project.stonecutterController get() = extensions.getByType<StonecutterContro
 val Project.common get() = requireNotNull(stonecutterBuild.node.sibling("common")) {
     "No common project for $project"
 }
-val Project.commonProject get() = rootProject.project(stonecutterBuild.current.project)
-val Project.commonMod get() = commonProject.mod
+val Project.commonProject get() = project.parent!!
+val Project.commonMod get() = commonProject.getMod()
 
+val Project.currentMod get() = this.getMod()
 val Project.loader: String? get() = prop("loader")
 
 @JvmInline
 value class ModData(private val project: Project) {
-    val id: String get() = modProp("id")
-    val name: String get() = modProp("name")
-    val version: String get() = modProp("version")
-    val group: String get() = modProp("group")
-    val author: String get() = modProp("author")
-    val description: String get() = modProp("description")
-    val license: String get() = modProp("license")
-    val github: String get() = modProp("github")
-    val mc: String get() = depOrNull("minecraft") ?: project.stonecutterBuild.current.version
+
+    val id: String get() = project.commonMod.modProp("id")
+    val name: String get() = project.commonMod.modProp("name")
+    val version: String get() = project.commonMod.modProp("version")
+    val group: String get() = project.commonMod.modProp("group")
+    val author: String get() = project.commonMod.modProp("author")
+    val description: String get() = project.commonMod.modProp("description")
+    val license: String get() = project.commonMod.modProp("license")
+    val github: String get() = project.commonMod.modProp("github")
+
+    val mc: String get() = depOrNull("minecraft")
+        ?: project.commonMod.depOrNull("minecraft")
+        ?: project.stonecutterBuild.current.version
 
     fun propOrNull(key: String) = project.prop(key)
     fun prop(key: String) = requireNotNull(propOrNull(key)) { "Missing '$key'" }

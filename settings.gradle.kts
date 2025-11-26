@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.*
+
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -14,6 +16,8 @@ plugins {
     id("dev.kikugie.stonecutter") version "0.7"
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
 }
+
+rootProject.name = "visceralib"
 
 val commonVersions = providers.gradleProperty("stonecutter_enabled_common_versions")
     .orNull?.split(",")?.map { it.trim() } ?: emptyList()
@@ -32,29 +36,28 @@ val dists = mapOf(
 )
 val uniqueVersions = dists.values.flatten().distinct()
 
-stonecutter {
-    kotlinController = true
-    centralScript = "build.gradle.kts"
+fun module(name: String) {
+    val projectName = ":$name"
+    include(projectName)
+    project(projectName).projectDir = file(name)
 
-    create(rootProject) {
-        versions(*uniqueVersions.toTypedArray())
+    stonecutter {
+        kotlinController = true
+        centralScript = "build.gradle.kts"
 
-        dists.forEach { (branchName, branchVersions) ->
-            branch(branchName) {
-                versions(*branchVersions.toTypedArray())
+        create(project(projectName)) {
+            versions(*uniqueVersions.toTypedArray())
+
+            dists.forEach { (branchName, branchVersions) ->
+                branch(branchName) {
+                    versions(*branchVersions.toTypedArray())
+                }
             }
         }
     }
 }
 
-//val components = listOf("registration", "datagen", "objloader")
-//val loaders = listOf("common", "fabric", "neoforge")
-//
-//components.forEach { componentName ->
-//    loaders.forEach { loaderName ->
-//        val projectName = ":$componentName:$loaderName"
-//        include(projectName)
-//    }
-//}
-
-rootProject.name = "visceralib"
+module("visceralib-core")
+module("visceralib-registration")
+//module("visceralib-datagen")
+//module("visceralib-objloader")

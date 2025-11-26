@@ -13,8 +13,9 @@ base {
 
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(commonProject.prop("java.version")!!)
-     withSourcesJar()
-     withJavadocJar()
+
+    withSourcesJar()
+    withJavadocJar()
 }
 
 repositories {
@@ -99,5 +100,5 @@ tasks {
 }
 
 tasks.named("processResources") {
-    dependsOn(":common:${commonMod.propOrNull("minecraft_version")}:stonecutterGenerate")
+    dependsOn("${project.parent!!.path}:${commonMod.mc}:stonecutterGenerate")
 }
