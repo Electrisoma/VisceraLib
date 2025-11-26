@@ -47,4 +47,14 @@ stonecutter {
     }
 }
 
+//val components = listOf("registration", "datagen", "objloader")
+//val loaders = listOf("common", "fabric", "neoforge")
+//
+//components.forEach { componentName ->
+//    loaders.forEach { loaderName ->
+//        val projectName = ":$componentName:$loaderName"
+//        include(projectName)
+//    }
+//}
+
 rootProject.name = "visceralib"
