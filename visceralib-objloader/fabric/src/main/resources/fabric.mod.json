@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "${id}",
+  "version": "${version}",
+  "name": "${name}",
+  "description": "${description}",
+  "authors": [
+    "${authors}"
+  ],
+  "contact": {
+  },
+  "license": "${license}",
+  "icon": "icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.electrisoma.visceralib.VisceraLibFabric"
+    ]
+  },
+  "mixins": [
+    "${id}-common.mixins.json",
+    "${id}-fabric.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${fabric}",
+    "fabric-api": "*",
+    "minecraft": "${minecraft}",
+    "java": ">=${java}"
+  }
+}

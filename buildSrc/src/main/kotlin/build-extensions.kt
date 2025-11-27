@@ -7,7 +7,6 @@ fun Project.getMod(): ModData = ModData(this)
 fun Project.prop(key: String): String? = findProperty(key)?.toString()
 
 val Project.stonecutterBuild get() = extensions.getByType<StonecutterBuildExtension>()
-val Project.stonecutterController get() = extensions.getByType<StonecutterControllerExtension>()
 
 val Project.common get() = requireNotNull(stonecutterBuild.node.sibling("common")) {
     "No common project for $project"

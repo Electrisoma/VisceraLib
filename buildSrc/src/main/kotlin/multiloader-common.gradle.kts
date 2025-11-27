@@ -5,8 +5,6 @@ plugins {
     id("java-library")
 }
 
-println("--- Configuring Project Path: ${project.path} ---")
-
 version = "${loader}-${currentMod.version}+mc${stonecutterBuild.current.version}"
 
 base {
@@ -31,12 +29,8 @@ repositories {
             includeGroup("maven.modrinth")
         }
     }
-    maven("https://maven.kikugie.dev/releases") {
-        name = "KikuGie Releases"
-    }
-    maven("https://maven.kikugie.dev/snapshots") {
-        name = "KikuGie Snapshots"
-    }
+    maven("https://maven.kikugie.dev/releases")
+    maven("https://maven.kikugie.dev/snapshots")
 
     exclusiveContent {
         forRepository {
@@ -48,15 +42,9 @@ repositories {
     }
     exclusiveContent {
         forRepositories(
-            maven("https://maven.parchmentmc.org") {
-                name = "ParchmentMC"
-            },
-            maven("https://maven.neoforged.net/releases") {
-                name = "NeoForge"
-            },
-            maven("https://maven.minecraftforge.net/") {
-                name = "MinecraftForge"
-            }
+            maven("https://maven.parchmentmc.org"),
+            maven("https://maven.neoforged.net/releases"),
+            maven("https://maven.minecraftforge.net/")
         )
         filter { includeGroup("org.parchmentmc.data") }
     }
