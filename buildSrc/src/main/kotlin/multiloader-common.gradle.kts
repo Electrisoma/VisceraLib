@@ -5,14 +5,14 @@ plugins {
     id("java-library")
 }
 
-version = "${loader}-${commonMod.version}+mc${stonecutterBuild.current.version}"
+version = "${loader}-${currentMod.version}+mc${stonecutterBuild.current.version}"
 
 base {
-    archivesName = commonMod.id
+    archivesName = currentMod.id
 }
 
 java {
-    toolchain.languageVersion = JavaLanguageVersion.of(commonProject.prop("java.version")!!)
+    toolchain.languageVersion = JavaLanguageVersion.of(currentMod.prop("java.version")!!)
 
     withSourcesJar()
     withJavadocJar()
@@ -67,22 +67,22 @@ tasks {
 
     processResources {
         val expandProps = mapOf(
-            "java" to commonMod.propOrNull("java.version"),
-            "compatibilityLevel" to commonMod.propOrNull("java.version")?.let { "JAVA_$it" },
-            "id" to commonMod.id,
-            "name" to commonMod.name,
-            "version" to commonMod.version,
-            "group" to commonMod.group,
-            "authors" to commonMod.author,
-            "description" to commonMod.description,
-            "license" to commonMod.license,
-            "github" to commonMod.github,
-            "minecraft" to commonMod.propOrNull("minecraft_version"),
-            "minMinecraft" to commonMod.propOrNull("min_minecraft_version"),
-            "fabric" to commonMod.depOrNull("fabric_loader"),
-            "FApi" to commonMod.depOrNull("fabric_api"),
-            "neoForge" to commonMod.depOrNull("neoforge"),
-            "forge" to commonMod.depOrNull("forge")
+            "java" to currentMod.propOrNull("java.version"),
+            "compatibilityLevel" to currentMod.propOrNull("java.version")?.let { "JAVA_$it" },
+            "id" to currentMod.id,
+            "name" to currentMod.name,
+            "version" to currentMod.version,
+            "group" to currentMod.group,
+            "authors" to currentMod.author,
+            "description" to currentMod.description,
+            "license" to currentMod.license,
+            "github" to currentMod.github,
+            "minecraft" to currentMod.propOrNull("minecraft_version"),
+            "minMinecraft" to currentMod.propOrNull("min_minecraft_version"),
+            "fabric" to currentMod.depOrNull("fabric_loader"),
+            "FApi" to currentMod.depOrNull("fabric_api"),
+            "neoForge" to currentMod.depOrNull("neoforge"),
+            "forge" to currentMod.depOrNull("forge")
         ).filterValues { it?.isNotEmpty() == true }.mapValues { (_, v) -> v!! }
 
         val jsonExpandProps = expandProps.mapValues { (_, v) -> v.replace("\n", "\\\\n") }
@@ -100,5 +100,5 @@ tasks {
 }
 
 tasks.named("processResources") {
-    dependsOn("${project.parent!!.path}:${commonMod.mc}:stonecutterGenerate")
+    dependsOn("${project.parent!!.path}:${currentMod.mc}:stonecutterGenerate")
 }

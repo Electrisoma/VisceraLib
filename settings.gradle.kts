@@ -30,7 +30,7 @@ val neoforgeVersions = providers.gradleProperty("stonecutter_enabled_neoforge_ve
 
 val dists = mapOf(
     "common" to commonVersions,
-    "forge" to forgeVersions,
+    //"forge" to forgeVersions,
     "fabric" to fabricVersions,
     "neoforge" to neoforgeVersions
 )
@@ -58,6 +58,6 @@ fun module(name: String) {
 }
 
 module("visceralib-core")
-module("visceralib-registration")
+//module("visceralib-registration")
 //module("visceralib-datagen")
 //module("visceralib-objloader")

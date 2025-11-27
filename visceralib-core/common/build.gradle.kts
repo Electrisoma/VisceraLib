@@ -8,7 +8,7 @@ plugins {
 
 loom {
     accessWidenerPath = common.project.file(
-        "../../src/main/resources/accesswideners/${commonMod.mc}-${currentMod.id}.accesswidener"
+        "../../src/main/resources/accesswideners/${currentMod.mc}-${currentMod.id}.accesswidener"
     )
 
     mixin {
@@ -23,11 +23,11 @@ fletchingTable {
 }
 
 dependencies {
-    minecraft(group = "com.mojang", name = "minecraft", version = commonMod.mc)
+    minecraft(group = "com.mojang", name = "minecraft", version = currentMod.mc)
     mappings(loom.layered {
         officialMojangMappings()
-        commonMod.depOrNull("parchment")?.let { parchmentVersion ->
-            parchment("org.parchmentmc.data:parchment-${commonMod.mc}:$parchmentVersion@zip")
+        currentMod.dep("parchment")?.let { parchmentVersion ->
+            parchment("org.parchmentmc.data:parchment-${currentMod.mc}:$parchmentVersion@zip")
         }
     })
 
@@ -38,7 +38,7 @@ dependencies {
         annotationProcessor(it)
     }
 
-    modCompileOnly("net.fabricmc:fabric-loader:${commonMod.dep("fabric_loader")}")
+    modCompileOnly("net.fabricmc:fabric-loader:${currentMod.dep("fabric-loader")}")
 }
 
 val commonJava: Configuration by configurations.creating {

@@ -34,7 +34,7 @@ value class ModData(private val project: Project) {
         ?: project.commonMod.depOrNull("minecraft")
         ?: project.stonecutterBuild.current.version
 
-    fun propOrNull(key: String) = project.prop(key)
+    fun propOrNull(key: String): String? = project.prop(key)
     fun prop(key: String) = requireNotNull(propOrNull(key)) { "Missing '$key'" }
     fun modPropOrNull(key: String) = project.prop("mod.$key")
     fun modProp(key: String) = requireNotNull(modPropOrNull(key)) { "Missing 'mod.$key'" }
