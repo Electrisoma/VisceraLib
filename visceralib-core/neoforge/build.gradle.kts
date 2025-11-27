@@ -10,13 +10,13 @@ fletchingTable {
     }
 
     accessConverter.register("main") {
-        add("accesswideners/${commonMod.mc}-visceralib.accesswidener")
+        add("accesswideners/${currentMod.mc}-visceralib.accesswidener")
     }
 }
 
 neoForge {
     enable {
-        version = commonMod.dep("neoforge")
+        version = currentMod.dep("neoforge")
     }
 }
 
@@ -41,14 +41,14 @@ neoForge {
     }
 
     parchment {
-        commonMod.depOrNull("parchment")?.let {
+        currentMod.depOrNull("parchment")?.let {
             mappingsVersion = it
-            minecraftVersion = commonMod.mc
+            minecraftVersion = currentMod.mc
         }
     }
 
     mods {
-        register(commonMod.id) {
+        register(currentMod.id) {
             sourceSet(sourceSets.main.get())
         }
     }
@@ -60,10 +60,10 @@ sourceSets.main {
 
 tasks {
     processResources {
-        exclude("${mod.id}.accesswidener")
+        exclude("${currentMod.id}.accesswidener")
     }
 }
 
 //tasks.named("createMinecraftArtifacts") {
-//    dependsOn(":neoforge:${commonMod.propOrNull("minecraft_version")}:processResources")
+//    dependsOn(":neoforge:${currentMod.propOrNull("minecraft_version")}:processResources")
 //}

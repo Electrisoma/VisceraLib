@@ -26,7 +26,7 @@ dependencies {
     minecraft(group = "com.mojang", name = "minecraft", version = currentMod.mc)
     mappings(loom.layered {
         officialMojangMappings()
-        currentMod.dep("parchment")?.let { parchmentVersion ->
+        currentMod.depOrNull("parchment")?.let { parchmentVersion ->
             parchment("org.parchmentmc.data:parchment-${currentMod.mc}:$parchmentVersion@zip")
         }
     })

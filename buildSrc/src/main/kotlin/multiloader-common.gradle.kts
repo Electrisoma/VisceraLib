@@ -5,6 +5,8 @@ plugins {
     id("java-library")
 }
 
+println("--- Configuring Project Path: ${project.path} ---")
+
 version = "${loader}-${currentMod.version}+mc${stonecutterBuild.current.version}"
 
 base {
@@ -12,7 +14,9 @@ base {
 }
 
 java {
-    toolchain.languageVersion = JavaLanguageVersion.of(currentMod.prop("java.version")!!)
+    toolchain.languageVersion.set(project.providers.provider {
+        JavaLanguageVersion.of(currentMod.prop("java.version").toInt())
+    })
 
     withSourcesJar()
     withJavadocJar()

@@ -17,20 +17,20 @@ stonecutter {
 }
 
 dependencies {
-    minecraft("com.mojang:minecraft:${commonMod.mc}")
+    minecraft("com.mojang:minecraft:${currentMod.mc}")
     mappings(loom.layered {
         officialMojangMappings()
-        commonMod.depOrNull("parchment")?.let { parchmentVersion ->
-            parchment("org.parchmentmc.data:parchment-${commonMod.mc}:$parchmentVersion@zip")
+        currentMod.depOrNull("parchment")?.let { parchmentVersion ->
+            parchment("org.parchmentmc.data:parchment-${currentMod.mc}:$parchmentVersion@zip")
         }
     })
 
-    modImplementation("net.fabricmc:fabric-loader:${commonMod.dep("fabric_loader")}")
-    modApi("net.fabricmc.fabric-api:fabric-api:${commonMod.dep("fabric_api")}+${commonMod.mc}")
+    modImplementation("net.fabricmc:fabric-loader:${currentMod.dep("fabric-loader")}")
+    modApi("net.fabricmc.fabric-api:fabric-api:${currentMod.dep("fabric-api")}+${currentMod.mc}")
 }
 
 loom {
-    accessWidenerPath = common.project.file("../../src/main/resources/accesswideners/${commonMod.mc}-${mod.id}.accesswidener")
+    accessWidenerPath = common.project.file("../../src/main/resources/accesswideners/${currentMod.mc}-${currentMod.id}.accesswidener")
 
     runs {
         getByName("client") {
@@ -46,16 +46,16 @@ loom {
     }
 
     mixin {
-        defaultRefmapName = "${mod.id}.refmap.json"
+        defaultRefmapName = "${currentMod.id}.refmap.json"
     }
 }
 
 tasks.named<ProcessResources>("processResources") {
-    val awFile = project(":common").file("src/main/resources/accesswideners/${commonMod.mc}-${mod.id}.accesswidener")
+    val awFile = project(":common").file("src/main/resources/accesswideners/${currentMod.mc}-${currentMod.id}.accesswidener")
 
     from(awFile.parentFile) {
         include(awFile.name)
-        rename(awFile.name, "${mod.id}.accesswidener")
+        rename(awFile.name, "${currentMod.id}.accesswidener")
         into("")
     }
 }
