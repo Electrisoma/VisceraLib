@@ -67,22 +67,22 @@ tasks {
 
     processResources {
         val expandProps = mapOf(
-            "java" to currentMod.propOrNull("java.version"),
+            "java"               to currentMod.propOrNull("java.version"),
             "compatibilityLevel" to currentMod.propOrNull("java.version")?.let { "JAVA_$it" },
-            "id" to currentMod.id,
-            "name" to currentMod.name,
-            "version" to currentMod.version,
-            "group" to currentMod.group,
-            "authors" to currentMod.author,
-            "description" to currentMod.description,
-            "license" to currentMod.license,
-            "github" to currentMod.github,
-            "minecraft" to currentMod.propOrNull("minecraft_version"),
-            "minMinecraft" to currentMod.propOrNull("min_minecraft_version"),
-            "fabric" to currentMod.depOrNull("fabric_loader"),
-            "FApi" to currentMod.depOrNull("fabric_api"),
-            "neoForge" to currentMod.depOrNull("neoforge"),
-            "forge" to currentMod.depOrNull("forge")
+            "id"                 to currentMod.id,
+            "name"               to currentMod.name,
+            "version"            to currentMod.version,
+            "group"              to currentMod.group,
+            "authors"            to currentMod.author,
+            "description"        to currentMod.description,
+            "license"            to currentMod.license,
+            "github"             to currentMod.github,
+            "minecraft"          to currentMod.propOrNull("minecraft_version"),
+            "minMinecraft"       to currentMod.propOrNull("min_minecraft_version"),
+            "fabric"             to currentMod.depOrNull("fabric_loader"),
+            "FApi"               to currentMod.depOrNull("fabric_api"),
+            "neoForge"           to currentMod.depOrNull("neoforge"),
+            "forge"              to currentMod.depOrNull("forge")
         ).filterValues { it?.isNotEmpty() == true }.mapValues { (_, v) -> v!! }
 
         val jsonExpandProps = expandProps.mapValues { (_, v) -> v.replace("\n", "\\\\n") }
