@@ -6,9 +6,20 @@ plugins {
     id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.22"
 }
 
+val visceraLibCorePathCommon: String = ":visceralib-core:common:${currentMod.mc}"
+
+val main = sourceSets.getByName("main")
+val testmod = sourceSets.create("testmod") {
+    compileClasspath += main.compileClasspath
+    runtimeClasspath += main.runtimeClasspath
+}
+
+configurations.getByName("testmodImplementation").extendsFrom(configurations.getByName("implementation"))
+configurations.getByName("testmodRuntimeClasspath").extendsFrom(configurations.getByName("runtimeClasspath"))
+
 loom {
     accessWidenerPath = common.project.file(
-        "../../src/main/resources/accesswideners/${currentMod.mc}-${currentMod.id}.accesswidener"
+        "../../src/main/resources/accesswideners/${currentMod.mc}-visceralib_registration.accesswidener"
     )
 
     mixin {
@@ -23,6 +34,8 @@ fletchingTable {
 }
 
 dependencies {
+    implementation(project(visceraLibCorePathCommon))
+
     minecraft(group = "com.mojang", name = "minecraft", version = currentMod.mc)
     mappings(loom.layered {
         officialMojangMappings()
@@ -39,6 +52,10 @@ dependencies {
     }
 
     modCompileOnly("net.fabricmc:fabric-loader:${currentMod.dep("fabric-loader")}")
+
+    afterEvaluate {
+        "testmodImplementation"(main.output)
+    }
 }
 
 val commonJava: Configuration by configurations.creating {
@@ -53,12 +70,20 @@ val commonResources: Configuration by configurations.creating {
 
 artifacts {
     afterEvaluate {
-        val mainSourceSet = sourceSets.main.get()
+        val mainSourceSet = main
+        val testmodSourceSet = testmod
 
         mainSourceSet.java.sourceDirectories.files.forEach {
             add(commonJava.name, it)
         }
         mainSourceSet.resources.sourceDirectories.files.forEach {
+            add(commonResources.name, it)
+        }
+
+        testmodSourceSet.java.sourceDirectories.files.forEach {
+            add(commonJava.name, it)
+        }
+        testmodSourceSet.resources.sourceDirectories.files.forEach {
             add(commonResources.name, it)
         }
     }

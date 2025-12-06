@@ -4,13 +4,25 @@ plugins {
     id("dev.kikugie.fletching-table.neoforge") version "0.1.0-alpha.22"
 }
 
+val main = sourceSets.getByName("main")
+val testmod = sourceSets.create("testmod") {
+    compileClasspath += main.compileClasspath
+    runtimeClasspath += main.runtimeClasspath
+}
+
+val commonProjectPath: String = project.parent!!.parent!!.path + ":common:"
+val versionedCommonProjectPath: String = commonProjectPath + currentMod.mc
+
+configurations.getByName("testmodImplementation").extendsFrom(configurations.getByName("implementation"))
+configurations.getByName("testmodRuntimeClasspath").extendsFrom(configurations.getByName("runtimeClasspath"))
+
 fletchingTable {
     j52j.register("main") {
         extension("json", "**/*.json5")
     }
 
     accessConverter.register("main") {
-        add("accesswideners/${currentMod.mc}-visceralib.accesswidener")
+        add("accesswideners/${currentMod.mc}-visceralib_core.accesswidener")
     }
 }
 
@@ -21,6 +33,10 @@ neoForge {
 }
 
 dependencies {
+    afterEvaluate {
+        "testmodImplementation"(main.output)
+        "testmodImplementation"(project(versionedCommonProjectPath).sourceSets.getByName("testmod").output)
+    }
 }
 
 neoForge {
@@ -48,7 +64,7 @@ neoForge {
     }
 
     mods {
-        register(currentMod.id) {
+        register("visceralib_core") {
             sourceSet(sourceSets.main.get())
         }
     }
@@ -60,7 +76,7 @@ sourceSets.main {
 
 tasks {
     processResources {
-        exclude("${currentMod.id}.accesswidener")
+        exclude("visceralib_core.accesswidener")
     }
 }
 

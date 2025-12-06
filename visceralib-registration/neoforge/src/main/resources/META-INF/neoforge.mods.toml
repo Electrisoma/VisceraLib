@@ -4,9 +4,9 @@ license="${license}"
 issueTrackerURL="${github}/issues"
 
 [[mods]]
-modId="${id}"
+modId="visceralib_registration"
 version="${version}"
-displayName="${name}"
+displayName="VisceraLib-Registration"
 authors="${authors}"
 description="${description}"
 logoFile="icon.png"
@@ -14,22 +14,22 @@ logoBlur=false
 displayURL=""
 
 [[mixins]]
-config="${id}-common.mixins.json"
+config="visceralib_registration-common.mixins.json"
 
 [[mixins]]
-config="${id}-neoforge.mixins.json"
+config="visceralib_registration-neoforge.mixins.json"
 
 [[accessTransformers]]
 file = "META-INF/accesstransformer.cfg"
 
-[[dependencies.${id}]]
+[[dependencies.visceralib_registration]]
 modId="neoforge"
 type="required"
 versionRange="*"
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.${id}]]
+[[dependencies.visceralib_registration]]
 modId="minecraft"
 type="required"
 versionRange="[${minMinecraft},)"

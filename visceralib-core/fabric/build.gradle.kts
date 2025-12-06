@@ -1,10 +1,24 @@
 @file:Suppress("UnstableApiUsage")
 
+import org.gradle.kotlin.dsl.*
+
 plugins {
     `multiloader-loader`
     id("fabric-loom")
     id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.22"
 }
+
+val main = sourceSets.getByName("main")
+val testmod = sourceSets.create("testmod") {
+    compileClasspath += main.compileClasspath
+    runtimeClasspath += main.runtimeClasspath
+}
+
+val commonProjectPath: String = project.parent!!.parent!!.path + ":common:"
+val versionedCommonProjectPath: String = commonProjectPath + currentMod.mc
+
+configurations.getByName("testmodImplementation").extendsFrom(configurations.getByName("implementation"))
+configurations.getByName("testmodRuntimeClasspath").extendsFrom(configurations.getByName("runtimeClasspath"))
 
 fletchingTable {
     j52j.register("main") {
@@ -27,10 +41,15 @@ dependencies {
 
     modImplementation("net.fabricmc:fabric-loader:${currentMod.dep("fabric-loader")}")
     modApi("net.fabricmc.fabric-api:fabric-api:${currentMod.dep("fabric-api")}+${currentMod.mc}")
+
+    afterEvaluate {
+        "testmodImplementation"(main.output)
+        //"testmodImplementation"(project(versionedCommonProjectPath).sourceSets.getByName("testmod").output)
+    }
 }
 
 loom {
-    accessWidenerPath = common.project.file("../../src/main/resources/accesswideners/${currentMod.mc}-${currentMod.id}.accesswidener")
+    accessWidenerPath = common.project.file("../../src/main/resources/accesswideners/${currentMod.mc}-visceralib_core.accesswidener")
 
     runs {
         getByName("client") {
@@ -43,19 +62,25 @@ loom {
             configName = "Fabric Server"
             ideConfigGenerated(true)
         }
+        create("testmodClient") {
+            client()
+            source(testmod)
+            configName = "Testmod Fabric Client"
+            ideConfigGenerated(true)
+        }
     }
 
     mixin {
-        defaultRefmapName = "${currentMod.id}.refmap.json"
+        defaultRefmapName = "visceralib_core.refmap.json"
     }
 }
 
 tasks.named<ProcessResources>("processResources") {
-    val awFile = project(":common").file("src/main/resources/accesswideners/${currentMod.mc}-${currentMod.id}.accesswidener")
+    val awFile = project(commonProjectPath).file("src/main/resources/accesswideners/${currentMod.mc}-visceralib_core.accesswidener")
 
     from(awFile.parentFile) {
         include(awFile.name)
-        rename(awFile.name, "${currentMod.id}.accesswidener")
+        rename(awFile.name, "visceralib_core.accesswidener")
         into("")
     }
 }

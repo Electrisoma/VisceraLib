@@ -6,24 +6,18 @@ plugins {
     id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.22"
 }
 
-sourceSets {
-    create("testmod") {
-        val mainOutput = project.sourceSets.getByName("main").output
-        compileClasspath += mainOutput
-        runtimeClasspath += mainOutput
-
-        resources {
-            srcDir("src/testmod/resources")
-        }
-        java {
-            srcDir("src/testmod/java")
-        }
-    }
+val main = sourceSets.getByName("main")
+val testmod = sourceSets.create("testmod") {
+    compileClasspath += main.compileClasspath
+    runtimeClasspath += main.runtimeClasspath
 }
+
+configurations.getByName("testmodImplementation").extendsFrom(configurations.getByName("implementation"))
+configurations.getByName("testmodRuntimeClasspath").extendsFrom(configurations.getByName("runtimeClasspath"))
 
 loom {
     accessWidenerPath = common.project.file(
-        "../../src/main/resources/accesswideners/${currentMod.mc}-${currentMod.id}.accesswidener"
+        "../../src/main/resources/accesswideners/${currentMod.mc}-visceralib_core.accesswidener"
     )
 
     mixin {
@@ -33,9 +27,6 @@ loom {
 
 fletchingTable {
     j52j.register("main") {
-        extension("json", "**/*.json5")
-    }
-    j52j.register("testmod") {
         extension("json", "**/*.json5")
     }
 }
@@ -57,8 +48,11 @@ dependencies {
     }
 
     modCompileOnly("net.fabricmc:fabric-loader:${currentMod.dep("fabric-loader")}")
-}
 
+    afterEvaluate {
+        "testmodImplementation"(main.output)
+    }
+}
 
 val commonJava: Configuration by configurations.creating {
     isCanBeResolved = false
@@ -70,19 +64,10 @@ val commonResources: Configuration by configurations.creating {
     isCanBeConsumed = true
 }
 
-val testmodJava: Configuration by configurations.creating {
-    isCanBeResolved = false
-    isCanBeConsumed = true
-}
-
-val testmodResources: Configuration by configurations.creating {
-    isCanBeResolved = false
-    isCanBeConsumed = true
-}
-
 artifacts {
     afterEvaluate {
-        val mainSourceSet = sourceSets.main.get()
+        val mainSourceSet = main
+        val testmodSourceSet = testmod
 
         mainSourceSet.java.sourceDirectories.files.forEach {
             add(commonJava.name, it)
@@ -91,13 +76,11 @@ artifacts {
             add(commonResources.name, it)
         }
 
-        val testmodSourceSet = sourceSets["testmod"]
-
         testmodSourceSet.java.sourceDirectories.files.forEach {
-            add(testmodJava.name, it)
+            add(commonJava.name, it)
         }
         testmodSourceSet.resources.sourceDirectories.files.forEach {
-            add(testmodResources.name, it)
+            add(commonResources.name, it)
         }
     }
 }

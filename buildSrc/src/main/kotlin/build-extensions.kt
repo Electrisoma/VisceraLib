@@ -1,7 +1,6 @@
 import dev.kikugie.stonecutter.build.StonecutterBuildExtension
-import dev.kikugie.stonecutter.controller.StonecutterControllerExtension
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.*
+import org.gradle.kotlin.dsl.getByType
 
 fun Project.getMod(): ModData = ModData(this)
 fun Project.prop(key: String): String? = findProperty(key)?.toString()
@@ -18,16 +17,16 @@ val Project.loader: String? get() = prop("loader")
 @JvmInline
 value class ModData(private val project: Project) {
 
-    val id: String get()          = modProp("id")
-    val name: String get()        = modProp("name")
-    val version: String get()     = modProp("version")
-    val group: String get()       = modProp("group")
-    val author: String get()      = modProp("author")
+    val id         : String get() = modProp("id")
+    val name       : String get() = modProp("name")
+    val module     : String get() = modProp("module")
+    val version    : String get() = modProp("version")
+    val group      : String get() = modProp("group")
+    val author     : String get() = modProp("author")
     val description: String get() = modProp("description")
-    val license: String get()     = modProp("license")
-    val github: String get()      = modProp("github")
-    val mc: String get()          = depOrNull("minecraft")
-        ?: depOrNull("minecraft")
+    val license    : String get() = modProp("license")
+    val github     : String get() = modProp("github")
+    val mc         : String get() = depOrNull("minecraft")
         ?: project.stonecutterBuild.current.version
 
     fun propOrNull(key: String): String?       = project.prop(key)

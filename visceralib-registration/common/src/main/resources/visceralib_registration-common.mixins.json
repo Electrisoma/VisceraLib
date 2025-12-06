@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.electrisoma.visceralib.mixin.registration",
+  "refmap": "visceralib_registration.refmap.json",
+  "compatibilityLevel": "${compatibilityLevel}",
+  "mixins": [
+    "accessor.Holder\u0024ReferenceAccessor"
+  ],
+  "client": [
+  ],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

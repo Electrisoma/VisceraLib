@@ -14,6 +14,9 @@ pluginManagement {
 
 plugins {
     id("dev.kikugie.stonecutter") version "0.7"
+    id("net.neoforged.moddev") version "2.0.115" apply false
+    id("net.neoforged.moddev.legacyforge") version "2.0.107" apply false
+    id("fabric-loom") version "1.11-SNAPSHOT" apply false
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
 }
 
@@ -30,7 +33,7 @@ val neoforgeVersions = providers.gradleProperty("stonecutter_enabled_neoforge_ve
 
 val dists = mapOf(
     "common" to commonVersions,
-    "forge" to forgeVersions,
+    //"forge" to forgeVersions,
     "fabric" to fabricVersions,
     "neoforge" to neoforgeVersions
 )
@@ -59,5 +62,5 @@ fun module(name: String) {
 
 module("visceralib-core")
 module("visceralib-registration")
-module("visceralib-datagen")
-module("visceralib-objloader")
+//module("visceralib-datagen")
+module("visceralib-modelloader")

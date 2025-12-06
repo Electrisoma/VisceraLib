@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "${id}",
+  "id": "visceralib_core",
   "version": "${version}",
-  "name": "${name}",
+  "name": "VisceraLib-Core",
   "description": "${description}",
   "authors": [
     "${authors}"
@@ -14,12 +14,12 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.electrisoma.visceralib.VisceraLibFabric"
+      "net.electrisoma.visceralib.impl.core.EntrypointFabric"
     ]
   },
   "mixins": [
-    "${id}-common.mixins.json",
-    "${id}-fabric.mixins.json"
+    "visceralib_core-common.mixins.json",
+    "visceralib_core-fabric.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${fabric}",

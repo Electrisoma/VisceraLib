@@ -1,0 +1,10 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.electrisoma.visceralib.mixin.core",
+  "compatibilityLevel": "${compatibilityLevel}",
+  "mixins": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

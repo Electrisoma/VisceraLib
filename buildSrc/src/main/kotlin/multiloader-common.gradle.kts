@@ -7,6 +7,7 @@ plugins {
 
 version = "${loader}-${currentMod.version}+mc${stonecutterBuild.current.version}"
 
+
 base {
     archivesName = currentMod.id
 }
@@ -63,6 +64,7 @@ tasks {
             "compatibilityLevel" to currentMod.propOrNull("java.version")?.let { "JAVA_$it" },
             "id"                 to currentMod.id,
             "name"               to currentMod.name,
+            "module"             to currentMod.module,
             "version"            to currentMod.version,
             "group"              to currentMod.group,
             "authors"            to currentMod.author,
@@ -71,8 +73,8 @@ tasks {
             "github"             to currentMod.github,
             "minecraft"          to currentMod.propOrNull("minecraft_version"),
             "minMinecraft"       to currentMod.propOrNull("min_minecraft_version"),
-            "fabric"             to currentMod.depOrNull("fabric_loader"),
-            "FApi"               to currentMod.depOrNull("fabric_api"),
+            "fabric"             to currentMod.depOrNull("fabric-loader"),
+            "FApi"               to currentMod.depOrNull("fabric-api"),
             "neoForge"           to currentMod.depOrNull("neoforge"),
             "forge"              to currentMod.depOrNull("forge")
         ).filterValues { it?.isNotEmpty() == true }.mapValues { (_, v) -> v!! }
@@ -92,5 +94,5 @@ tasks {
 }
 
 tasks.named("processResources") {
-    dependsOn("${project.parent!!.path}:${currentMod.mc}:stonecutterGenerate")
+    dependsOn("${project.parent!!.project.parent!!.path}:${currentMod.mc}:stonecutterGenerate")
 }

@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.electrisoma.visceralib.mixin.modelloader",
+  "refmap": "visceralib_modelloader.refmap.json",
+  "compatibilityLevel": "${compatibilityLevel}",
+  "mixins": [
+  ],
+  "client": [
+  ],
+  "server": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

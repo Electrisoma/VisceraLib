@@ -1,10 +1,15 @@
-# Multiloader - Stonecutter
-A gradle project template allows you to make a multi-loaders+versions mod using [Multi-loader Template](https://github.com/jaredlll08/MultiLoader-Template/) and [Stonecutter](https://stonecutter.kikugie.dev/).
+# VisceraLib
 
-This template is based on [Faboslav](https://github.com/Faboslav) mods, extracted to be used as template.
+Module-based multiloader library for general ease of development within a multiloader environment.
+This library can be used in single loader projects as well.
 
-# How-to Setup
-// TODO
+# Modules
 
----
-Note: This template has not carefully tested so there might be bugs, feel free to report or PR to make this template better!
+## - VisceraLib-Core
+See [VisceraLib-Core README](visceralib-core/README.md)
+
+## - VisceraLib-Registration
+See [VisceraLib-Registration README](visceralib-registration/README.md)
+
+## - VisceraLib-ModelLoader
+See [VisceraLib-ModelLoader README](visceralib-modelloader/README.md)

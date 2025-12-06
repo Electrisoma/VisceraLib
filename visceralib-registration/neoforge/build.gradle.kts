@@ -4,13 +4,28 @@ plugins {
     id("dev.kikugie.fletching-table.neoforge") version "0.1.0-alpha.22"
 }
 
+val visceraLibCorePathCommon: String = ":visceralib-core:common:${currentMod.mc}"
+val visceraLibCorePathLoader: String = ":visceralib-core:neoforge:${currentMod.mc}"
+
+val main = sourceSets.getByName("main")
+val testmod = sourceSets.create("testmod") {
+    compileClasspath += main.compileClasspath
+    runtimeClasspath += main.runtimeClasspath
+}
+
+val commonProjectPath: String = project.parent!!.parent!!.path + ":common:"
+val versionedCommonProjectPath: String = commonProjectPath + currentMod.mc
+
+configurations.getByName("testmodImplementation").extendsFrom(configurations.getByName("implementation"))
+configurations.getByName("testmodRuntimeClasspath").extendsFrom(configurations.getByName("runtimeClasspath"))
+
 fletchingTable {
     j52j.register("main") {
         extension("json", "**/*.json5")
     }
 
     accessConverter.register("main") {
-        add("accesswideners/${currentMod.mc}-visceralib.accesswidener")
+        add("accesswideners/${currentMod.mc}-visceralib_registration.accesswidener")
     }
 }
 
@@ -21,14 +36,16 @@ neoForge {
 }
 
 dependencies {
+    implementation(project(visceraLibCorePathCommon))
+    implementation(project(visceraLibCorePathLoader))
+
+    afterEvaluate {
+        "testmodImplementation"(main.output)
+        "testmodImplementation"(project(versionedCommonProjectPath).sourceSets.getByName("testmod").output)
+    }
 }
 
 neoForge {
-//    val at = project.file("build/resources/main/META-INF/accesstransformer.cfg");
-//
-//    accessTransformers.from(at.absolutePath)
-//    validateAccessTransformers = true
-
     runs {
         register("client") {
             client()
@@ -37,6 +54,11 @@ neoForge {
         register("server") {
             server()
             ideName = "NeoForge Server (${project.path})"
+        }
+        register("testmodClient") {
+            client()
+            sourceSet = sourceSets.getByName("testmod")
+            ideName = "TestMod NeoForge Client (${project.path})"
         }
     }
 
@@ -48,7 +70,7 @@ neoForge {
     }
 
     mods {
-        register(currentMod.id) {
+        register("visceralib_registration") {
             sourceSet(sourceSets.main.get())
         }
     }
@@ -60,7 +82,7 @@ sourceSets.main {
 
 tasks {
     processResources {
-        exclude("${currentMod.id}.accesswidener")
+        exclude("visceralib_registration.accesswidener")
     }
 }
 
