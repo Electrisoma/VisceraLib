@@ -3,9 +3,9 @@ package net.electrisoma.visceralib.impl.core;
 import net.neoforged.fml.common.Mod;
 
 @Mod(Constants.MOD_ID)
-public class EntrypointNeoforge {
+public class EntrypointNeoForge {
 
-    public EntrypointNeoforge() {
+    public EntrypointNeoForge() {
         Entrypoint.init();
     }
 }

@@ -7,5 +7,5 @@ public class Constants {
 
     public static final String MOD_ID = "visceralib_modelloader";
     public static final String NAME = "VisceraLib-ModelLoader";
-    public static final Logger LOGGER = LoggerFactory.getLogger(NAME);
+    public static final Logger LOG = LoggerFactory.getLogger(NAME);
 }

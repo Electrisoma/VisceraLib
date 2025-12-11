@@ -12,7 +12,7 @@ import net.neoforged.neoforgespi.language.MavenVersionAdapter;
 import java.util.List;
 
 @AutoService(IPlatformHelper.class)
-public class PlatformHelperImpl implements IPlatformHelper {
+public class PlatformHelperNeoForge implements IPlatformHelper {
 
     @Override
     public PlatformEnum getPlatformInfo() {
@@ -24,7 +24,7 @@ public class PlatformHelperImpl implements IPlatformHelper {
         String versionString = "UNKNOWN";
 
         List<IModInfo> infoList = ModList.get().getModFileById(Constants.MOD_ID).getMods();
-        if (infoList.size() > 1) Constants.LOGGER.error("Multiple mods for MOD_ID: " + Constants.MOD_ID);
+        if (infoList.size() > 1) Constants.LOG.error("Multiple mods for MOD_ID: " + Constants.MOD_ID);
         for (IModInfo info : infoList) {
             if (info.getModId().equals(Constants.MOD_ID)) {
                 versionString = String.valueOf(MavenVersionAdapter.createFromVersionSpec(String.valueOf(info.getVersion())));

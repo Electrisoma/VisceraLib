@@ -20,6 +20,20 @@ val testmod = sourceSets.create("testmod") {
 val commonProjectPath: String = project.parent!!.parent!!.path + ":common:"
 val versionedCommonProjectPath: String = commonProjectPath + currentMod.mc
 
+val dependencyProjects: List<Project> = listOf(
+    project(visceraLibCorePathCommon),
+)
+val fabricProjects: List<Project> = listOf(
+    project(visceraLibCorePathLoader)
+)
+
+dependencyProjects.forEach {
+    project.evaluationDependsOn(it.path)
+}
+fabricProjects.forEach {
+    project.evaluationDependsOn(it.path)
+}
+
 configurations.getByName("testmodImplementation").extendsFrom(configurations.getByName("implementation"))
 configurations.getByName("testmodRuntimeClasspath").extendsFrom(configurations.getByName("runtimeClasspath"))
 
@@ -34,9 +48,6 @@ stonecutter {
 }
 
 dependencies {
-    implementation(project(visceraLibCorePathCommon))
-    implementation(project(visceraLibCorePathLoader))
-
     minecraft("com.mojang:minecraft:${currentMod.mc}")
     mappings(loom.layered {
         officialMojangMappings()
@@ -44,6 +55,13 @@ dependencies {
             parchment("org.parchmentmc.data:parchment-${currentMod.mc}:$parchmentVersion@zip")
         }
     })
+
+    dependencyProjects.forEach {
+        implementation(it)
+    }
+    fabricProjects.forEach {
+        modImplementation(it)
+    }
 
     modImplementation("net.fabricmc:fabric-loader:${currentMod.dep("fabric-loader")}")
     modApi("net.fabricmc.fabric-api:fabric-api:${currentMod.dep("fabric-api")}+${currentMod.mc}")

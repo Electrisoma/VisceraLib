@@ -10,9 +10,9 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 @Mod(Constants.MOD_ID)
-public class EntrypointNeoforge {
+public class EntrypointNeoForge {
 
-    public EntrypointNeoforge(IEventBus modEventBus, ModContainer modContainer) {
+    public EntrypointNeoForge(IEventBus modEventBus, ModContainer modContainer) {
         Entrypoint.init();
     }
 

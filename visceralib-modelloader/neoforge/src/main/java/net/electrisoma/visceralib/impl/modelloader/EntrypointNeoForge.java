@@ -5,9 +5,9 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 
 @Mod(Constants.MOD_ID)
-public class EntrypointNeoforge {
+public class EntrypointNeoForge {
 
-    public EntrypointNeoforge(IEventBus modEventBus, ModContainer modContainer) {
+    private EntrypointNeoForge(IEventBus modEventBus, ModContainer modContainer) {
         Entrypoint.init();
     }
 }

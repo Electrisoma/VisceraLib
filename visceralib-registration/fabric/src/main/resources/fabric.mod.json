@@ -15,6 +15,9 @@
   "entrypoints": {
     "main": [
       "net.electrisoma.visceralib.impl.registration.EntrypointFabric"
+    ],
+    "client": [
+      "net.electrisoma.visceralib.impl.registration.ClientEntrypointFabric"
     ]
   },
   "mixins": [
@@ -22,6 +25,7 @@
     "visceralib_registration-fabric.mixins.json"
   ],
   "depends": {
+    "visceralib_core": "*",
     "fabricloader": ">=${fabric}",
     "fabric-api": "*",
     "minecraft": "${minecraft}",

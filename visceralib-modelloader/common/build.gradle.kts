@@ -14,6 +14,14 @@ val testmod = sourceSets.create("testmod") {
     runtimeClasspath += main.runtimeClasspath
 }
 
+val dependencyProjects: List<Project> = listOf(
+    project(visceraLibCorePathCommon)
+)
+
+dependencyProjects.forEach {
+    project.evaluationDependsOn(it.path)
+}
+
 configurations.getByName("testmodImplementation").extendsFrom(configurations.getByName("implementation"))
 configurations.getByName("testmodRuntimeClasspath").extendsFrom(configurations.getByName("runtimeClasspath"))
 
@@ -34,8 +42,6 @@ fletchingTable {
 }
 
 dependencies {
-    implementation(project(visceraLibCorePathCommon))
-
     minecraft(group = "com.mojang", name = "minecraft", version = currentMod.mc)
     mappings(loom.layered {
         officialMojangMappings()
@@ -49,6 +55,10 @@ dependencies {
     "io.github.llamalad7:mixinextras-common:0.5.0".let {
         compileOnly(it)
         annotationProcessor(it)
+    }
+
+    dependencyProjects.forEach {
+        implementation(it)
     }
 
     modCompileOnly("net.fabricmc:fabric-loader:${currentMod.dep("fabric-loader")}")

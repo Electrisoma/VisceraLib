@@ -1,6 +1,7 @@
 package net.electrisoma.visceralib.api.core;
 
 import net.electrisoma.visceralib.platform.core.services.IPlatformHelper;
+//import net.electrisoma.visceralib.platform.core.services.IResourceLocationHelper;
 import net.minecraft.resources.ResourceLocation;
 
 public class PlatformConstants {
@@ -18,8 +19,7 @@ public class PlatformConstants {
      * @param path The {@link ResourceLocation#path}
      * @return The {@link ResourceLocation}
      */
-    public static ResourceLocation path(String namespace, String path) {
-        return /*? =1.21.1 {*/ResourceLocation.fromNamespaceAndPath
-                /*?} else {*//*new ResourceLocation*//*?}*/(namespace, path);
-    }
+//    public static ResourceLocation path(String namespace, String path) {
+//        return IResourceLocationHelper.INSTANCE.get().path(namespace, path);
+//    }
 }

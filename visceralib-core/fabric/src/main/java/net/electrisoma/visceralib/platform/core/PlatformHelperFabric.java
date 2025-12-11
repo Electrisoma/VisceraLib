@@ -6,7 +6,7 @@ import net.electrisoma.visceralib.platform.core.services.IPlatformHelper;
 import net.fabricmc.loader.api.FabricLoader;
 
 @AutoService(IPlatformHelper.class)
-public class PlatformHelperImpl implements IPlatformHelper {
+public class PlatformHelperFabric implements IPlatformHelper {
 
     @Override
     public PlatformEnum getPlatformInfo() {

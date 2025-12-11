@@ -21,10 +21,10 @@ public class Services {
                 .findFirst();
 
         if (loadedService.isPresent()) {
-            Constants.LOGGER.debug("Found implementation {} for service {}",
+            Constants.LOG.debug("Found implementation {} for service {}",
                     loadedService.get().getClass().getName(), clazz.getName());
         } else {
-            Constants.LOGGER.debug("No implementation found for optional service {}", clazz.getName());
+            Constants.LOG.debug("No implementation found for optional service {}", clazz.getName());
         }
 
         return loadedService;

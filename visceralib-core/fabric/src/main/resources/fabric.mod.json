@@ -15,6 +15,9 @@
   "entrypoints": {
     "main": [
       "net.electrisoma.visceralib.impl.core.EntrypointFabric"
+    ],
+    "client": [
+      "net.electrisoma.visceralib.impl.core.ClientEntrypointFabric"
     ]
   },
   "mixins": [

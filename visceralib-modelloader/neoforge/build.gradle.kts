@@ -16,6 +16,15 @@ val testmod = sourceSets.create("testmod") {
 val commonProjectPath: String = project.parent!!.parent!!.path + ":common:"
 val versionedCommonProjectPath: String = commonProjectPath + currentMod.mc
 
+val dependencyProjects: List<Project> = listOf(
+    project(visceraLibCorePathCommon),
+    project(visceraLibCorePathLoader),
+)
+
+dependencyProjects.forEach {
+    project.evaluationDependsOn(it.path)
+}
+
 configurations.getByName("testmodImplementation").extendsFrom(configurations.getByName("implementation"))
 configurations.getByName("testmodRuntimeClasspath").extendsFrom(configurations.getByName("runtimeClasspath"))
 
@@ -36,8 +45,9 @@ neoForge {
 }
 
 dependencies {
-    implementation(project(visceraLibCorePathCommon))
-    implementation(project(visceraLibCorePathLoader))
+    dependencyProjects.forEach {
+        implementation(it)
+    }
 
     afterEvaluate {
         "testmodImplementation"(main.output)
