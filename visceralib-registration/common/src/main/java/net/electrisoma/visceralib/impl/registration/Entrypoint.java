@@ -1,32 +1,22 @@
 package net.electrisoma.visceralib.impl.registration;
 
-import net.electrisoma.visceralib.api.core.PlatformConstants;
-import net.electrisoma.visceralib.platform.core.services.IEnvHelper;
-import net.electrisoma.visceralib.platform.core.services.IEnvHelper.EnvironmentEnum;
-import net.electrisoma.visceralib.platform.core.services.IPlatformHelper;
-import net.electrisoma.visceralib.api.registration.registry.test.TestBlockEntities;
-import net.electrisoma.visceralib.api.registration.registry.test.TestBlocks;
-import net.electrisoma.visceralib.api.registration.registry.test.TestItems;
-import net.electrisoma.visceralib.api.registration.registry.test.TestTabs;
+import net.electrisoma.visceralib.api.core.debug.EntrypointMessages;
+import net.electrisoma.visceralib.impl.registration.test.TestBlockEntities;
+import net.electrisoma.visceralib.impl.registration.test.TestBlocks;
+import net.electrisoma.visceralib.impl.registration.test.TestItems;
+import net.electrisoma.visceralib.impl.registration.test.TestTabs;
 
-public class Entrypoint {
+final class Entrypoint {
 
     public static void init() {
+        EntrypointMessages.onCommon(Constants.LOG, Constants.MOD_ID, Constants.NAME);
+        testReg();
+    }
 
+    private static void testReg() {
         TestTabs.init();
-//        TestComponents.init();
         TestBlockEntities.init();
         TestBlocks.init();
         TestItems.init();
-
-        if (IPlatformHelper.INSTANCE.isDev()) {
-            Constants.LOG.info("{} {}: v{}",
-                    Constants.NAME, PlatformConstants.getLoader(), PlatformConstants.getVersion()
-            );
-
-            if (IEnvHelper.INSTANCE.isCurrent(EnvironmentEnum.SERVER)) {
-                Constants.LOG.info("{} Server Initialized!", Constants.NAME);
-            }
-        }
     }
 }

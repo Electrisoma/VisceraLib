@@ -1,15 +1,10 @@
 package net.electrisoma.visceralib.impl.modelloader;
 
-import net.electrisoma.visceralib.platform.core.services.IEnvHelper;
-import net.electrisoma.visceralib.platform.core.services.IEnvHelper.EnvironmentEnum;
-import net.electrisoma.visceralib.platform.core.services.IPlatformHelper;
+import net.electrisoma.visceralib.api.core.debug.EntrypointMessages;
 
-public class ClientEntrypoint {
+final class ClientEntrypoint {
 
     public static void init() {
-
-        if (IPlatformHelper.INSTANCE.isDev() && IEnvHelper.INSTANCE.isCurrent(EnvironmentEnum.CLIENT)) {
-            Constants.LOG.info("{} Client Initialized!", Constants.NAME);
-        }
+        EntrypointMessages.onClient(Constants.LOG, Constants.MOD_ID, Constants.NAME);
     }
 }

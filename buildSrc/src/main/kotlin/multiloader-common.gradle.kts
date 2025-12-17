@@ -7,7 +7,6 @@ plugins {
 
 version = "${loader}-${currentMod.version}+mc${stonecutterBuild.current.version}"
 
-
 base {
     archivesName = currentMod.id
 }
@@ -65,6 +64,7 @@ tasks {
             "id"                 to currentMod.id,
             "name"               to currentMod.name,
             "module"             to currentMod.module,
+            "moduleCaps"         to currentMod.moduleCaps,
             "version"            to currentMod.version,
             "group"              to currentMod.group,
             "authors"            to currentMod.author,

@@ -1,8 +1,8 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "net.electrisoma.visceralib.mixin.registration",
-  "refmap": "visceralib_registration.refmap.json",
+  "package": "${group}.${id}.mixin.${module}",
+  "refmap": "${id}_${module}.refmap.json",
   "compatibilityLevel": "${compatibilityLevel}",
   "mixins": [
   ],

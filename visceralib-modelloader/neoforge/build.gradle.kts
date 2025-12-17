@@ -1,32 +1,25 @@
 plugins {
     `multiloader-loader`
     id("net.neoforged.moddev")
-    id("dev.kikugie.fletching-table.neoforge") version "0.1.0-alpha.22"
+    id("dev.kikugie.fletching-table.neoforge")
 }
+
+val main: SourceSet? = sourceSets.getByName("main")
 
 val visceraLibCorePathCommon: String = ":visceralib-core:common:${currentMod.mc}"
 val visceraLibCorePathLoader: String = ":visceralib-core:neoforge:${currentMod.mc}"
-
-val main = sourceSets.getByName("main")
-val testmod = sourceSets.create("testmod") {
-    compileClasspath += main.compileClasspath
-    runtimeClasspath += main.runtimeClasspath
-}
 
 val commonProjectPath: String = project.parent!!.parent!!.path + ":common:"
 val versionedCommonProjectPath: String = commonProjectPath + currentMod.mc
 
 val dependencyProjects: List<Project> = listOf(
     project(visceraLibCorePathCommon),
-    project(visceraLibCorePathLoader),
+    project(visceraLibCorePathLoader)
 )
 
 dependencyProjects.forEach {
     project.evaluationDependsOn(it.path)
 }
-
-configurations.getByName("testmodImplementation").extendsFrom(configurations.getByName("implementation"))
-configurations.getByName("testmodRuntimeClasspath").extendsFrom(configurations.getByName("runtimeClasspath"))
 
 fletchingTable {
     j52j.register("main") {
@@ -34,7 +27,7 @@ fletchingTable {
     }
 
     accessConverter.register("main") {
-        add("accesswideners/${currentMod.mc}-visceralib_modelloader.accesswidener")
+        add("accesswideners/${currentMod.mc}-${currentMod.id}_${currentMod.module}.accesswidener")
     }
 }
 
@@ -48,32 +41,19 @@ dependencies {
     dependencyProjects.forEach {
         implementation(it)
     }
-
-    afterEvaluate {
-        "testmodImplementation"(main.output)
-        "testmodImplementation"(project(versionedCommonProjectPath).sourceSets.getByName("testmod").output)
-    }
 }
 
 neoForge {
-//    val at = project.file("build/resources/main/META-INF/accesstransformer.cfg");
-//
-//    accessTransformers.from(at.absolutePath)
-//    validateAccessTransformers = true
-
     runs {
         register("client") {
             client()
             ideName = "NeoForge Client (${project.path})"
+            gameDirectory = file("../../../../run/client")
         }
         register("server") {
             server()
             ideName = "NeoForge Server (${project.path})"
-        }
-        register("testmodClient") {
-            client()
-            sourceSet = sourceSets.getByName("testmod")
-            ideName = "TestMod NeoForge Client (${project.path})"
+            gameDirectory = file("../../../../run/server")
         }
     }
 
@@ -85,12 +65,9 @@ neoForge {
     }
 
     mods {
-        register("visceralib_modelloader") {
+        register("${currentMod.id}_${currentMod.module}") {
             sourceSet(sourceSets.main.get())
         }
-//        register("testmod") {
-//            sourceSet(sourceSets.getByName("testmod"))
-//        }
     }
 }
 
@@ -100,10 +77,6 @@ sourceSets.main {
 
 tasks {
     processResources {
-        exclude("visceralib_modelloader.accesswidener")
+        exclude("${currentMod.id}_${currentMod.module}.accesswidener")
     }
 }
-
-//tasks.named("createMinecraftArtifacts") {
-//    dependsOn(":neoforge:${currentMod.propOrNull("minecraft_version")}:processResources")
-//}

@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "visceralib_core",
+  "id": "${id}_${module}",
   "version": "${version}",
-  "name": "VisceraLib-Core",
+  "name": "${name}-${moduleCaps}",
   "description": "${description}",
   "authors": [
     "${authors}"
@@ -10,19 +10,19 @@
   "contact": {
   },
   "license": "${license}",
-  "icon": "icon.png",
+  "icon": "logo.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.electrisoma.visceralib.impl.core.EntrypointFabric"
+      "${group}.${id}.impl.${module}.EntrypointFabric"
     ],
     "client": [
-      "net.electrisoma.visceralib.impl.core.ClientEntrypointFabric"
+      "${group}.${id}.impl.${module}.ClientEntrypointFabric"
     ]
   },
   "mixins": [
-    "visceralib_core-common.mixins.json",
-    "visceralib_core-fabric.mixins.json"
+    "${id}_${module}-common.mixins.json",
+    "${id}_${module}-fabric.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${fabric}",

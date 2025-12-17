@@ -14,6 +14,8 @@ pluginManagement {
 
 plugins {
     id("dev.kikugie.stonecutter") version "0.7"
+    id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.22" apply false
+    id("dev.kikugie.fletching-table.neoforge") version "0.1.0-alpha.22" apply false
     id("net.neoforged.moddev") version "2.0.115" apply false
     id("net.neoforged.moddev.legacyforge") version "2.0.107" apply false
     id("fabric-loom") version "1.11-SNAPSHOT" apply false
@@ -26,14 +28,11 @@ val commonVersions = providers.gradleProperty("stonecutter_enabled_common_versio
     .orNull?.split(",")?.map { it.trim() } ?: emptyList()
 val fabricVersions = providers.gradleProperty("stonecutter_enabled_fabric_versions")
     .orNull?.split(",")?.map { it.trim() } ?: emptyList()
-val forgeVersions = providers.gradleProperty("stonecutter_enabled_forge_versions")
-    .orNull?.split(",")?.map { it.trim() } ?: emptyList()
 val neoforgeVersions = providers.gradleProperty("stonecutter_enabled_neoforge_versions")
     .orNull?.split(",")?.map { it.trim() } ?: emptyList()
 
 val dists = mapOf(
     "common" to commonVersions,
-    //"forge" to forgeVersions,
     "fabric" to fabricVersions,
     "neoforge" to neoforgeVersions
 )
@@ -51,7 +50,8 @@ fun module(name: String) {
         create(project(projectName)) {
             versions(*uniqueVersions.toTypedArray())
 
-            dists.forEach { (branchName, branchVersions) ->
+            dists.forEach {
+                (branchName, branchVersions) ->
                 branch(branchName) {
                     versions(*branchVersions.toTypedArray())
                 }
@@ -61,6 +61,7 @@ fun module(name: String) {
 }
 
 module("visceralib-core")
-module("visceralib-registration")
-//module("visceralib-datagen")
+module("visceralib-datagen")
+//module("visceralib-events")
 module("visceralib-modelloader")
+module("visceralib-registration")

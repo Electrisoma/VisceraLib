@@ -1,20 +1,14 @@
 plugins {
     `multiloader-loader`
     id("net.neoforged.moddev")
-    id("dev.kikugie.fletching-table.neoforge") version "0.1.0-alpha.22"
+    id("maven-publish")
+    id("dev.kikugie.fletching-table.neoforge")
 }
 
-val main = sourceSets.getByName("main")
-val testmod = sourceSets.create("testmod") {
-    compileClasspath += main.compileClasspath
-    runtimeClasspath += main.runtimeClasspath
-}
+val main: SourceSet? = sourceSets.getByName("main")
 
 val commonProjectPath: String = project.parent!!.parent!!.path + ":common:"
 val versionedCommonProjectPath: String = commonProjectPath + currentMod.mc
-
-configurations.getByName("testmodImplementation").extendsFrom(configurations.getByName("implementation"))
-configurations.getByName("testmodRuntimeClasspath").extendsFrom(configurations.getByName("runtimeClasspath"))
 
 fletchingTable {
     j52j.register("main") {
@@ -22,7 +16,7 @@ fletchingTable {
     }
 
     accessConverter.register("main") {
-        add("accesswideners/${currentMod.mc}-visceralib_core.accesswidener")
+        add("accesswideners/${currentMod.mc}-${currentMod.id}_${currentMod.module}.accesswidener")
     }
 }
 
@@ -32,27 +26,17 @@ neoForge {
     }
 }
 
-dependencies {
-    afterEvaluate {
-        "testmodImplementation"(main.output)
-        "testmodImplementation"(project(versionedCommonProjectPath).sourceSets.getByName("testmod").output)
-    }
-}
-
 neoForge {
-//    val at = project.file("build/resources/main/META-INF/accesstransformer.cfg");
-//
-//    accessTransformers.from(at.absolutePath)
-//    validateAccessTransformers = true
-
     runs {
         register("client") {
             client()
             ideName = "NeoForge Client (${project.path})"
+            gameDirectory = file("../../../../run/client")
         }
         register("server") {
             server()
             ideName = "NeoForge Server (${project.path})"
+            gameDirectory = file("../../../../run/server")
         }
     }
 
@@ -64,7 +48,7 @@ neoForge {
     }
 
     mods {
-        register("visceralib_core") {
+        register("${currentMod.id}_${currentMod.module}") {
             sourceSet(sourceSets.main.get())
         }
     }
@@ -76,10 +60,33 @@ sourceSets.main {
 
 tasks {
     processResources {
-        exclude("visceralib_core.accesswidener")
+        exclude("${currentMod.id}_${currentMod.module}.accesswidener")
     }
 }
 
-//tasks.named("createMinecraftArtifacts") {
-//    dependsOn(":neoforge:${currentMod.propOrNull("minecraft_version")}:processResources")
-//}
+apply(plugin = "maven-publish")
+
+publishing {
+    publications {
+        register<MavenPublication>("mavenJava") {
+            from(components["java"])
+
+            artifactId = "${currentMod.module}-$loader-${currentMod.mc}"
+
+            group = currentMod.group
+            version = "${currentMod.version}+mc${currentMod.mc}"
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/electrisoma/VisceraLib")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR") ?: project.findProperty("mavenUsername")?.toString()
+                password = System.getenv("GITHUB_TOKEN") ?: project.findProperty("mavenToken")?.toString()
+            }
+        }
+        mavenLocal()
+    }
+}

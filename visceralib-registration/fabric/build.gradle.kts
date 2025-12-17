@@ -5,32 +5,28 @@ import org.gradle.kotlin.dsl.*
 plugins {
     `multiloader-loader`
     id("fabric-loom")
-    id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.22"
+    id("dev.kikugie.fletching-table.fabric")
 }
+
+val main: SourceSet? = sourceSets.getByName("main")
 
 val visceraLibCorePathCommon: String = ":visceralib-core:common:${currentMod.mc}"
 val visceraLibCorePathLoader: String = ":visceralib-core:fabric:${currentMod.mc}"
 
-val main = sourceSets.getByName("main")
-val testmod = sourceSets.create("testmod") {
-    compileClasspath += main.compileClasspath
-    runtimeClasspath += main.runtimeClasspath
-}
-
 val commonProjectPath: String = project.parent!!.parent!!.path + ":common:"
 val versionedCommonProjectPath: String = commonProjectPath + currentMod.mc
 
-val dependencyProjects: List<Project> = listOf(
-    project(visceraLibCorePathCommon),
+val commonProject: List<Project> = listOf(
+    project(visceraLibCorePathCommon)
+)
+val fabricProject: List<Project> = listOf(
     project(visceraLibCorePathLoader)
 )
+val dependencyProjects = commonProject + fabricProject
 
 dependencyProjects.forEach {
     project.evaluationDependsOn(it.path)
 }
-
-configurations.getByName("testmodImplementation").extendsFrom(configurations.getByName("implementation"))
-configurations.getByName("testmodRuntimeClasspath").extendsFrom(configurations.getByName("runtimeClasspath"))
 
 fletchingTable {
     j52j.register("main") {
@@ -38,65 +34,77 @@ fletchingTable {
     }
 }
 
-stonecutter {
-
-}
-
 dependencies {
-    minecraft("com.mojang:minecraft:${currentMod.mc}")
+    minecraft(
+        group = "com.mojang",
+        name = "minecraft",
+        version = currentMod.mc
+    )
+
     mappings(loom.layered {
         officialMojangMappings()
-        currentMod.depOrNull("parchment")?.let { parchmentVersion ->
+        currentMod.depOrNull("parchment")?.let {
+            parchmentVersion ->
             parchment("org.parchmentmc.data:parchment-${currentMod.mc}:$parchmentVersion@zip")
         }
     })
 
-    dependencyProjects.forEach {
+    modImplementation(
+        group = "net.fabricmc",
+        name = "fabric-loader",
+        version = currentMod.dep("fabric-loader")
+    )
+
+    modImplementation(
+        group = "net.fabricmc.fabric-api",
+        name = "fabric-api",
+        version = "${currentMod.dep("fabric-api")}+${currentMod.mc}"
+    )
+
+    commonProject.forEach {
         implementation(it)
     }
 
-    modImplementation("net.fabricmc:fabric-loader:${currentMod.dep("fabric-loader")}")
-    modApi("net.fabricmc.fabric-api:fabric-api:${currentMod.dep("fabric-api")}+${currentMod.mc}")
-
-    afterEvaluate {
-        "testmodImplementation"(main.output)
-        "testmodImplementation"(project(versionedCommonProjectPath).sourceSets.getByName("testmod").output)
+    fabricProject.forEach {
+        implementation(project(it.path, "namedElements"))
     }
 }
 
 loom {
-    accessWidenerPath = common.project.file("../../src/main/resources/accesswideners/${currentMod.mc}-visceralib_registration.accesswidener")
+    accessWidenerPath = common.project.file(
+        "../../src/main/resources/accesswideners/${currentMod.mc}-${currentMod.id}_${currentMod.module}.accesswidener"
+    )
+
+    val loomRunDir = File("../../../../run")
 
     runs {
         getByName("client") {
             client()
             configName = "Fabric Client"
             ideConfigGenerated(true)
+            runDir(loomRunDir.resolve("client").toString())
         }
         getByName("server") {
             server()
             configName = "Fabric Server"
             ideConfigGenerated(true)
-        }
-        create("testmodClient") {
-            client()
-            source(testmod)
-            configName = "Testmod Fabric Client"
-            ideConfigGenerated(true)
+            runDir(loomRunDir.resolve("server").toString())
         }
     }
 
     mixin {
-        defaultRefmapName = "visceralib_registration.refmap.json"
+        defaultRefmapName = "${currentMod.id}_${currentMod.module}.refmap.json"
     }
 }
 
 tasks.named<ProcessResources>("processResources") {
-    val awFile = project(commonProjectPath).file("src/main/resources/accesswideners/${currentMod.mc}-visceralib_registration.accesswidener")
+    val awFile = project(commonProjectPath).file(
+        "src/main/resources/accesswideners/${currentMod.mc}-${currentMod.id}_${currentMod.module}.accesswidener"
+    )
 
     from(awFile.parentFile) {
         include(awFile.name)
-        rename(awFile.name, "visceralib_registration.accesswidener")
+        rename(awFile.name, "${currentMod.id}_${currentMod.module}.accesswidener")
         into("")
     }
 }

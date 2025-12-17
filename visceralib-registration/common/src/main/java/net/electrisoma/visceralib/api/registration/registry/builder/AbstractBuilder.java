@@ -1,10 +1,10 @@
 package net.electrisoma.visceralib.api.registration.registry.builder;
 
+import net.electrisoma.visceralib.api.core.resources.ResourceLocationUtils;
 import net.electrisoma.visceralib.api.registration.registry.Registration;
 import net.electrisoma.visceralib.api.registration.registry.VisceralRegistry;
 import net.electrisoma.visceralib.api.registration.registry.holder.BaseHolder;
 import net.electrisoma.visceralib.api.registration.registry.holder.RegistryObject;
-import net.electrisoma.visceralib.impl.registration.Constants;
 import net.electrisoma.visceralib.platform.core.services.IPlatformHelper;
 import net.electrisoma.visceralib.platform.core.services.IPlatformHelper.PlatformEnum;
 import net.minecraft.core.HolderOwner;
@@ -24,7 +24,7 @@ public abstract class AbstractBuilder<R, T extends R, H extends BaseHolder<T>> {
 
     public AbstractBuilder(VisceralRegistry owner, String name, Registry<R> registry) {
         this.owner = owner;
-        this.id = Constants.path(owner.modId(), name);
+        this.id = ResourceLocationUtils.path(owner.modId(), name);
         this.registry = registry;
     }
 

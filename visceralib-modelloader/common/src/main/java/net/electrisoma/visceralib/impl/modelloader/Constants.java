@@ -3,7 +3,7 @@ package net.electrisoma.visceralib.impl.modelloader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Constants {
+final class Constants {
 
     public static final String MOD_ID = "visceralib_modelloader";
     public static final String NAME = "VisceraLib-ModelLoader";

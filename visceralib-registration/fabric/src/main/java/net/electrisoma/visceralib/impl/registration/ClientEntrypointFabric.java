@@ -1,6 +1,5 @@
 package net.electrisoma.visceralib.impl.registration;
 
-import net.electrisoma.visceralib.impl.core.ClientEntrypoint;
 import net.electrisoma.visceralib.platform.core.services.IEnvHelper;
 import net.electrisoma.visceralib.platform.core.services.IEnvHelper.EnvironmentEnum;
 import net.fabricmc.api.ClientModInitializer;

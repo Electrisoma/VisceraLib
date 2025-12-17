@@ -20,6 +20,7 @@ value class ModData(private val project: Project) {
     val id         : String get() = modProp("id")
     val name       : String get() = modProp("name")
     val module     : String get() = modProp("module")
+    val moduleCaps : String get() = modProp("module_caps")
     val version    : String get() = modProp("version")
     val group      : String get() = modProp("group")
     val author     : String get() = modProp("author")
@@ -29,14 +30,14 @@ value class ModData(private val project: Project) {
     val mc         : String get() = depOrNull("minecraft")
         ?: project.stonecutterBuild.current.version
 
-    fun propOrNull(key: String): String?       = project.prop(key)
-    fun prop(key: String)                      = requireNotNull(propOrNull(key)) { "Missing '$key'" }
+    fun propOrNull(key: String): String? = project.prop(key)
+    fun prop(key: String)                = requireNotNull(propOrNull(key)) { "Missing '$key'" }
 
-    fun modPropOrNull(key: String)             = project.prop("mod.$key")
-    fun modProp(key: String)                   = requireNotNull(modPropOrNull(key)) { "Missing 'mod.$key'" }
+    fun modPropOrNull(key: String)       = project.prop("mod.$key")
+    fun modProp(key: String)             = requireNotNull(modPropOrNull(key)) { "Missing 'mod.$key'" }
 
-    fun depOrNull(key: String): String?        = project.prop("deps.$key")?.takeIf { it.isNotEmpty() && it != "" }
-    fun dep(key: String)                       = requireNotNull(depOrNull(key)) { "Missing 'deps.$key'" }
+    fun depOrNull(key: String): String?  = project.prop("deps.$key")?.takeIf { it.isNotEmpty() && it != "" }
+    fun dep(key: String)                 = requireNotNull(depOrNull(key)) { "Missing 'deps.$key'" }
 
-    fun modrinth(name: String, version:String) = "maven.modrinth:$name:$version"
+    fun modrinth(name: String, version: String) = "maven.modrinth:$name:$version"
 }

@@ -28,6 +28,6 @@ tasks {
     }
 
     jar {
-        exclude("accesswideners/**")
+        exclude("accesswideners", "accesswideners/**")
     }
 }
