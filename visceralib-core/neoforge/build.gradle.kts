@@ -69,10 +69,9 @@ apply(plugin = "maven-publish")
 publishing {
     publications {
         register<MavenPublication>("mavenJava") {
-            from(components["java"])
+            artifact(tasks.named("jar"))
 
             artifactId = "${currentMod.module}-$loader-${currentMod.mc}"
-
             group = currentMod.group
             version = "${currentMod.version}+mc${currentMod.mc}"
         }

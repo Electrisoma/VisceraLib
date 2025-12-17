@@ -97,7 +97,6 @@ publishing {
             artifact(tasks.named("sourcesJar"))
 
             artifactId = "${currentMod.module}-$loader-${currentMod.mc}"
-
             group = currentMod.group
             version = "${currentMod.version}+mc${currentMod.mc}"
         }
