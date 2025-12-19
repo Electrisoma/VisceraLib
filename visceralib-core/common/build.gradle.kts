@@ -1,10 +1,18 @@
 @file:Suppress("UnstableApiUsage")
 
+import java.util.Properties
+
 plugins {
     id("multiloader-common")
     id("fabric-loom")
     id("maven-publish")
     id("dev.kikugie.fletching-table.fabric")
+}
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
 }
 
 val main: SourceSet? = sourceSets.getByName("main")
@@ -88,7 +96,7 @@ publishing {
         register<MavenPublication>("mavenJava") {
             artifact(tasks.named("jar"))
 
-            artifactId = "${currentMod.module}-$loader-${currentMod.mc}"
+            artifactId = "${currentMod.id}-${currentMod.module}-$loader-${currentMod.mc}"
             group = currentMod.group
             version = "${currentMod.version}+mc${currentMod.mc}"
         }
@@ -99,8 +107,8 @@ publishing {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/electrisoma/VisceraLib")
             credentials {
-                username = System.getenv("GITHUB_ACTOR") ?: project.findProperty("mavenUsername")?.toString()
-                password = System.getenv("GITHUB_TOKEN") ?: project.findProperty("mavenToken")?.toString()
+                username = System.getenv("GITHUB_ACTOR") ?: localProperties.getProperty("mavenUsername", "")
+                password = System.getenv("GITHUB_TOKEN") ?: localProperties.getProperty("mavenToken", "")
             }
         }
         mavenLocal()

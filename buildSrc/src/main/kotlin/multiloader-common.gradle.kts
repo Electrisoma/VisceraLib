@@ -93,6 +93,6 @@ tasks {
     }
 }
 
-tasks.named("processResources") {
-    dependsOn("${project.parent!!.project.parent!!.path}:${currentMod.mc}:stonecutterGenerate")
+tasks.matching { it.name == "processResources" }.configureEach {
+    mustRunAfter(tasks.matching { it.name.contains("stonecutterGenerate") })
 }

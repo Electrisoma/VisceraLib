@@ -1,6 +1,13 @@
 @file:Suppress("UnstableApiUsage")
 
 import org.gradle.kotlin.dsl.*
+import java.util.Properties
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
 
 plugins {
     `multiloader-loader`
@@ -77,26 +84,30 @@ loom {
 }
 
 tasks.named<ProcessResources>("processResources") {
-    val awFile = project(commonProjectPath).file(
-        "src/main/resources/accesswideners/${currentMod.mc}-${currentMod.id}_${currentMod.module}.accesswidener"
-    )
+    val commonResDir = common.project.file("src/main/resources")
+    val awFile = commonResDir.resolve("accesswideners/${currentMod.mc}-${currentMod.id}_${currentMod.module}.accesswidener")
 
-    from(awFile.parentFile) {
-        include(awFile.name)
-        rename(awFile.name, "${currentMod.id}_${currentMod.module}.accesswidener")
-        into("")
+    if (awFile.exists()) {
+        from(awFile) {
+            rename(awFile.name, "${currentMod.id}_${currentMod.module}.accesswidener")
+            into("")
+        }
     }
 }
-
 apply(plugin = "maven-publish")
 
 publishing {
     publications {
         register<MavenPublication>("mavenJava") {
-            artifact(tasks.named("remapJar"))
+            if (project.plugins.hasPlugin("fabric-loom")) {
+                artifact(tasks.named("remapJar"))
+            } else {
+                artifact(tasks.named("jar"))
+            }
+
             artifact(tasks.named("sourcesJar"))
 
-            artifactId = "${currentMod.module}-$loader-${currentMod.mc}"
+            artifactId = "${currentMod.id}-${currentMod.module}-$loader-${currentMod.mc}"
             group = currentMod.group
             version = "${currentMod.version}+mc${currentMod.mc}"
         }
@@ -107,8 +118,8 @@ publishing {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/electrisoma/VisceraLib")
             credentials {
-                username = System.getenv("GITHUB_ACTOR") ?: project.findProperty("mavenUsername")?.toString()
-                password = System.getenv("GITHUB_TOKEN") ?: project.findProperty("mavenToken")?.toString()
+                username = System.getenv("GITHUB_ACTOR") ?: localProperties.getProperty("mavenUsername", "")
+                password = System.getenv("GITHUB_TOKEN") ?: localProperties.getProperty("mavenToken", "")
             }
         }
         mavenLocal()

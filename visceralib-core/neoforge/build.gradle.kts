@@ -1,3 +1,13 @@
+@file:Suppress("UnstableApiUsage")
+
+import java.util.Properties
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(localPropertiesFile.inputStream())
+}
+
 plugins {
     `multiloader-loader`
     id("net.neoforged.moddev")
@@ -69,9 +79,15 @@ apply(plugin = "maven-publish")
 publishing {
     publications {
         register<MavenPublication>("mavenJava") {
-            artifact(tasks.named("jar"))
+            if (project.plugins.hasPlugin("fabric-loom")) {
+                artifact(tasks.named("remapJar"))
+            } else {
+                artifact(tasks.named("jar"))
+            }
 
-            artifactId = "${currentMod.module}-$loader-${currentMod.mc}"
+            artifact(tasks.named("sourcesJar"))
+
+            artifactId = "${currentMod.id}-${currentMod.module}-$loader-${currentMod.mc}"
             group = currentMod.group
             version = "${currentMod.version}+mc${currentMod.mc}"
         }
@@ -82,8 +98,8 @@ publishing {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/electrisoma/VisceraLib")
             credentials {
-                username = System.getenv("GITHUB_ACTOR") ?: project.findProperty("mavenUsername")?.toString()
-                password = System.getenv("GITHUB_TOKEN") ?: project.findProperty("mavenToken")?.toString()
+                username = System.getenv("GITHUB_ACTOR") ?: localProperties.getProperty("mavenUsername", "")
+                password = System.getenv("GITHUB_TOKEN") ?: localProperties.getProperty("mavenToken", "")
             }
         }
         mavenLocal()
