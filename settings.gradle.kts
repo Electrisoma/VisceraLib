@@ -61,7 +61,7 @@ fun module(name: String) {
 }
 
 module("visceralib-core")
-module("visceralib-datagen")
+//module("visceralib-datagen")
 //module("visceralib-events")
-module("visceralib-modelloader")
-module("visceralib-registration")
+//module("visceralib-modelloader")
+//module("visceralib-registration")

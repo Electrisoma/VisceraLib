@@ -1,18 +1,9 @@
 @file:Suppress("UnstableApiUsage")
 
-import java.util.Properties
-
 plugins {
     id("multiloader-common")
     id("fabric-loom")
-    id("maven-publish")
     id("dev.kikugie.fletching-table.fabric")
-}
-
-val localProperties = Properties()
-val localPropertiesFile = rootProject.file("local.properties")
-if (localPropertiesFile.exists()) {
-    localProperties.load(localPropertiesFile.inputStream())
 }
 
 val main: SourceSet? = sourceSets.getByName("main")
@@ -77,40 +68,22 @@ val commonResources: Configuration by configurations.creating {
 }
 
 artifacts {
-    afterEvaluate {
-        val mainSourceSet = main!!
+    val mainSourceSet = sourceSets.getByName("main")
 
-        mainSourceSet.java.sourceDirectories.files.forEach {
-            add(commonJava.name, it)
-        }
-        mainSourceSet.resources.sourceDirectories.files.forEach {
-            add(commonResources.name, it)
-        }
+    mainSourceSet.java.sourceDirectories.files.forEach {
+        add(commonJava.name, it)
     }
-}
-
-apply(plugin = "maven-publish")
-
-publishing {
-    publications {
-        register<MavenPublication>("mavenJava") {
-            artifact(tasks.named("jar"))
-
-            artifactId = "${currentMod.id}-${currentMod.module}-$loader-${currentMod.mc}"
-            group = currentMod.group
-            version = "${currentMod.version}+mc${currentMod.mc}"
-        }
+    mainSourceSet.resources.sourceDirectories.files.forEach {
+        add(commonResources.name, it)
     }
 
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/electrisoma/VisceraLib")
-            credentials {
-                username = System.getenv("GITHUB_ACTOR") ?: localProperties.getProperty("mavenUsername", "")
-                password = System.getenv("GITHUB_TOKEN") ?: localProperties.getProperty("mavenToken", "")
-            }
-        }
-        mavenLocal()
-    }
+//    afterEvaluate {
+//
+//        mainSourceSet.java.sourceDirectories.files.forEach {
+//            add(commonJava.name, it)
+//        }
+//        mainSourceSet.resources.sourceDirectories.files.forEach {
+//            add(commonResources.name, it)
+//        }
+//    }
 }

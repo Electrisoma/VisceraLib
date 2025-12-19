@@ -1,6 +1,0 @@
-{
-  "pack": {
-    "description": "${moduleCaps} module for ${name}.",
-    "pack_format": 8
-  }
-}

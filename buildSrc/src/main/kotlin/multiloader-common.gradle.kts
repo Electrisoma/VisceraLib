@@ -1,14 +1,16 @@
 @file:Suppress("UnstableApiUsage")
 
+import java.util.Properties
+
 plugins {
     id("java")
     id("java-library")
+    `maven-publish`
 }
 
-version = "${loader}-${currentMod.version}+mc${stonecutterBuild.current.version}"
-
 base {
-    archivesName = currentMod.id
+    version = "${currentMod.version}+mc${stonecutterBuild.current.version}-${loader}"
+    archivesName = "${currentMod.id}-${currentMod.module}"
 }
 
 java {
@@ -95,4 +97,34 @@ tasks {
 
 tasks.matching { it.name == "processResources" }.configureEach {
     mustRunAfter(tasks.matching { it.name.contains("stonecutterGenerate") })
+}
+
+val localProperties: Properties = Properties()
+val localPropertiesFile: File = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.inputStream().use {
+        localProperties.load(it)
+    }
+}
+
+publishing {
+    publications {
+        register<MavenPublication>("mavenJava") {
+            artifactId = base.archivesName.get()
+            groupId = "${currentMod.group}.${currentMod.id}"
+            from(components["java"])
+        }
+    }
+
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/electrisoma/VisceraLib")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR") ?: localProperties.getProperty("mavenUsername", "")
+                password = System.getenv("GITHUB_TOKEN") ?: localProperties.getProperty("mavenToken", "")
+            }
+        }
+        mavenLocal()
+    }
 }
