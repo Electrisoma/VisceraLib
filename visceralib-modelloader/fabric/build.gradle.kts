@@ -8,8 +8,6 @@ plugins {
     id("dev.kikugie.fletching-table.fabric")
 }
 
-val main: SourceSet? = sourceSets.getByName("main")
-
 val visceraLibCorePathCommon: String = ":visceralib-core:common:${currentMod.mc}"
 val visceraLibCorePathLoader: String = ":visceralib-core:fabric:${currentMod.mc}"
 
@@ -55,19 +53,26 @@ dependencies {
         version = currentMod.dep("fabric-loader")
     )
 
-    modImplementation(
-        group = "net.fabricmc.fabric-api",
-        name = "fabric-api",
-        version = "${currentMod.dep("fabric-api")}+${currentMod.mc}"
+    modCompileOnly("com.terraformersmc:modmenu:${currentMod.dep("modmenu")}")
+    modRuntimeOnly("com.terraformersmc:modmenu:${currentMod.dep("modmenu")}")
+
+    fapiModules(project,
+        "fabric-api-base",
+        "fabric-resource-loader-v0",
+        "fabric-screen-api-v1",
+        "fabric-key-binding-api-v1",
+        "fabric-lifecycle-events-v1",
+        config = "modRuntimeOnly"
     )
 
-    commonProject.forEach {
-        implementation(it)
-    }
+    fapiModules(project,
+        "fabric-api-base",
+        "fabric-model-loading-api-v1",
+        include = true
+    )
 
-    fabricProject.forEach {
-        implementation(project(it.path, "namedElements"))
-    }
+    listImplementation(commonProject)
+    listImplementation(fabricProject, "namedElements")
 }
 
 loom {

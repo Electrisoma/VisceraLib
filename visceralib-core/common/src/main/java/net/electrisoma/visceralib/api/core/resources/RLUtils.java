@@ -2,7 +2,7 @@ package net.electrisoma.visceralib.api.core.resources;
 
 import net.minecraft.resources.ResourceLocation;
 
-public class ResourceLocationUtils {
+public class RLUtils {
 
     /**
      * Creates a {@link ResourceLocation} using version-appropriate factory methods.
@@ -19,5 +19,9 @@ public class ResourceLocationUtils {
     public static ResourceLocation path(String namespace, String path) {
         return /*? =1.21.1 {*/ResourceLocation.fromNamespaceAndPath
                 /*?} else {*//*new ResourceLocation*//*?}*/(namespace, path);
+    }
+
+    public static String getPathOrDefault(ResourceLocation location, String defaultValue) {
+        return location == null ? defaultValue : location.getPath();
     }
 }

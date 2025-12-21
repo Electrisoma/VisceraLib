@@ -13,7 +13,142 @@ This project is licensed under [MIT](LICENSE.md)
 > _This is primarily created for my own personal use 
 > and I feel it is only fair to hold little restrictions for others in such context._\
 > _This is meant to help me, and if other projects want to use it to help them 
-> in whatever way possible then it has succeeded._
+> in whatever way possible, then it has succeeded._
+
+## Usage
+
+Here's how to import VisceraLib into your project:
+
+<details>
+<summary>Multiloader</summary>
+
+### Architectury Multiloader:
+
+Kotlin DSL
+```kotlin
+listOf(
+    "core",
+    "registration",
+    "modelloader"
+).forEach { module ->
+    "net.electrisoma.visceralib:visceralib-$module:${visceralib_version}+mc${minecraft_version}-common".let {
+        modImplementation(it)
+    }
+}
+```
+
+Groovy DSL
+```groovy
+Set<String> modules = [
+        "core",
+        "registration",
+        "modelloader"
+]
+
+modules.each {
+    def dep = "net.electrisoma.visceralib:visceralib-${it}:${visceralib_version}+mc${minecraft_version}-common"
+    modImplementation(dep)
+}
+```
+
+### Jared's Multiloader Template:
+
+Kotlin DSL
+```kotlin
+listOf(
+    "core",
+    "registration",
+    "modelloader"
+).forEach { module ->
+    "net.electrisoma.visceralib:visceralib-$module:${visceralib_version}+mc${minecraft_version}-common".let {
+        implementation(it)
+    }
+}
+```
+
+Groovy DSL
+```groovy
+Set<String> modules = [
+        "core",
+        "registration",
+        "modelloader"
+]
+
+modules.each {
+    def dep = "net.electrisoma.visceralib:visceralib-${it}:${visceralib_version}+mc${minecraft_version}-common"
+    implementation(dep)
+}
+```
+
+</details>
+
+<details>
+<summary>Fabric</summary>
+
+### Loom
+
+Kotlin DSL
+```kotlin
+listOf(
+    "core",
+    "registration",
+    "modelloader"
+).forEach { module ->
+    "net.electrisoma.visceralib:visceralib-$module:${visceralib_version}+mc${minecraft_version}-fabric".let {
+        modImplementation(it)
+    }
+}
+```
+
+Groovy DSL
+```groovy
+Set<String> modules = [
+        "core",
+        "registration",
+        "modelloader"
+]
+
+modules.each {
+    def dep = "net.electrisoma.visceralib:visceralib-${it}:${visceralib_version}+mc${minecraft_version}-fabric"
+    modImplementation(dep)
+}
+```
+
+</details>
+
+<details>
+<summary>NeoForge</summary>
+
+### MDG
+
+Kotlin DSL
+```kotlin
+listOf(
+    "core",
+    "registration",
+    "modelloader"
+).forEach { module ->
+    "net.electrisoma.visceralib:visceralib-$module:${visceralib_version}+mc${minecraft_version}-neoforge".let {
+        implementation(it)
+    }
+}
+```
+
+Groovy DSL
+```groovy
+Set<String> modules = [
+        "core",
+        "registration",
+        "modelloader"
+]
+
+modules.each {
+    def dep = "net.electrisoma.visceralib:visceralib-${it}:${visceralib_version}+mc${minecraft_version}-neoforge"
+    implementation(dep)
+}
+```
+
+</details>
 
 ## Contributing
 

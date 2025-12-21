@@ -3,7 +3,7 @@
   "id": "${id}_${module}",
   "version": "${version}",
   "name": "${name}-${moduleCaps}",
-  "description": "${description}",
+  "description": "Contains essential code for each ${name} module.",
   "authors": [
     "${authors}"
   ],
@@ -26,8 +26,21 @@
   ],
   "depends": {
     "fabricloader": ">=${fabric}",
-    "fabric-api": "*",
+    "fabric-api-base": "*",
     "minecraft": "${minecraft}",
     "java": ">=${java}"
+  },
+  "custom": {
+    "modmenu": {
+      "badges": [ "library" ],
+      "parent": {
+        "id": "${id}",
+        "name": "${name}",
+        "description": "${description}",
+        "icon": "logo.png",
+        "badges": [ "library" ]
+      },
+      "update_checker": true
+    }
   }
 }

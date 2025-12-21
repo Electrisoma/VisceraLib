@@ -3,7 +3,7 @@
   "id": "${id}_${module}",
   "version": "${version}",
   "name": "${name}-${moduleCaps}",
-  "description": "${description}",
+  "description": "Contains code for modloader agnostic data generation utilities.",
   "authors": [
     "${authors}"
   ],
@@ -27,8 +27,23 @@
   "depends": {
     "visceralib_core": "*",
     "fabricloader": ">=${fabric}",
-    "fabric-api": "*",
+    "fabric-api-base": "*",
+    "fabric-data-generation-api-v1": "*",
+    "fabric-convention-tags-v2": "*",
     "minecraft": "${minecraft}",
     "java": ">=${java}"
+  },
+  "custom": {
+    "modmenu": {
+      "badges": [ "library" ],
+      "parent": {
+        "id": "${id}",
+        "name": "${name}",
+        "description": "${description}",
+        "icon": "logo.png",
+        "badges": [ "library" ]
+      },
+      "update_checker": true
+    }
   }
 }

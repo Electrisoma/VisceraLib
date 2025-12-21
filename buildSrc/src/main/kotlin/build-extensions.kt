@@ -1,6 +1,52 @@
 import dev.kikugie.stonecutter.build.StonecutterBuildExtension
+import gradle.kotlin.dsl.accessors._f2a9aebd8c5798d32ebc7e5891a02610.implementation
+import net.fabricmc.loom.api.fabricapi.FabricApiExtension
 import org.gradle.api.Project
+import org.gradle.api.artifacts.dsl.RepositoryHandler
+import org.gradle.kotlin.dsl.DependencyHandlerScope
 import org.gradle.kotlin.dsl.getByType
+import org.gradle.kotlin.dsl.maven
+import org.gradle.kotlin.dsl.project
+
+fun RepositoryHandler.strictMaven(url: String, vararg coords: String) {
+    exclusiveContent {
+        forRepository { maven(url) }
+        filter {
+            coords.forEach { coordinate ->
+                if (":" in coordinate) {
+                    val (group, module) = coordinate.split(":", limit = 2)
+                    includeModule(group, module)
+                } else {
+                    includeGroup(coordinate)
+                }
+            }
+        }
+    }
+}
+
+fun DependencyHandlerScope.fapiModules(
+    project: Project,
+    vararg modules: String,
+    version: String = project.currentMod.dep("fabric-api"),
+    mcVersion: String = project.currentMod.mc,
+    config: String = "modImplementation",
+    include: Boolean = false
+) {
+    val factory = project.extensions.getByType<FabricApiExtension>()
+    modules.forEach { name ->
+        val dep = factory.module(name, "$version+$mcVersion")
+        add(config, dep)
+        if (include) {
+            add("include", dep)
+        }
+    }
+}
+
+fun DependencyHandlerScope.listImplementation(projects: List<Project>) =
+    projects.forEach { implementation(it) }
+
+fun DependencyHandlerScope.listImplementation(projects: List<Project>, configuration: String) =
+    projects.forEach { implementation(project(it.path, configuration)) }
 
 fun Project.getMod(): ModData = ModData(this)
 fun Project.prop(key: String): String? = findProperty(key)?.toString()
@@ -39,5 +85,6 @@ value class ModData(private val project: Project) {
     fun depOrNull(key: String): String?  = project.prop("deps.$key")?.takeIf { it.isNotEmpty() && it != "" }
     fun dep(key: String)                 = requireNotNull(depOrNull(key)) { "Missing 'deps.$key'" }
 
-    fun modrinth(name: String, version: String) = "maven.modrinth:$name:$version"
+    fun curseforge(name: String, projectId: String, fileId: String) = "curse.maven:$name-$projectId:$fileId"
+    fun modrinth(name: String, version: String)                     = "maven.modrinth:$name:$version"
 }

@@ -4,11 +4,11 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         mavenCentral()
+
         maven("https://maven.fabricmc.net/")
         maven("https://maven.neoforged.net/releases/")
-        maven("https://maven.minecraftforge.net")
-        maven("https://maven.kikugie.dev/snapshots")
         maven("https://maven.kikugie.dev/releases")
+        maven("https://maven.kikugie.dev/snapshots")
     }
 }
 
@@ -17,7 +17,6 @@ plugins {
     id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.22" apply false
     id("dev.kikugie.fletching-table.neoforge") version "0.1.0-alpha.22" apply false
     id("net.neoforged.moddev") version "2.0.115" apply false
-    id("net.neoforged.moddev.legacyforge") version "2.0.107" apply false
     id("fabric-loom") version "1.11-SNAPSHOT" apply false
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
 }

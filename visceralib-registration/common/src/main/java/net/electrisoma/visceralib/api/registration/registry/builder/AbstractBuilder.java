@@ -1,6 +1,6 @@
 package net.electrisoma.visceralib.api.registration.registry.builder;
 
-import net.electrisoma.visceralib.api.core.resources.ResourceLocationUtils;
+import net.electrisoma.visceralib.api.core.resources.RLUtils;
 import net.electrisoma.visceralib.api.registration.registry.Registration;
 import net.electrisoma.visceralib.api.registration.registry.VisceralRegistry;
 import net.electrisoma.visceralib.api.registration.registry.holder.BaseHolder;
@@ -24,7 +24,7 @@ public abstract class AbstractBuilder<R, T extends R, H extends BaseHolder<T>> {
 
     public AbstractBuilder(VisceralRegistry owner, String name, Registry<R> registry) {
         this.owner = owner;
-        this.id = ResourceLocationUtils.path(owner.modId(), name);
+        this.id = RLUtils.path(owner.modId(), name);
         this.registry = registry;
     }
 

@@ -3,7 +3,7 @@
   "id": "${id}_${module}",
   "version": "${version}",
   "name": "${name}-${moduleCaps}",
-  "description": "${description}",
+  "description": "Contains code to help with loading different model formats.",
   "authors": [
     "${authors}"
   ],
@@ -30,5 +30,18 @@
     "fabric-api": "*",
     "minecraft": "${minecraft}",
     "java": ">=${java}"
+  },
+  "custom": {
+    "modmenu": {
+      "badges": [ "library" ],
+      "parent": {
+        "id": "${id}",
+        "name": "${name}",
+        "description": "${description}",
+        "icon": "logo.png",
+        "badges": [ "library" ]
+      },
+      "update_checker": true
+    }
   }
 }

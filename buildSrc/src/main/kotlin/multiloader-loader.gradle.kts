@@ -18,10 +18,8 @@ dependencies {
 
 tasks {
     compileJava {
-        inputs.files(commonJava)
-        doFirst {
-            source(commonJava.files)
-        }
+        dependsOn(commonJava)
+        source(commonJava)
     }
 
     processResources {

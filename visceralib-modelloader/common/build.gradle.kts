@@ -6,8 +6,6 @@ plugins {
     id("dev.kikugie.fletching-table.fabric")
 }
 
-val main: SourceSet? = sourceSets.getByName("main")
-
 val visceraLibCorePathCommon: String = ":visceralib-core:common:${currentMod.mc}"
 
 val dependencyProjects: List<Project> = listOf(
@@ -82,14 +80,12 @@ val commonResources: Configuration by configurations.creating {
 }
 
 artifacts {
-    afterEvaluate {
-        val mainSourceSet = main!!
+    val mainSourceSet = sourceSets.getByName("main")
 
-        mainSourceSet.java.sourceDirectories.files.forEach {
-            add(commonJava.name, it)
-        }
-        mainSourceSet.resources.sourceDirectories.files.forEach {
-            add(commonResources.name, it)
-        }
+    mainSourceSet.java.sourceDirectories.files.forEach {
+        add(commonJava.name, it)
+    }
+    mainSourceSet.resources.sourceDirectories.files.forEach {
+        add(commonResources.name, it)
     }
 }

@@ -4,8 +4,6 @@ plugins {
     id("dev.kikugie.fletching-table.neoforge")
 }
 
-val main: SourceSet? = sourceSets.getByName("main")
-
 val visceraLibCorePathCommon: String = ":visceralib-core:common:${currentMod.mc}"
 val visceraLibCorePathLoader: String = ":visceralib-core:neoforge:${currentMod.mc}"
 
@@ -38,9 +36,7 @@ neoForge {
 }
 
 dependencies {
-    dependencyProjects.forEach {
-        implementation(it)
-    }
+    listImplementation(dependencyProjects)
 }
 
 neoForge {

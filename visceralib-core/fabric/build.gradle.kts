@@ -1,22 +1,12 @@
 @file:Suppress("UnstableApiUsage")
 
 import org.gradle.kotlin.dsl.*
-import java.util.Properties
-
-val localProperties = Properties()
-val localPropertiesFile = rootProject.file("local.properties")
-if (localPropertiesFile.exists()) {
-    localProperties.load(localPropertiesFile.inputStream())
-}
 
 plugins {
     `multiloader-loader`
     id("fabric-loom")
-    id("maven-publish")
     id("dev.kikugie.fletching-table.fabric")
 }
-
-val main: SourceSet? = sourceSets.getByName("main")
 
 val commonProjectPath: String = project.parent!!.parent!!.path + ":common:"
 val versionedCommonProjectPath: String = commonProjectPath + currentMod.mc
@@ -48,10 +38,21 @@ dependencies {
         version = currentMod.dep("fabric-loader")
     )
 
-    modImplementation(
-        group = "net.fabricmc.fabric-api",
-        name = "fabric-api",
-        version = "${currentMod.dep("fabric-api")}+${currentMod.mc}"
+    modCompileOnly("com.terraformersmc:modmenu:${currentMod.dep("modmenu")}")
+    modRuntimeOnly("com.terraformersmc:modmenu:${currentMod.dep("modmenu")}")
+
+    fapiModules(project,
+        "fabric-api-base",
+        "fabric-resource-loader-v0",
+        "fabric-screen-api-v1",
+        "fabric-key-binding-api-v1",
+        "fabric-lifecycle-events-v1",
+        config = "modRuntimeOnly"
+    )
+
+    fapiModules(project,
+        "fabric-api-base",
+        include = true
     )
 }
 
@@ -92,36 +93,5 @@ tasks.named<ProcessResources>("processResources") {
             rename(awFile.name, "${currentMod.id}_${currentMod.module}.accesswidener")
             into("")
         }
-    }
-}
-apply(plugin = "maven-publish")
-
-publishing {
-    publications {
-        register<MavenPublication>("mavenJava") {
-            if (project.plugins.hasPlugin("fabric-loom")) {
-                artifact(tasks.named("remapJar"))
-            } else {
-                artifact(tasks.named("jar"))
-            }
-
-            artifact(tasks.named("sourcesJar"))
-
-            artifactId = "${currentMod.id}-${currentMod.module}-$loader-${currentMod.mc}"
-            group = currentMod.group
-            version = "${currentMod.version}+mc${currentMod.mc}"
-        }
-    }
-
-    repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/electrisoma/VisceraLib")
-            credentials {
-                username = System.getenv("GITHUB_ACTOR") ?: localProperties.getProperty("mavenUsername", "")
-                password = System.getenv("GITHUB_TOKEN") ?: localProperties.getProperty("mavenToken", "")
-            }
-        }
-        mavenLocal()
     }
 }

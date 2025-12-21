@@ -1,5 +1,7 @@
 package net.electrisoma.visceralib.api.core.utils;
 
+import net.minecraft.resources.ResourceLocation;
+
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.stream.Collectors;

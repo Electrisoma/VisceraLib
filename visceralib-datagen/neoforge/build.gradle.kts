@@ -4,8 +4,6 @@ plugins {
     id("dev.kikugie.fletching-table.neoforge")
 }
 
-val main: SourceSet? = sourceSets.getByName("main")
-
 val visceraLibCorePathCommon: String = ":visceralib-core:common:${currentMod.mc}"
 val visceraLibCorePathLoader: String = ":visceralib-core:neoforge:${currentMod.mc}"
 
@@ -38,12 +36,8 @@ neoForge {
 }
 
 dependencies {
-    dependencyProjects.forEach {
-        implementation(it)
-    }
+    listImplementation(dependencyProjects)
 }
-
-val selfModule = project.parent?.parent ?: project
 
 neoForge {
     runs {
@@ -56,22 +50,6 @@ neoForge {
             server()
             ideName = "NeoForge Server (${project.path})"
             gameDirectory = file("../../../../run/server")
-        }
-        register("data") {
-            data()
-            ideName = "NeoForge Datagen (${project.path})"
-            gameDirectory = file("../../../../run/data")
-
-            val outputPath = project.projectDir.parentFile.resolve("src/generated/resources")
-            val commonPath = project.projectDir.parentFile.parentFile.resolve("common/src/main/resources")
-
-            programArguments.addAll(
-                "--mod",
-                currentMod.id,
-                "--all",
-                "--output", outputPath.absolutePath,
-                "--existing", commonPath.absolutePath
-            )
         }
     }
 
@@ -88,9 +66,6 @@ neoForge {
         }
     }
 }
-
-println("NEOFORGE LINE " + selfModule.file("neoforge/src/generated/resources").absolutePath)
-println("COMMON LINE " + selfModule.file("common/src/main/resources").absolutePath)
 
 sourceSets.main {
     resources {
