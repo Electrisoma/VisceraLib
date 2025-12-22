@@ -17,6 +17,10 @@ dependencies {
 }
 
 tasks {
+    jar {
+        exclude("accesswideners", "accesswideners/**")
+    }
+
     compileJava {
         dependsOn(commonJava)
         source(commonJava)
@@ -25,9 +29,5 @@ tasks {
     processResources {
         dependsOn(commonResources)
         from(commonResources)
-    }
-
-    jar {
-        exclude("accesswideners", "accesswideners/**")
     }
 }

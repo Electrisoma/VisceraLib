@@ -11,52 +11,36 @@ import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class BlockBuilder<B extends Block> extends AbstractBuilder<Block, B, BlockHolder<B>> {
-
-    private final Function<Properties, B> factory;
+public class BlockBuilder<T extends Block> extends AbstractBuilder<Block, T, BlockHolder<T>> {
+    private final Function<Properties, T> factory;
     private Supplier<Properties> initialProperties = Properties::of;
     private Function<Properties, Properties> properties = Function.identity();
 
-    public BlockBuilder(
-            VisceralRegistry owner,
-            String name,
-            Function<Properties, B> factory
-    ) {
+    public BlockBuilder(VisceralRegistry owner, String name, Function<Properties, T> factory) {
         super(owner, name, BuiltInRegistries.BLOCK);
         this.factory = factory;
     }
 
-    public BlockBuilder<B> initialProperties(Block block) {
-        initialProperties = () ->
-                /*? =1.21.1 {*/Properties.ofFullCopy
-                /*?} else {*//*Properties.copy*//*?}*/
-                        (block);
+    public BlockBuilder<T> initialProperties(Supplier<T> block) {
+        initialProperties = () -> Properties.ofFullCopy(block.get());
         return this;
     }
 
-    public BlockBuilder<B> initialProperties(Supplier<B> block) {
-        initialProperties = () ->
-                /*? =1.21.1 {*/Properties.ofFullCopy
-                /*?} else {*//*Properties.copy*//*?}*/
-                        (block.get());
-        return this;
-    }
-
-    public BlockBuilder<B> properties(Function<Properties, Properties> properties) {
+    public BlockBuilder<T> properties(Function<Properties, Properties> properties) {
         this.properties = this.properties.andThen(properties);
         return this;
     }
 
     @Override
-    B build() {
+    T build() {
         Properties properties = initialProperties.get();
         properties = this.properties.apply(properties);
         return factory.apply(properties);
     }
 
     @Override
-    BlockHolder<B> getHolder(HolderOwner<Block> owner, ResourceKey<Block> key) {
+    BlockHolder<T> getHolder(HolderOwner<Block> owner, ResourceKey<Block> key) {
         //noinspection unchecked
-        return (BlockHolder<B>) new BlockHolder<>(owner, key);
+        return (BlockHolder<T>) new BlockHolder<>(owner, key);
     }
 }

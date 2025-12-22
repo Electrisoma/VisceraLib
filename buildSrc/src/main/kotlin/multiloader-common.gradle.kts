@@ -88,34 +88,6 @@ val localPropertiesFile: File = rootProject.file("local.properties")
 if (localPropertiesFile.exists())
     localPropertiesFile.inputStream().use(localProperties::load)
 
-//val artifactVersion = project.version.toString()
-//val isDuplicate = try {
-//    val groupPath = "${currentMod.group}.${currentMod.id}".replace('.', '/')
-//    val artifactId = base.archivesName.get()
-//    val url = "https://maven.pkg.github.com/electrisoma/VisceraLib/$groupPath/$artifactId/$artifactVersion/$artifactId-$artifactVersion.jar"
-//
-//    val connection = URI(url).toURL().openConnection() as HttpURLConnection
-//    connection.requestMethod = "HEAD"
-//    val username = System.getenv("GITHUB_ACTOR") ?: localProperties.getProperty("mavenUsername", "")
-//    val token = System.getenv("GITHUB_TOKEN") ?: localProperties.getProperty("mavenToken", "")
-//
-//    if (username.isNotEmpty() && token.isNotEmpty()) {
-//        val auth = Base64.getEncoder().encodeToString("$username:$token".toByteArray())
-//        connection.setRequestProperty("Authorization", "Basic $auth")
-//    }
-//
-//    connection.responseCode == 200
-//} catch (_: Exception) {
-//    false
-//}
-//
-//if (isDuplicate) {
-//    tasks.withType<PublishToMavenRepository>().configureEach {
-//        enabled = false
-//    }
-//    logger.lifecycle("Skipping publication for ${project.name} because version $artifactVersion already exists on GitHub Packages.")
-//}
-
 publishing {
     publications {
         register<MavenPublication>("mavenJava") {

@@ -1,15 +1,8 @@
-@file:Suppress("UnstableApiUsage")
-
-import org.gradle.kotlin.dsl.*
-
 plugins {
     `multiloader-loader`
     id("fabric-loom")
     id("dev.kikugie.fletching-table.fabric")
 }
-
-val commonProjectPath: String = project.parent!!.parent!!.path + ":common:"
-val versionedCommonProjectPath: String = commonProjectPath + currentMod.mc
 
 fletchingTable {
     j52j.register("main") {
@@ -18,42 +11,21 @@ fletchingTable {
 }
 
 dependencies {
-    minecraft(
-        group = "com.mojang",
-        name = "minecraft",
-        version = currentMod.mc
-    )
 
-    mappings(loom.layered {
-        officialMojangMappings()
-        currentMod.depOrNull("parchment")?.let {
-            parchmentVersion ->
-            parchment("org.parchmentmc.data:parchment-${currentMod.mc}:$parchmentVersion@zip")
-        }
-    })
+    setup(project)
+    minecraft()
+    mappings(layeredMappings())
+    fabricLoader()
 
-    modImplementation(
-        group = "net.fabricmc",
-        name = "fabric-loader",
-        version = currentMod.dep("fabric-loader")
-    )
+    embedFapi("fabric-api-base")
 
     modCompileOnly("com.terraformersmc:modmenu:${currentMod.dep("modmenu")}")
     modRuntimeOnly("com.terraformersmc:modmenu:${currentMod.dep("modmenu")}")
 
-    fapiModules(project,
-        "fabric-api-base",
-        "fabric-resource-loader-v0",
-        "fabric-screen-api-v1",
-        "fabric-key-binding-api-v1",
-        "fabric-lifecycle-events-v1",
-        config = "modRuntimeOnly"
-    )
-
-    fapiModules(project,
-        "fabric-api-base",
-        include = true
-    )
+    runtimeFapi("fabric-resource-loader-v0")
+    runtimeFapi("fabric-screen-api-v1")
+    runtimeFapi("fabric-key-binding-api-v1")
+    runtimeFapi("fabric-lifecycle-events-v1")
 }
 
 loom {
@@ -79,13 +51,14 @@ loom {
         }
     }
 
+    @Suppress("UnstableApiUsage")
     mixin {
         defaultRefmapName = "${currentMod.id}_${currentMod.module}.refmap.json"
     }
 }
 
 tasks.named<ProcessResources>("processResources") {
-    val commonResDir = common.project.file("src/main/resources")
+    val commonResDir = project(common.project.parent!!.path).file("src/main/resources")
     val awFile = commonResDir.resolve("accesswideners/${currentMod.mc}-${currentMod.id}_${currentMod.module}.accesswidener")
 
     if (awFile.exists()) {

@@ -52,7 +52,7 @@ public abstract class VisceralTagProvider<T> extends TagsProvider<T> {
         private final TagBuilder internalBuilder;
         private final Function<T, ResourceKey<T>> lookup;
 
-        private VisceralTagBuilder(
+        public VisceralTagBuilder(
                 TagBuilder builder,
                 Function<T, ResourceKey<T>> lookup
         ) {
@@ -92,9 +92,10 @@ public abstract class VisceralTagProvider<T> extends TagsProvider<T> {
         }
 
         @SafeVarargs
-        public final void addTags(@NotNull TagKey<T>... tags) {
+        public final VisceralTagBuilder<T> addTags(@NotNull TagKey<T>... tags) {
             for (TagKey<T> tag : tags)
                 this.addTag(tag);
+            return this;
         }
 
         @Override @NotNull

@@ -6,9 +6,6 @@ plugins {
     id("dev.kikugie.fletching-table.neoforge")
 }
 
-val commonProjectPath: String = project.parent!!.parent!!.path + ":common:"
-val versionedCommonProjectPath: String = commonProjectPath + currentMod.mc
-
 fletchingTable {
     j52j.register("main") {
         extension("json", "**/*.json5")
@@ -23,6 +20,11 @@ neoForge {
     enable {
         version = currentMod.dep("neoforge")
     }
+}
+
+dependencies {
+    compileOnly(currentMod.modrinth("better-modlist", currentMod.dep("better_modlist")))
+    runtimeOnly(currentMod.modrinth("better-modlist", currentMod.dep("better_modlist")))
 }
 
 neoForge {

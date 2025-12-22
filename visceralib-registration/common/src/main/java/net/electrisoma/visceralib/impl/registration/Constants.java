@@ -3,7 +3,7 @@ package net.electrisoma.visceralib.impl.registration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-final class Constants {
+public final class Constants {
 
     public static final String MOD_ID = "visceralib_registration";
     public static final String NAME = "VisceraLib-Registration";

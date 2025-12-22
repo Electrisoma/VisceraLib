@@ -4,15 +4,9 @@ plugins {
     id("dev.kikugie.fletching-table.neoforge")
 }
 
-val visceraLibCorePathCommon: String = ":visceralib-core:common:${currentMod.mc}"
-val visceraLibCorePathLoader: String = ":visceralib-core:neoforge:${currentMod.mc}"
-
-val commonProjectPath: String = project.parent!!.parent!!.path + ":common:"
-val versionedCommonProjectPath: String = commonProjectPath + currentMod.mc
-
 val dependencyProjects: List<Project> = listOf(
-    project(visceraLibCorePathCommon),
-    project(visceraLibCorePathLoader)
+    project(":visceralib-core:common:${currentMod.mc}"),
+    project(":visceralib-core:neoforge:${currentMod.mc}")
 )
 
 dependencyProjects.forEach {
@@ -36,6 +30,8 @@ neoForge {
 }
 
 dependencies {
+    compileOnly(currentMod.modrinth("better-modlist", currentMod.dep("better_modlist")))
+    runtimeOnly(currentMod.modrinth("better-modlist", currentMod.dep("better_modlist")))
     listImplementation(dependencyProjects)
 }
 

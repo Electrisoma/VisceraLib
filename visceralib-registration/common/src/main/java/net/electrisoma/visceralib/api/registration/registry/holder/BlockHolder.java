@@ -6,7 +6,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class BlockHolder<T extends Block> extends ItemLikeHolder<T> {
-
     public BlockHolder(HolderOwner<T> owner, ResourceKey<T> key) {
         super(owner, key);
     }

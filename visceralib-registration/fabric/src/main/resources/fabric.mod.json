@@ -14,10 +14,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "${group}.${id}.impl.${module}.EntrypointFabric"
+      "net.electrisoma.visceralib.impl.registration.EntrypointFabric"
     ],
     "client": [
-      "${group}.${id}.impl.${module}.ClientEntrypointFabric"
+      "net.electrisoma.visceralib.impl.registration.ClientEntrypointFabric"
     ]
   },
   "mixins": [
@@ -27,7 +27,8 @@
   "depends": {
     "visceralib_core": "*",
     "fabricloader": ">=${fabric}",
-    "fabric-api": "*",
+    "fabric-api-base": "*",
+    "fabric-particles-v1": "*",
     "minecraft": "${minecraft}",
     "java": ">=${java}"
   },

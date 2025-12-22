@@ -8,7 +8,7 @@ modId="${id}_${module}"
 version="${version}"
 displayName="${name}-${moduleCaps}"
 authors="${authors}"
-description="${description}"
+description="Contains code to help with loading different model formats."
 logoFile="logo.png"
 logoBlur=false
 displayURL=""
@@ -42,3 +42,13 @@ type="required"
 versionRange="[${minMinecraft},)"
 ordering="NONE"
 side="BOTH"
+
+[modproperties.modmenu]
+badges=["library"]
+
+[modproperties.modmenu_parent]
+id="${id}"
+name= "${name}"
+description= "${description}"
+icon= "logo.png"
+badges= ["library"]

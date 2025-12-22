@@ -21,8 +21,4 @@ public record RegistryObject<T>(BaseHolder<T> holder) {
     public ResourceKey<T> getResourceKey() {
         return holder.key();
     }
-
-    public static <T> RegistryObject<T> of(BaseHolder<T> holder) {
-        return new RegistryObject<>(holder);
-    }
 }

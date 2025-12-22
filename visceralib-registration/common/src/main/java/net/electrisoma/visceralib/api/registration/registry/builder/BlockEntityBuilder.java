@@ -16,32 +16,27 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class BlockEntityBuilder<BE extends BlockEntity> extends AbstractBuilder<BlockEntityType<?>, BlockEntityType<BE>, BlockEntityHolder<BE>> {
-
-    private final BlockEntityFactory<BE> factory;
+public class BlockEntityBuilder<T extends BlockEntity> extends AbstractBuilder<BlockEntityType<?>, BlockEntityType<T>, BlockEntityHolder<T>> {
+    private final BlockEntityFactory<T> factory;
     private final Set<Supplier<@NotNull Block>> validBlocks = new HashSet<>();
 
-    public BlockEntityBuilder(
-            VisceralRegistry owner,
-            String name,
-            BlockEntityFactory<BE> factory
-    ) {
+    public BlockEntityBuilder(VisceralRegistry owner, String name, BlockEntityFactory<T> factory) {
         super(owner, name, BuiltInRegistries.BLOCK_ENTITY_TYPE);
         this.factory = factory;
     }
 
     @SafeVarargs
-    public final BlockEntityBuilder<BE> validBlocks(Supplier<@NotNull Block>... blocks) {
+    public final BlockEntityBuilder<T> validBlocks(Supplier<@NotNull Block>... blocks) {
         return validBlocks(List.of(blocks));
     }
 
-    public BlockEntityBuilder<BE> validBlocks(List<Supplier<@NotNull Block>> blocks) {
+    public BlockEntityBuilder<T> validBlocks(List<Supplier<@NotNull Block>> blocks) {
         validBlocks.addAll(blocks);
         return this;
     }
 
     @Override
-    BlockEntityType<BE> build() {
+    BlockEntityType<T> build() {
         Set<Block> validBlocks = this.validBlocks.stream()
                 .map(Supplier::get)
                 .collect(Collectors.toSet());
@@ -50,8 +45,8 @@ public class BlockEntityBuilder<BE extends BlockEntity> extends AbstractBuilder<
     }
 
     @Override
-    BlockEntityHolder<BE> getHolder(HolderOwner<BlockEntityType<?>> owner, ResourceKey<BlockEntityType<?>> key) {
-        //noinspection unchecked, rawtypes
+    BlockEntityHolder<T> getHolder(HolderOwner<BlockEntityType<?>> owner, ResourceKey<BlockEntityType<?>> key) {
+        //noinspection unchecked,rawtypes
         return new BlockEntityHolder<>((HolderOwner) owner, (ResourceKey) key);
     }
 

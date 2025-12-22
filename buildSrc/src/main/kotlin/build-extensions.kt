@@ -1,52 +1,14 @@
 import dev.kikugie.stonecutter.build.StonecutterBuildExtension
-import gradle.kotlin.dsl.accessors._f2a9aebd8c5798d32ebc7e5891a02610.implementation
+import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import net.fabricmc.loom.api.fabricapi.FabricApiExtension
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.dsl.RepositoryHandler
+import org.gradle.api.plugins.ExtensionAware
 import org.gradle.kotlin.dsl.DependencyHandlerScope
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.maven
 import org.gradle.kotlin.dsl.project
-
-fun RepositoryHandler.strictMaven(url: String, vararg coords: String) {
-    exclusiveContent {
-        forRepository { maven(url) }
-        filter {
-            coords.forEach { coordinate ->
-                if (":" in coordinate) {
-                    val (group, module) = coordinate.split(":", limit = 2)
-                    includeModule(group, module)
-                } else {
-                    includeGroup(coordinate)
-                }
-            }
-        }
-    }
-}
-
-fun DependencyHandlerScope.fapiModules(
-    project: Project,
-    vararg modules: String,
-    version: String = project.currentMod.dep("fabric-api"),
-    mcVersion: String = project.currentMod.mc,
-    config: String = "modImplementation",
-    include: Boolean = false
-) {
-    val factory = project.extensions.getByType<FabricApiExtension>()
-    modules.forEach { name ->
-        val dep = factory.module(name, "$version+$mcVersion")
-        add(config, dep)
-        if (include) {
-            add("include", dep)
-        }
-    }
-}
-
-fun DependencyHandlerScope.listImplementation(projects: List<Project>) =
-    projects.forEach { implementation(it) }
-
-fun DependencyHandlerScope.listImplementation(projects: List<Project>, configuration: String) =
-    projects.forEach { implementation(project(it.path, configuration)) }
 
 fun Project.getMod(): ModData = ModData(this)
 fun Project.prop(key: String): String? = findProperty(key)?.toString()
@@ -86,5 +48,69 @@ value class ModData(private val project: Project) {
     fun dep(key: String)                 = requireNotNull(depOrNull(key)) { "Missing 'deps.$key'" }
 
     fun curseforge(name: String, projectId: String, fileId: String) = "curse.maven:$name-$projectId:$fileId"
-    fun modrinth(name: String, version: String)                     = "maven.modrinth:$name:$version"
+    fun modrinth(name: String, version: String) = "maven.modrinth:$name:$version"
 }
+
+fun RepositoryHandler.strictMaven(url: String, vararg coords: String) {
+    exclusiveContent {
+        forRepository { maven(url) }
+        filter {
+            coords.forEach { coordinate ->
+                if (":" in coordinate) {
+                    val (group, module) = coordinate.split(":", limit = 2)
+                    includeModule(group, module)
+                } else {
+                    includeGroup(coordinate)
+                }
+            }
+        }
+    }
+}
+
+private val DependencyHandlerScope.project: Project
+    get() = (this as ExtensionAware).extensions.getByName("currentProject") as Project
+
+fun DependencyHandlerScope.setup(project: Project) =
+    (this as ExtensionAware).extensions.add("currentProject", project)
+
+fun DependencyHandlerScope.embedFapi(name: String) {
+    val factory = project.extensions.getByType<FabricApiExtension>()
+    val version = "${project.currentMod.dep("fabric-api")}+${project.currentMod.mc}"
+    val module = factory.module(name, version)
+
+    add("modImplementation", module)
+    add("include", module)
+}
+
+fun DependencyHandlerScope.runtimeFapi(name: String) {
+    val factory = project.extensions.getByType<FabricApiExtension>()
+    val version = "${project.currentMod.dep("fabric-api")}+${project.currentMod.mc}"
+    val module = factory.module(name, version)
+
+    add("modRuntimeOnly", module)
+}
+
+fun DependencyHandlerScope.listImplementation(projects: List<Project>) =
+    projects.forEach { "implementation"(it) }
+
+fun DependencyHandlerScope.listImplementation(projects: List<Project>, configuration: String) =
+    projects.forEach { "implementation"(project(it.path, configuration)) }
+
+fun DependencyHandlerScope.minecraft() = add(
+    "minecraft",
+    "com.mojang:minecraft:${project.currentMod.mc}"
+)
+
+fun DependencyHandlerScope.fabricLoader() = add(
+    "modImplementation",
+    "net.fabricmc:fabric-loader:${project.currentMod.dep("fabric-loader")}"
+)
+
+@Suppress("UnstableApiUsage")
+fun DependencyHandlerScope.layeredMappings(): Dependency =
+    project.extensions.getByType<LoomGradleExtensionAPI>().layered {
+        officialMojangMappings()
+        project.currentMod.depOrNull("parchment")?.let { version ->
+            parchment("org.parchmentmc.data:parchment-${project.currentMod.mc}:$version@zip")
+        }
+    }

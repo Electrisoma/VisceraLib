@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 plugins {
     id("multiloader-common")
     id("fabric-loom")
@@ -11,6 +9,7 @@ loom {
         "../../src/main/resources/accesswideners/${currentMod.mc}-${currentMod.id}_${currentMod.module}.accesswidener"
     )
 
+    @Suppress("UnstableApiUsage")
     mixin {
         useLegacyMixinAp = false
     }
@@ -23,31 +22,13 @@ fletchingTable {
 }
 
 dependencies {
-    minecraft(
-        group = "com.mojang",
-        name = "minecraft",
-        version = currentMod.mc
-    )
 
-    mappings(loom.layered {
-        officialMojangMappings()
-        currentMod.depOrNull("parchment")?.let {
-                parchmentVersion ->
-            parchment("org.parchmentmc.data:parchment-${currentMod.mc}:$parchmentVersion@zip")
-        }
-    })
+    setup(project)
+    minecraft()
+    mappings(layeredMappings())
 
-    modCompileOnly(
-        group = "net.fabricmc",
-        name = "fabric-loader",
-        version = currentMod.dep("fabric-loader")
-    )
-
-    compileOnly(
-        group = "org.spongepowered",
-        name = "mixin",
-        version = "0.8.5"
-    )
+    compileOnly("net.fabricmc:fabric-loader:${currentMod.dep("fabric-loader")}")
+    compileOnly("net.fabricmc:sponge-mixin:0.13.2+mixin.0.8.5")
 
     "io.github.llamalad7:mixinextras-common:0.5.0".let {
         compileOnly(it)

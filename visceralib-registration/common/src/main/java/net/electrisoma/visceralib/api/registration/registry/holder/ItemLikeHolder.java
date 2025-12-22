@@ -9,7 +9,6 @@ import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemLikeHolder<T extends ItemLike> extends BaseHolder<T> implements ItemLike {
-
     protected ItemLikeHolder(HolderOwner<T> owner, ResourceKey<T> key) {
         super(owner, key);
     }
@@ -30,7 +29,7 @@ public class ItemLikeHolder<T extends ItemLike> extends BaseHolder<T> implements
         return asItem() == item;
     }
 
-    @Override @NotNull
+    @Override
     public Item asItem() {
         return value().asItem();
     }
