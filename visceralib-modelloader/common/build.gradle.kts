@@ -43,9 +43,7 @@ dependencies {
         annotationProcessor(it)
     }
 
-    dependencyProjects.forEach {
-        implementation(it)
-    }
+    listImplementation(dependencyProjects)
 }
 
 val commonJava: Configuration by configurations.creating {

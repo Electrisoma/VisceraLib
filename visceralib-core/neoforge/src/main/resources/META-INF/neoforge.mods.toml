@@ -4,44 +4,45 @@ license="${license}"
 issueTrackerURL="${github}/issues"
 
 [[mods]]
-modId="${id}_${module}"
-version="${version}"
-displayName="${name}-${moduleCaps}"
-authors="${authors}"
-description="Contains essential code for each ${name} module."
-logoFile="logo.png"
-logoBlur=false
-displayURL=""
+    modId="visceralib_core"
+    version="${version}"
+    displayName="VisceraLib-Core"
+    authors="${authors}"
+    credits="${contributors}"
+    description="Contains essential code for each ${name} module."
+    logoFile="assets/visceralib-core/logo.png"
+    logoBlur=false
+    displayURL="${github}"
 
 [[mixins]]
-config="${id}_${module}-common.mixins.json"
-
+    config="mixins/visceralib_core-common.mixins.json"
 [[mixins]]
-config="${id}_${module}-neoforge.mixins.json"
-
+    config="mixins/visceralib_core-neoforge.mixins.json"
+[[mixins]]
+    config="mixins/visceralib_core-common.client.mixins.json"
+[[mixins]]
+    config="mixins/visceralib_core-neoforge.client.mixins.json"
 [[accessTransformers]]
-file = "META-INF/accesstransformer.cfg"
+    file="META-INF/accesstransformer.cfg"
 
-[[dependencies.${id}_${module}]]
-modId="neoforge"
-type="required"
-versionRange="*"
-ordering="NONE"
-side="BOTH"
-
-[[dependencies.${id}_${module}]]
-modId="minecraft"
-type="required"
-versionRange="[${minMinecraft},)"
-ordering="NONE"
-side="BOTH"
+[[dependencies.visceralib_core]]
+    modId="neoforge"
+    type="required"
+    versionRange="*"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.visceralib_core]]
+    modId="minecraft"
+    type="required"
+    versionRange="[${minMinecraft},)"
+    ordering="NONE"
+    side="BOTH"
 
 [modproperties.modmenu]
-badges=["library"]
-
+    badges=[ "library" ]
 [modproperties.modmenu_parent]
-id="${id}"
-name= "${name}"
-description= "${description}"
-icon= "logo.png"
-badges= ["library"]
+    id="visceralib"
+    name="VisceraLib"
+    description="${description}"
+    icon="assets/visceralib-core/logo.png"
+    badges=[ "library" ]

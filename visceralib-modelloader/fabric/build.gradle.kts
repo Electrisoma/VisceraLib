@@ -36,7 +36,8 @@ dependencies {
     listImplementation(fabricProjects, "namedElements")
 
     modCompileOnly("com.terraformersmc:modmenu:${currentMod.dep("modmenu")}")
-    modRuntimeOnly("com.terraformersmc:modmenu:${currentMod.dep("modmenu")}")
+    if(property("run_modmenu").toString().toBoolean())
+        modRuntimeOnly("com.terraformersmc:modmenu:${currentMod.dep("modmenu")}")
 
     runtimeFapi("fabric-resource-loader-v0")
     runtimeFapi("fabric-screen-api-v1")

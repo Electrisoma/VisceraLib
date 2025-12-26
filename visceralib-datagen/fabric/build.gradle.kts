@@ -29,15 +29,16 @@ dependencies {
     mappings(layeredMappings())
     fabricLoader()
 
+    listImplementation(commonProjects)
+    listImplementation(fabricProjects, "namedElements")
+
     embedFapi("fabric-api-base")
     embedFapi("fabric-data-generation-api-v1")
     embedFapi("fabric-convention-tags-v2")
 
-    listImplementation(commonProjects)
-    listImplementation(fabricProjects, "namedElements")
-
     modCompileOnly("com.terraformersmc:modmenu:${currentMod.dep("modmenu")}")
-    modRuntimeOnly("com.terraformersmc:modmenu:${currentMod.dep("modmenu")}")
+    if(property("run_modmenu").toString().toBoolean())
+        modRuntimeOnly("com.terraformersmc:modmenu:${currentMod.dep("modmenu")}")
 
     runtimeFapi("fabric-resource-loader-v0")
     runtimeFapi("fabric-screen-api-v1")

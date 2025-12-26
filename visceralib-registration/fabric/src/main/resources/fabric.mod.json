@@ -1,34 +1,34 @@
 {
   "schemaVersion": 1,
-  "id": "${id}_${module}",
+  "id": "visceralib_registration",
   "version": "${version}",
-  "name": "${name}-${moduleCaps}",
+  "name": "VisceraLib-Registration",
   "description": "Contains code to help with registering content in common.",
-  "authors": [
-    "${authors}"
-  ],
+  "authors": [ "${authors}" ],
+  "contributors": [ "${contributors}" ],
   "contact": {
+    "homepage": "${github}",
+    "sources": "${github}",
+    "issues": "${github}/issues"
   },
   "license": "${license}",
-  "icon": "logo.png",
+  "icon": "assets/visceralib-registration/logo.png",
   "environment": "*",
   "entrypoints": {
-    "main": [
-      "net.electrisoma.visceralib.impl.registration.EntrypointFabric"
-    ],
-    "client": [
-      "net.electrisoma.visceralib.impl.registration.ClientEntrypointFabric"
-    ]
+    "main": [ "net.electrisoma.visceralib.impl.registration.EntrypointFabric" ],
+    "client": [ "net.electrisoma.visceralib.impl.registration.client.ClientEntrypointFabric" ]
   },
   "mixins": [
-    "${id}_${module}-common.mixins.json",
-    "${id}_${module}-fabric.mixins.json"
+    "visceralib_registration-common.mixins.json",
+    "visceralib_registration-fabric.mixins.json",
+    "visceralib_registration-common.client.mixins.json",
+    "visceralib_registration-fabric.client.mixins.json"
   ],
   "depends": {
     "visceralib_core": "*",
-    "fabricloader": ">=${fabric}",
     "fabric-api-base": "*",
     "fabric-particles-v1": "*",
+    "fabricloader": ">=${fabric}",
     "minecraft": "${minecraft}",
     "java": ">=${java}"
   },
@@ -39,7 +39,7 @@
         "id": "${id}",
         "name": "${name}",
         "description": "${description}",
-        "icon": "logo.png",
+        "icon": "assets/visceralib-registration/logo.png",
         "badges": [ "library" ]
       },
       "update_checker": true

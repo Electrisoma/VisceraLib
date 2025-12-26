@@ -1,5 +1,3 @@
-import org.gradle.kotlin.dsl.*
-
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -17,7 +15,7 @@ plugins {
     id("dev.kikugie.fletching-table.fabric") version "0.1.0-alpha.22" apply false
     id("dev.kikugie.fletching-table.neoforge") version "0.1.0-alpha.22" apply false
     id("net.neoforged.moddev") version "2.0.115" apply false
-    id("fabric-loom") version "1.11-SNAPSHOT" apply false
+    id("fabric-loom") version "1.12-SNAPSHOT" apply false
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
 }
 
@@ -61,6 +59,5 @@ fun module(name: String) {
 
 module("visceralib-core")
 module("visceralib-datagen")
-//module("visceralib-events")
 module("visceralib-modelloader")
 module("visceralib-registration")

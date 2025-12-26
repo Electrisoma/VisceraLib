@@ -14,9 +14,8 @@ public abstract class TagsProviderMixin {
             at = @At("RETURN")
     )
     private String visceralib$customName(String original) {
-        if ((Object) this instanceof VisceralTagProvider<?> provider) {
-            return provider.visceral$getName();
-        }
-        return original;
+        return (Object) this instanceof VisceralTagProvider<?> provider
+                ? provider.visceral$getName()
+                : original;
     }
 }

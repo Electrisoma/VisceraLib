@@ -4,51 +4,51 @@ license="${license}"
 issueTrackerURL="${github}/issues"
 
 [[mods]]
-modId="${id}_${module}"
-version="${version}"
-displayName="${name}-${moduleCaps}"
-authors="${authors}"
-description="Contains code for modloader agnostic data generation utilities."
-logoFile="logo.png"
-logoBlur=false
-displayURL=""
+    modId="visceralib_datagen"
+    version="${version}"
+    displayName="VisceraLib-Datagen"
+    authors="${authors}"
+    credits="${contributors}"
+    description="Contains code for modloader agnostic data generation utilities."
+    logoFile="assets/visceralib-datagen/logo.png"
+    logoBlur=false
+    displayURL="${github}"
 
 [[mixins]]
-config="${id}_${module}-common.mixins.json"
-
+    config="mixins/visceralib_datagen-common.mixins.json"
 [[mixins]]
-config="${id}_${module}-neoforge.mixins.json"
-
+    config="mixins/visceralib_datagen-neoforge.mixins.json"
+[[mixins]]
+    config="mixins/visceralib_datagen-common.client.mixins.json"
+[[mixins]]
+    config="mixins/visceralib_datagen-neoforge.client.mixins.json"
 [[accessTransformers]]
-file = "META-INF/accesstransformer.cfg"
+    file="META-INF/accesstransformer.cfg"
 
-[[dependencies.${id}_${module}]]
-modId="neoforge"
-type="required"
-versionRange="*"
-ordering="NONE"
-side="BOTH"
-
-[[dependencies.${id}_${module}]]
-modId="visceralib_core"
-type="required"
-versionRange="*"
-ordering="NONE"
-side="BOTH"
-
-[[dependencies.${id}_${module}]]
-modId="minecraft"
-type="required"
-versionRange="[${minMinecraft},)"
-ordering="NONE"
-side="BOTH"
+[[dependencies.visceralib_datagen]]
+    modId="neoforge"
+    type="required"
+    versionRange="*"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.visceralib_datagen]]
+    modId="minecraft"
+    type="required"
+    versionRange="[${minMinecraft},)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.visceralib_datagen]]
+    modId="visceralib_core"
+    type="required"
+    versionRange="*"
+    ordering="NONE"
+    side="BOTH"
 
 [modproperties.modmenu]
-badges=["library"]
-
+    badges=[ "library" ]
 [modproperties.modmenu_parent]
-id="${id}"
-name= "${name}"
-description= "${description}"
-icon= "logo.png"
-badges= ["library"]
+    id="visceralib"
+    name="VisceraLib"
+    description="${description}"
+    icon="assets/visceralib-datagen/logo.png"
+    badges=[ "library" ]

@@ -1,10 +1,9 @@
 package net.electrisoma.visceralib.impl.modelloader;
 
+import net.electrisoma.visceralib.impl.modelloader.client.ClientEntrypoint;
 import net.electrisoma.visceralib.platform.core.services.IEnvHelper;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 

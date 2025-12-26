@@ -1,14 +1,10 @@
-@file:Suppress("UnstableApiUsage")
-
-import java.util.Properties
-import java.net.HttpURLConnection
-import java.net.URI
-import java.util.Base64
+import java.util.*
 
 plugins {
     id("java")
     id("java-library")
     `maven-publish`
+    idea
 }
 
 base {
@@ -25,6 +21,13 @@ java {
     withJavadocJar()
 }
 
+idea {
+    module {
+        isDownloadJavadoc = true
+        isDownloadSources = true
+    }
+}
+
 repositories {
     mavenCentral()
 
@@ -33,13 +36,12 @@ repositories {
     strictMaven("https://cursemaven.com", "curse.maven")
     strictMaven("https://repo.spongepowered.org/repository/maven-public", "org.spongepowered")
     strictMaven("https://maven.terraformersmc.com/releases/", "com.terraformersmc")
-//    strictMaven("https://maven.kikugie.dev/releases", "dev.kikugie")
-//    strictMaven("https://maven.kikugie.dev/snapshots", "dev.kikugie")
 }
 
 dependencies {
     annotationProcessor("com.google.auto.service:auto-service:${currentMod.propOrNull("auto_service")}")
     compileOnly("com.google.auto.service:auto-service-annotations:${currentMod.propOrNull("auto_service")}")
+    api("com.google.code.findbugs:jsr305:${currentMod.propOrNull("find_bugs")}")
 }
 
 tasks {
@@ -54,7 +56,8 @@ tasks {
             "moduleCaps"         to currentMod.moduleCaps,
             "version"            to currentMod.version,
             "group"              to currentMod.group,
-            "authors"            to currentMod.author,
+            "authors"            to currentMod.authors,
+            "contributors"       to currentMod.contributors,
             "description"        to currentMod.description,
             "license"            to currentMod.license,
             "github"             to currentMod.github,
@@ -71,7 +74,7 @@ tasks {
             expand(expandProps)
         }
 
-        filesMatching(listOf("pack.mcmeta", "fabric.mod.json", "*.mixins.json")) {
+        filesMatching(listOf("pack.mcmeta", "fabric.mod.json", "*.mixins.json", "**/*.mixins.json")) {
             expand(jsonExpandProps)
         }
 

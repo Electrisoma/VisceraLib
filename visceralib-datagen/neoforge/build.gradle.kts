@@ -30,9 +30,10 @@ neoForge {
 }
 
 dependencies {
-    compileOnly(currentMod.modrinth("better-modlist", currentMod.dep("better_modlist")))
-    runtimeOnly(currentMod.modrinth("better-modlist", currentMod.dep("better_modlist")))
     listImplementation(dependencyProjects)
+    compileOnly(currentMod.modrinth("better-modlist", currentMod.dep("better_modlist")))
+    if(property("run_better_modlist").toString().toBoolean())
+        runtimeOnly(currentMod.modrinth("better-modlist", currentMod.dep("better_modlist")))
 }
 
 neoForge {

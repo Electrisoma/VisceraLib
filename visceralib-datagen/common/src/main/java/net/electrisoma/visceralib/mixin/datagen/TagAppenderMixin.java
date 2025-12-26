@@ -8,13 +8,13 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Mixin(TagsProvider.TagAppender.class)
 public abstract class TagAppenderMixin<T> {
 
-    @Unique
-    @SuppressWarnings("unchecked")
+    @Unique @SuppressWarnings("unchecked")
     private VisceralTagProvider.VisceralTagBuilder<T> visceralib$asVisceral() {
         return (Object) this instanceof VisceralTagProvider.VisceralTagBuilder<?> builder
                 ? (VisceralTagProvider.VisceralTagBuilder<T>) builder
@@ -30,7 +30,9 @@ public abstract class TagAppenderMixin<T> {
             ResourceKey<T> key
     ) {
         var builder = visceralib$asVisceral();
-        return builder != null ? builder.visceral$add(key) : original;
+        return builder != null
+                ? builder.visceral$add(key)
+                : original;
     }
 
     @ModifyReturnValue(
@@ -42,11 +44,11 @@ public abstract class TagAppenderMixin<T> {
             ResourceKey<T>[] keys
     ) {
         var builder = visceralib$asVisceral();
-        if (builder != null) {
-            for (ResourceKey<T> key : keys) builder.visceral$add(key);
-            return builder;
-        }
-        return original;
+        if (builder == null)
+            return original;
+
+        Arrays.stream(keys).forEach(builder::visceral$add);
+        return builder;
     }
 
     @ModifyReturnValue(
@@ -58,10 +60,10 @@ public abstract class TagAppenderMixin<T> {
             List<ResourceKey<T>> keys
     ) {
         var builder = visceralib$asVisceral();
-        if (builder != null) {
-            keys.forEach(builder::visceral$add);
-            return builder;
-        }
-        return original;
+        if (builder == null)
+            return original;
+
+        keys.forEach(builder::visceral$add);
+        return builder;
     }
 }

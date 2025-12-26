@@ -1,33 +1,33 @@
 {
   "schemaVersion": 1,
-  "id": "${id}_${module}",
+  "id": "visceralib_modelloader",
   "version": "${version}",
-  "name": "${name}-${moduleCaps}",
+  "name": "VisceraLib-Model-Loader",
   "description": "Contains code to help with loading different model formats.",
-  "authors": [
-    "${authors}"
-  ],
+  "authors": [ "${authors}" ],
+  "contributors": [ "${contributors}" ],
   "contact": {
+    "homepage": "${github}",
+    "sources": "${github}",
+    "issues": "${github}/issues"
   },
   "license": "${license}",
-  "icon": "logo.png",
+  "icon": "assets/visceralib-modelloader/logo.png",
   "environment": "*",
   "entrypoints": {
-    "main": [
-      "${group}.${id}.impl.${module}.EntrypointFabric"
-    ],
-    "client": [
-      "${group}.${id}.impl.${module}.ClientEntrypointFabric"
-    ]
+    "main": [ "net.electrisoma.visceralib.impl.modelloader.EntrypointFabric" ],
+    "client": [ "net.electrisoma.visceralib.impl.modelloader.client.ClientEntrypointFabric" ]
   },
   "mixins": [
-    "${id}_${module}-common.mixins.json",
-    "${id}_${module}-fabric.mixins.json"
+    "mixins/visceralib_modelloader-common.mixins.json",
+    "mixins/visceralib_modelloader-fabric.mixins.json",
+    "mixins/visceralib_modelloader-common.client.mixins.json",
+    "mixins/visceralib_modelloader-fabric.client.mixins.json"
   ],
   "depends": {
     "visceralib_core": "*",
+    "fabric-api-base": "*",
     "fabricloader": ">=${fabric}",
-    "fabric-api": "*",
     "minecraft": "${minecraft}",
     "java": ">=${java}"
   },
@@ -35,10 +35,10 @@
     "modmenu": {
       "badges": [ "library" ],
       "parent": {
-        "id": "${id}",
-        "name": "${name}",
+        "id": "visceralib",
+        "name": "VisceraLib",
         "description": "${description}",
-        "icon": "logo.png",
+        "icon": "assets/visceralib-modelloader/logo.png",
         "badges": [ "library" ]
       },
       "update_checker": true

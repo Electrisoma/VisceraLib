@@ -1,6 +1,6 @@
 {
   "pack": {
-    "description": "${moduleCaps} module for ${name}.",
+    "description": "Model-Loader module for VisceraLib.",
     "pack_format": 8
   }
 }

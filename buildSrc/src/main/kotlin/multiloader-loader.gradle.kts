@@ -21,12 +21,12 @@ tasks {
         exclude("accesswideners", "accesswideners/**")
     }
 
-    compileJava {
+    named<JavaCompile>("compileJava") {
         dependsOn(commonJava)
         source(commonJava)
     }
 
-    processResources {
+    named<ProcessResources>("processResources") {
         dependsOn(commonResources)
         from(commonResources)
     }

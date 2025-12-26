@@ -9,10 +9,13 @@ loom {
         "../../src/main/resources/accesswideners/${currentMod.mc}-${currentMod.id}_${currentMod.module}.accesswidener"
     )
 
-    @Suppress("UnstableApiUsage")
-    mixin {
-        useLegacyMixinAp = false
+    // interface injection
+    with(stonecutterBuild.node.sibling("fabric")!!.project) {
+        fabricModJsonPath = file("../../src/main/resources/fabric.mod.json")
     }
+
+    @Suppress("UnstableApiUsage")
+    mixin { useLegacyMixinAp = false }
 }
 
 fletchingTable {

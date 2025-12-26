@@ -25,17 +25,18 @@ val Project.loader: String? get() = prop("loader")
 @JvmInline
 value class ModData(private val project: Project) {
 
-    val id         : String get() = modProp("id")
-    val name       : String get() = modProp("name")
-    val module     : String get() = modProp("module")
-    val moduleCaps : String get() = modProp("module_caps")
-    val version    : String get() = modProp("version")
-    val group      : String get() = modProp("group")
-    val author     : String get() = modProp("author")
-    val description: String get() = modProp("description")
-    val license    : String get() = modProp("license")
-    val github     : String get() = modProp("github")
-    val mc         : String get() = depOrNull("minecraft")
+    val id           : String get() = modProp("id")
+    val name         : String get() = modProp("name")
+    val module       : String get() = modProp("module")
+    val moduleCaps   : String get() = modProp("module_caps")
+    val version      : String get() = modProp("version")
+    val group        : String get() = modProp("group")
+    val authors      : String get() = modProp("authors")
+    val contributors : String get() = modProp("contributors")
+    val description  : String get() = modProp("description")
+    val license      : String get() = modProp("license")
+    val github       : String get() = modProp("github")
+    val mc           : String get() = depOrNull("minecraft")
         ?: project.stonecutterBuild.current.version
 
     fun propOrNull(key: String): String? = project.prop(key)
@@ -55,12 +56,14 @@ fun RepositoryHandler.strictMaven(url: String, vararg coords: String) {
     exclusiveContent {
         forRepository { maven(url) }
         filter {
-            coords.forEach { coordinate ->
-                if (":" in coordinate) {
-                    val (group, module) = coordinate.split(":", limit = 2)
-                    includeModule(group, module)
-                } else {
-                    includeGroup(coordinate)
+            for (coordinate: String in coords) {
+                when {
+                    ":" in coordinate -> {
+                        val (group: String, module: String) = coordinate.split(
+                            ":", limit = 2)
+                        includeModule(group, module)
+                    }
+                    else -> includeGroup(coordinate)
                 }
             }
         }
@@ -88,6 +91,11 @@ fun DependencyHandlerScope.runtimeFapi(name: String) {
     val module = factory.module(name, version)
 
     add("modRuntimeOnly", module)
+}
+
+fun DependencyHandlerScope.optional(dependencyNotation: Any) {
+    add("modCompileOnly", dependencyNotation)
+    add("modRuntimeOnly", dependencyNotation)
 }
 
 fun DependencyHandlerScope.listImplementation(projects: List<Project>) =

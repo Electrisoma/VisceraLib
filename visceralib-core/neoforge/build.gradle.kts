@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 plugins {
     `multiloader-loader`
     id("net.neoforged.moddev")
@@ -24,10 +22,17 @@ neoForge {
 
 dependencies {
     compileOnly(currentMod.modrinth("better-modlist", currentMod.dep("better_modlist")))
-    runtimeOnly(currentMod.modrinth("better-modlist", currentMod.dep("better_modlist")))
+    if(property("run_better_modlist").toString().toBoolean())
+        runtimeOnly(currentMod.modrinth("better-modlist", currentMod.dep("better_modlist")))
 }
 
 neoForge {
+    val commonResDir = project(common.project.parent!!.path).file("src/main/resources")
+    interfaceInjectionData {
+        from(commonResDir.resolve("interfaces.json"))
+        publish(commonResDir.resolve("interfaces.json"))
+    }
+
     runs {
         register("client") {
             client()
@@ -48,10 +53,8 @@ neoForge {
         }
     }
 
-    mods {
-        register("${currentMod.id}_${currentMod.module}") {
-            sourceSet(sourceSets.main.get())
-        }
+    mods.register("${currentMod.id}_${currentMod.module}") {
+        sourceSet(sourceSets.main.get())
     }
 }
 

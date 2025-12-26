@@ -36,7 +36,7 @@ dependencies {
     mappings(layeredMappings())
 
     compileOnly("net.fabricmc:fabric-loader:${currentMod.dep("fabric-loader")}")
-    compileOnly("org.spongepowered:mixin:0.8.5")
+    compileOnly("net.fabricmc:sponge-mixin:0.13.2+mixin.0.8.5")
 
     "io.github.llamalad7:mixinextras-common:0.5.0".let {
         compileOnly(it)

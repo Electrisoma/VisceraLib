@@ -8,7 +8,7 @@ import java.util.ServiceLoader;
 
 public class ServiceHelper {
 
-    private static final Logger LOG = LoggerFactory.getLogger("VisceraLib_ServiceHelper");
+    private static final Logger LOG = LoggerFactory.getLogger("VisceraLib-ServiceHelper");
 
     /**
      * Loads an optional service that can exist or not.

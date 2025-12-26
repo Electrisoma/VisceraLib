@@ -1,35 +1,35 @@
 {
   "schemaVersion": 1,
-  "id": "${id}_${module}",
+  "id": "visceralib_datagen",
   "version": "${version}",
-  "name": "${name}-${moduleCaps}",
+  "name": "VisceraLib-Datagen",
   "description": "Contains code for modloader agnostic data generation utilities.",
-  "authors": [
-    "${authors}"
-  ],
+  "authors": [ "${authors}" ],
+  "contributors": [ "${contributors}" ],
   "contact": {
+    "homepage": "${github}",
+    "sources": "${github}",
+    "issues": "${github}/issues"
   },
   "license": "${license}",
-  "icon": "logo.png",
+  "icon": "assets/visceralib-datagen/logo.png",
   "environment": "*",
   "entrypoints": {
-    "main": [
-      "${group}.${id}.impl.${module}.EntrypointFabric"
-    ],
-    "client": [
-      "${group}.${id}.impl.${module}.ClientEntrypointFabric"
-    ]
+    "main": [ "net.electrisoma.visceralib.impl.datagen.EntrypointFabric" ],
+    "client": [ "net.electrisoma.visceralib.impl.datagen.client.ClientEntrypointFabric" ]
   },
   "mixins": [
-    "${id}_${module}-common.mixins.json",
-    "${id}_${module}-fabric.mixins.json"
+    "mixins/visceralib_datagen-common.mixins.json",
+    "mixins/visceralib_datagen-fabric.mixins.json",
+    "mixins/visceralib_datagen-common.client.mixins.json",
+    "mixins/visceralib_datagen-fabric.client.mixins.json"
   ],
   "depends": {
     "visceralib_core": "*",
-    "fabricloader": ">=${fabric}",
     "fabric-api-base": "*",
     "fabric-data-generation-api-v1": "*",
     "fabric-convention-tags-v2": "*",
+    "fabricloader": ">=${fabric}",
     "minecraft": "${minecraft}",
     "java": ">=${java}"
   },
@@ -37,10 +37,10 @@
     "modmenu": {
       "badges": [ "library" ],
       "parent": {
-        "id": "${id}",
-        "name": "${name}",
+        "id": "visceralib",
+        "name": "VisceraLib",
         "description": "${description}",
-        "icon": "logo.png",
+        "icon": "assets/visceralib-datagen/logo.png",
         "badges": [ "library" ]
       },
       "update_checker": true

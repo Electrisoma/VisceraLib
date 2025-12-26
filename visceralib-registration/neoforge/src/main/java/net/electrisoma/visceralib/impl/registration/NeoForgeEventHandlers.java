@@ -2,7 +2,7 @@
 //
 //import net.electrisoma.visceralib.event.core.VisceralEventBus;
 //import net.electrisoma.visceralib.event.registration.client.ParticleRegistrationEvent;
-//import net.electrisoma.visceralib.platform.registration.ParticleRegistrationImpl;
+//import net.electrisoma.visceralib.platform.registration.client.ParticleRegistrationImpl;
 //import net.electrisoma.visceralib.platform.registration.services.IParticleRegistrationHelper;
 //import net.neoforged.api.distmarker.Dist;
 //import net.neoforged.bus.api.SubscribeEvent;

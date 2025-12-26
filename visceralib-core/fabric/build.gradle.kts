@@ -20,7 +20,8 @@ dependencies {
     embedFapi("fabric-api-base")
 
     modCompileOnly("com.terraformersmc:modmenu:${currentMod.dep("modmenu")}")
-    modRuntimeOnly("com.terraformersmc:modmenu:${currentMod.dep("modmenu")}")
+    if(property("run_modmenu").toString().toBoolean())
+        modRuntimeOnly("com.terraformersmc:modmenu:${currentMod.dep("modmenu")}")
 
     runtimeFapi("fabric-resource-loader-v0")
     runtimeFapi("fabric-screen-api-v1")
@@ -49,6 +50,10 @@ loom {
         all {
             ideConfigGenerated(true)
         }
+    }
+
+    mods.register("${currentMod.id}_${currentMod.module}") {
+        sourceSet(sourceSets.main.get())
     }
 
     @Suppress("UnstableApiUsage")
