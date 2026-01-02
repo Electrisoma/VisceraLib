@@ -8,13 +8,13 @@ plugins {
 }
 
 base {
-    version = "${currentMod.version}+mc${stonecutterBuild.current.version}-${loader}"
-    archivesName = "${currentMod.id}-${currentMod.module}"
+    version = "${project.mod.version}+mc${project.stonecutterBuild.current.version}-${project.loader}"
+    archivesName = "${project.mod.id}-${project.mod.module}"
 }
 
 java {
     toolchain.languageVersion.set(project.providers.provider {
-        JavaLanguageVersion.of(currentMod.prop("java.version").toInt())
+        JavaLanguageVersion.of(project.mod.dep("java_version").toInt())
     })
 
     withSourcesJar()
@@ -36,41 +36,41 @@ repositories {
     strictMaven("https://cursemaven.com", "curse.maven")
     strictMaven("https://repo.spongepowered.org/repository/maven-public", "org.spongepowered")
     strictMaven("https://maven.terraformersmc.com/releases/", "com.terraformersmc")
+    maven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven/")
 }
 
 dependencies {
-    annotationProcessor("com.google.auto.service:auto-service:${currentMod.propOrNull("auto_service")}")
-    compileOnly("com.google.auto.service:auto-service-annotations:${currentMod.propOrNull("auto_service")}")
-    api("com.google.code.findbugs:jsr305:${currentMod.propOrNull("find_bugs")}")
+    annotationProcessor("com.google.auto.service:auto-service:${project.mod.dep("auto_service")}")
+    compileOnly("com.google.auto.service:auto-service-annotations:${project.mod.dep("auto_service")}")
+    api("com.google.code.findbugs:jsr305:${project.mod.dep("find_bugs")}")
 }
 
 tasks {
 
     processResources {
         val expandProps = mapOf(
-            "java"               to currentMod.propOrNull("java.version"),
-            "compatibilityLevel" to currentMod.propOrNull("java.version")?.let { "JAVA_$it" },
-            "id"                 to currentMod.id,
-            "name"               to currentMod.name,
-            "module"             to currentMod.module,
-            "moduleCaps"         to currentMod.moduleCaps,
-            "version"            to currentMod.version,
-            "group"              to currentMod.group,
-            "authors"            to currentMod.authors,
-            "contributors"       to currentMod.contributors,
-            "description"        to currentMod.description,
-            "license"            to currentMod.license,
-            "github"             to currentMod.github,
-            "minecraft"          to currentMod.propOrNull("minecraft_version"),
-            "minMinecraft"       to currentMod.propOrNull("min_minecraft_version"),
-            "fabric"             to currentMod.depOrNull("fabric-loader"),
-            "FApi"               to currentMod.depOrNull("fabric-api"),
-            "neoForge"           to currentMod.depOrNull("neoforge")
-        ).filterValues { it?.isNotEmpty() == true }.mapValues { (_, v) -> v!! }
+            "java"               to project.mod.dep("java_version"),
+            "compatibilityLevel" to "JAVA_${project.mod.dep("java_version")}",
+            "id"                 to project.mod.id,
+            "name"               to project.mod.name,
+            "module"             to project.mod.module,
+            "version"            to project.mod.version,
+            "group"              to project.mod.group,
+            "authors"            to project.mod.authors,
+            "contributors"       to project.mod.contributors,
+            "description"        to project.mod.description,
+            "license"            to project.mod.license,
+            "github"             to project.mod.github,
+            "minecraft"          to project.mod.mc,
+            "minMinecraft"       to project.mod.dep("min_minecraft_version"),
+            "fabric"             to project.mod.depOrNull("fabric-loader"),
+            "FApi"               to project.mod.depOrNull("fabric-api"),
+            "neoForge"           to project.mod.depOrNull("neoforge")
+        ).filterValues { !it.isNullOrBlank() }
 
-        val jsonExpandProps = expandProps.mapValues { (_, v) -> v.replace("\n", "\\\\n") }
+        val jsonExpandProps = expandProps.mapValues { (_, v) -> v.toString().replace("\n", "\\\\n") }
 
-        filesMatching(listOf("META-INF/neoforge.mods.toml")) {
+        filesMatching("META-INF/neoforge.mods.toml") {
             expand(expandProps)
         }
 
@@ -80,10 +80,10 @@ tasks {
 
         inputs.properties(expandProps)
     }
-}
 
-tasks.matching { it.name == "processResources" }.configureEach {
-    mustRunAfter(tasks.matching { it.name.contains("stonecutterGenerate") })
+    matching { it.name == "processResources" }.configureEach {
+        mustRunAfter(matching { it.name.contains("stonecutterGenerate") })
+    }
 }
 
 val localProperties: Properties = Properties()
@@ -95,7 +95,7 @@ publishing {
     publications {
         register<MavenPublication>("mavenJava") {
             artifactId = base.archivesName.get()
-            groupId = "${currentMod.group}.${currentMod.id}"
+            groupId = "${project.mod.group}.${project.mod.id}"
             from(components["java"])
         }
     }

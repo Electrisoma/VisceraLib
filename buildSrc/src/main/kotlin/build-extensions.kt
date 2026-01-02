@@ -1,101 +1,79 @@
 import dev.kikugie.stonecutter.build.StonecutterBuildExtension
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import net.fabricmc.loom.api.fabricapi.FabricApiExtension
+import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.dsl.RepositoryHandler
-import org.gradle.api.plugins.ExtensionAware
 import org.gradle.kotlin.dsl.DependencyHandlerScope
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.maven
 import org.gradle.kotlin.dsl.project
 
-fun Project.getMod(): ModData = ModData(this)
-fun Project.prop(key: String): String? = findProperty(key)?.toString()
+val Project.mod get() = ModData(this)
 
 val Project.stonecutterBuild get() = extensions.getByType<StonecutterBuildExtension>()
 
-val Project.common get() = requireNotNull(stonecutterBuild.node.sibling("common")) {
-    "No common project for $project"
-}
+val Project.loader get() = findProperty("loader")?.toString()
 
-val Project.currentMod get() = this.getMod()
-val Project.loader: String? get() = prop("loader")
+val Project.commonNode get() = requireNotNull(stonecutterBuild.node.sibling("common")) {
+    "No common project found for $name"
+}
 
 @JvmInline
 value class ModData(private val project: Project) {
 
-    val id           : String get() = modProp("id")
-    val name         : String get() = modProp("name")
-    val module       : String get() = modProp("module")
-    val moduleCaps   : String get() = modProp("module_caps")
-    val version      : String get() = modProp("version")
-    val group        : String get() = modProp("group")
-    val authors      : String get() = modProp("authors")
-    val contributors : String get() = modProp("contributors")
-    val description  : String get() = modProp("description")
-    val license      : String get() = modProp("license")
-    val github       : String get() = modProp("github")
-    val mc           : String get() = depOrNull("minecraft")
-        ?: project.stonecutterBuild.current.version
+    val id: String           get() = prop("mod.id")
+    val name: String         get() = prop("mod.name")
+    val module: String       get() = prop("mod.module")
+    val version: String      get() = prop("mod.version")
+    val group: String        get() = prop("mod.group")
+    val authors: String      get() = prop("mod.authors")
+    val contributors: String get() = prop("mod.contributors")
+    val description: String  get() = prop("mod.description")
+    val license: String      get() = prop("mod.license")
+    val github: String       get() = prop("mod.github")
 
-    fun propOrNull(key: String): String? = project.prop(key)
-    fun prop(key: String)                = requireNotNull(propOrNull(key)) { "Missing '$key'" }
+    val mc: String get() = depOrNull("minecraft") ?: project.stonecutterBuild.current.version
 
-    fun modPropOrNull(key: String)       = project.prop("mod.$key")
-    fun modProp(key: String)             = requireNotNull(modPropOrNull(key)) { "Missing 'mod.$key'" }
+    fun dep(key: String): String = requireNotNull(depOrNull(key)) { "Missing 'deps.$key' in gradle.properties" }
 
-    fun depOrNull(key: String): String?  = project.prop("deps.$key")?.takeIf { it.isNotEmpty() && it != "" }
-    fun dep(key: String)                 = requireNotNull(depOrNull(key)) { "Missing 'deps.$key'" }
+    fun depOrNull(key: String): String? =
+        project.findProperty("deps.$key")?.toString()?.takeIf { it.isNotBlank() }
 
-    fun curseforge(name: String, projectId: String, fileId: String) = "curse.maven:$name-$projectId:$fileId"
-    fun modrinth(name: String, version: String) = "maven.modrinth:$name:$version"
+    private fun prop(key: String): String =
+        project.findProperty(key)?.toString() ?: throw GradleException("Property '$key' is missing!")
 }
 
-fun RepositoryHandler.strictMaven(url: String, vararg coords: String) {
-    exclusiveContent {
-        forRepository { maven(url) }
-        filter {
-            for (coordinate: String in coords) {
-                when {
-                    ":" in coordinate -> {
-                        val (group: String, module: String) = coordinate.split(
-                            ":", limit = 2)
-                        includeModule(group, module)
-                    }
-                    else -> includeGroup(coordinate)
-                }
-            }
-        }
-    }
-}
+private fun fapiVersion(project: Project) =
+    "${project.mod.dep("fabric-api")}+${project.mod.mc}"
 
-private val DependencyHandlerScope.project: Project
-    get() = (this as ExtensionAware).extensions.getByName("currentProject") as Project
+fun DependencyHandlerScope.minecraft(project: Project) =
+    add("minecraft", "com.mojang:minecraft:${project.mod.mc}")
 
-fun DependencyHandlerScope.setup(project: Project) =
-    (this as ExtensionAware).extensions.add("currentProject", project)
+fun DependencyHandlerScope.fabricLoader(project: Project) =
+    add("modImplementation", "net.fabricmc:fabric-loader:${project.mod.dep("fabric-loader")}")
 
-fun DependencyHandlerScope.embedFapi(name: String) {
+fun DependencyHandlerScope.embedFapi(project: Project, name: String) {
     val factory = project.extensions.getByType<FabricApiExtension>()
-    val version = "${project.currentMod.dep("fabric-api")}+${project.currentMod.mc}"
-    val module = factory.module(name, version)
-
+    val module = factory.module(name, fapiVersion(project))
     add("modImplementation", module)
     add("include", module)
 }
 
-fun DependencyHandlerScope.runtimeFapi(name: String) {
+fun DependencyHandlerScope.runtimeFapi(project: Project, name: String) {
     val factory = project.extensions.getByType<FabricApiExtension>()
-    val version = "${project.currentMod.dep("fabric-api")}+${project.currentMod.mc}"
-    val module = factory.module(name, version)
-
-    add("modRuntimeOnly", module)
+    add("modRuntimeOnly", factory.module(name, fapiVersion(project)))
 }
 
-fun DependencyHandlerScope.optional(dependencyNotation: Any) {
+fun DependencyHandlerScope.optional(dependencyNotation: Any, runtime: Boolean = true) {
+    add("compileOnly", dependencyNotation)
+    if (runtime) add("runtimeOnly", dependencyNotation)
+}
+
+fun DependencyHandlerScope.modOptional(dependencyNotation: Any, runtime: Boolean = true) {
     add("modCompileOnly", dependencyNotation)
-    add("modRuntimeOnly", dependencyNotation)
+    if (runtime) add("modRuntimeOnly", dependencyNotation)
 }
 
 fun DependencyHandlerScope.listImplementation(projects: List<Project>) =
@@ -104,21 +82,30 @@ fun DependencyHandlerScope.listImplementation(projects: List<Project>) =
 fun DependencyHandlerScope.listImplementation(projects: List<Project>, configuration: String) =
     projects.forEach { "implementation"(project(it.path, configuration)) }
 
-fun DependencyHandlerScope.minecraft() = add(
-    "minecraft",
-    "com.mojang:minecraft:${project.currentMod.mc}"
-)
-
-fun DependencyHandlerScope.fabricLoader() = add(
-    "modImplementation",
-    "net.fabricmc:fabric-loader:${project.currentMod.dep("fabric-loader")}"
-)
-
 @Suppress("UnstableApiUsage")
-fun DependencyHandlerScope.layeredMappings(): Dependency =
+fun layeredMappings(project: Project): Dependency =
     project.extensions.getByType<LoomGradleExtensionAPI>().layered {
         officialMojangMappings()
-        project.currentMod.depOrNull("parchment")?.let { version ->
-            parchment("org.parchmentmc.data:parchment-${project.currentMod.mc}:$version@zip")
+        project.mod.depOrNull("parchment")?.let { version ->
+            parchment("org.parchmentmc.data:parchment-${project.mod.mc}:$version@zip")
         }
     }
+
+fun modrinth(name: String, version: String) = "maven.modrinth:$name:$version"
+fun curseforge(name: String, projectId: String, fileId: String) = "curse.maven:$name-$projectId:$fileId"
+
+fun RepositoryHandler.strictMaven(url: String, vararg coords: String) {
+    exclusiveContent {
+        forRepository { maven(url) }
+        filter {
+            for (coordinate in coords) {
+                if (":" in coordinate) {
+                    val (group, module) = coordinate.split(":", limit = 2)
+                    includeModule(group, module)
+                } else {
+                    includeGroup(coordinate)
+                }
+            }
+        }
+    }
+}

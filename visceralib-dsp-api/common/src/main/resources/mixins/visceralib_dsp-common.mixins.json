@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.electrisoma.visceralib.mixin.dsp",
+  "refmap": "visceralib_dsp.refmap.json",
+  "compatibilityLevel": "${compatibilityLevel}",
+  "mixins": [],
+  "server": [],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

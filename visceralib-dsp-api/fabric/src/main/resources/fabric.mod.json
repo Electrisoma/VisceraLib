@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "id": "visceralib_dsp",
+  "version": "${version}",
+  "name": "VisceraLib-DSP",
+  "description": "Contains code to help with creating digital sound processing effects.",
+  "authors": [ "${authors}" ],
+  "contributors": [ "${contributors}" ],
+  "contact": {
+    "homepage": "${github}",
+    "sources": "${github}",
+    "issues": "${github}/issues"
+  },
+  "license": "${license}",
+  "icon": "assets/visceralib_dsp/logo.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [ "net.electrisoma.visceralib.impl.dsp.EntrypointFabric" ],
+    "client": [ "net.electrisoma.visceralib.impl.dsp.client.ClientEntrypointFabric" ]
+  },
+  "mixins": [
+    "mixins/visceralib_dsp-common.mixins.json",
+    "mixins/visceralib_dsp-fabric.mixins.json",
+    "mixins/visceralib_dsp-common.client.mixins.json",
+    "mixins/visceralib_dsp-fabric.client.mixins.json"
+  ],
+  "depends": {
+    "visceralib_core": "*",
+    "fabric-api-base": "*",
+    "fabricloader": ">=${fabric}",
+    "minecraft": "${minecraft}",
+    "java": ">=${java}"
+  },
+  "custom": {
+    "modmenu": {
+      "badges": [ "library" ],
+      "parent": {
+        "id": "visceralib",
+        "name": "VisceraLib",
+        "description": "${description}",
+        "icon": "assets/visceralib_dsp/logo.png",
+        "badges": [ "library" ]
+      },
+      "update_checker": true
+    }
+  }
+}

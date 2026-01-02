@@ -67,7 +67,7 @@ public interface IPlatformHelper {
     /**
      * Gets the lowercase name of the current platform.
      * Commonly used for creating platform-specific folder paths or config keys.
-     * @return The platform name (e.g., "neoforge" or "fabric").
+     * @return The platform name (e.g., "neoforge", "fabric").
      */
     default String getPlatformName() {
         return getPlatformInfo().name().toLowerCase();

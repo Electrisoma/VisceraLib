@@ -5,34 +5,31 @@ plugins {
 }
 
 fletchingTable {
-    j52j.register("main") {
-        extension("json", "**/*.json5")
-    }
+    j52j.register("main") { extension("json", "**/*.json5") }
 }
 
 dependencies {
 
-    setup(project)
-    minecraft()
-    mappings(layeredMappings())
-    fabricLoader()
+    minecraft(project)
+    mappings(layeredMappings(project))
+    fabricLoader(project)
 
-    embedFapi("fabric-api-base")
+    embedFapi(project, "fabric-api-base")
 
-    modCompileOnly("com.terraformersmc:modmenu:${currentMod.dep("modmenu")}")
-    if(property("run_modmenu").toString().toBoolean())
-        modRuntimeOnly("com.terraformersmc:modmenu:${currentMod.dep("modmenu")}")
+    modOptional(
+        "com.terraformersmc:modmenu:${project.mod.dep("modmenu")}",
+        project.findProperty("run_modmenu")?.toString()?.toBoolean() ?: false
+    )
 
-    runtimeFapi("fabric-resource-loader-v0")
-    runtimeFapi("fabric-screen-api-v1")
-    runtimeFapi("fabric-key-binding-api-v1")
-    runtimeFapi("fabric-lifecycle-events-v1")
+    runtimeFapi(project, "fabric-resource-loader-v0")
+    runtimeFapi(project, "fabric-screen-api-v1")
+    runtimeFapi(project, "fabric-key-binding-api-v1")
+    runtimeFapi(project, "fabric-lifecycle-events-v1")
 }
 
 loom {
-    accessWidenerPath = common.project.file(
-        "../../src/main/resources/accesswideners/${currentMod.mc}-${currentMod.id}_${currentMod.module}.accesswidener"
-    )
+    val awName = "${project.mod.mc}-${project.mod.id}_${project.mod.module}.accesswidener"
+    accessWidenerPath = commonNode.project.file("../../src/main/resources/accesswideners/$awName")
 
     val loomRunDir = File("../../../../run")
 
@@ -47,29 +44,19 @@ loom {
             configName = "Fabric Server"
             runDir(loomRunDir.resolve("server").toString())
         }
-        all {
-            ideConfigGenerated(true)
-        }
-    }
-
-    mods.register("${currentMod.id}_${currentMod.module}") {
-        sourceSet(sourceSets.main.get())
     }
 
     @Suppress("UnstableApiUsage")
-    mixin {
-        defaultRefmapName = "${currentMod.id}_${currentMod.module}.refmap.json"
-    }
+    mixin { defaultRefmapName = "${project.mod.id}_${project.mod.module}.refmap.json" }
 }
 
 tasks.named<ProcessResources>("processResources") {
-    val commonResDir = project(common.project.parent!!.path).file("src/main/resources")
-    val awFile = commonResDir.resolve("accesswideners/${currentMod.mc}-${currentMod.id}_${currentMod.module}.accesswidener")
+    val commonResDir = commonNode.project.parent!!.projectDir.resolve("src/main/resources")
+    val awFile = commonResDir.resolve("accesswideners/${project.mod.mc}-${project.mod.id}_${project.mod.module}.accesswidener")
 
     if (awFile.exists()) {
         from(awFile) {
-            rename(awFile.name, "${currentMod.id}_${currentMod.module}.accesswidener")
-            into("")
+            rename(awFile.name, "${project.mod.id}_${project.mod.module}.accesswidener")
         }
     }
 }

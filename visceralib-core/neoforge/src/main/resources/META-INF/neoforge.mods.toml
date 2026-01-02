@@ -10,7 +10,7 @@ issueTrackerURL="${github}/issues"
     authors="${authors}"
     credits="${contributors}"
     description="Contains essential code for each ${name} module."
-    logoFile="assets/visceralib-core/logo.png"
+    logoFile="assets/visceralib_core/logo.png"
     logoBlur=false
     displayURL="${github}"
 
@@ -44,5 +44,5 @@ issueTrackerURL="${github}/issues"
     id="visceralib"
     name="VisceraLib"
     description="${description}"
-    icon="assets/visceralib-core/logo.png"
+    icon="assets/visceralib_core/logo.png"
     badges=[ "library" ]

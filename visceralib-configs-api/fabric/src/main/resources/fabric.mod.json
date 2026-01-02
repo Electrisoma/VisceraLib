@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "id": "visceralib_configs",
+  "version": "${version}",
+  "name": "VisceraLib-Configs",
+  "description": "Contains code to help with building configs.",
+  "authors": [ "${authors}" ],
+  "contributors": [ "${contributors}" ],
+  "contact": {
+    "homepage": "${github}",
+    "sources": "${github}",
+    "issues": "${github}/issues"
+  },
+  "license": "${license}",
+  "icon": "assets/visceralib_configs/logo.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [ "net.electrisoma.visceralib.impl.configs.EntrypointFabric" ],
+    "client": [ "net.electrisoma.visceralib.impl.configs.client.ClientEntrypointFabric" ]
+  },
+  "mixins": [
+    "mixins/visceralib_configs-common.mixins.json",
+    "mixins/visceralib_configs-fabric.mixins.json",
+    "mixins/visceralib_configs-common.client.mixins.json",
+    "mixins/visceralib_configs-fabric.client.mixins.json"
+  ],
+  "depends": {
+    "visceralib_core": "*",
+    "fabric-api-base": "*",
+    "fabricloader": ">=${fabric}",
+    "minecraft": "${minecraft}",
+    "java": ">=${java}"
+  },
+  "custom": {
+    "modmenu": {
+      "badges": [ "library" ],
+      "parent": {
+        "id": "visceralib",
+        "name": "VisceraLib",
+        "description": "${description}",
+        "icon": "assets/visceralib_configs/logo.png",
+        "badges": [ "library" ]
+      },
+      "update_checker": true
+    }
+  }
+}

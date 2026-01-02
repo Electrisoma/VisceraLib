@@ -2,6 +2,7 @@ package net.electrisoma.visceralib.api.core.utils;
 
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -10,10 +11,14 @@ public class TextUtils {
     // "camelCase"
     public static String toCamelCase(String text) {
         String[] words = splitWords(text);
-        return words.length == 0 ? "" : IntStream
+        return words.length != 0 ? IntStream
                 .range(1, words.length)
                 .mapToObj(i -> capitalize(words[i]))
-                .collect(Collectors.joining("", words[0].toLowerCase(Locale.ROOT), ""));
+                .collect(Collectors.joining("", words[0].toLowerCase(Locale.ROOT), "")) : "";
+    }
+
+    public static String toSmartCamelCase(String text) {
+        return toCamelCase(smartSplit(text));
     }
 
     // "PascalCase"
@@ -23,9 +28,17 @@ public class TextUtils {
                 .collect(Collectors.joining());
     }
 
+    public static String toSmartPascalCase(String text) {
+        return toPascalCase(smartSplit(text));
+    }
+
     // "snake_case"
     public static String toSnakeCase(String text) {
         return String.join("_", splitWords(text)).toLowerCase(Locale.ROOT);
+    }
+
+    public static String toSmartSnakeCase(String text) {
+        return toSnakeCase(smartSplit(text));
     }
 
     // "kebab-case"
@@ -33,9 +46,17 @@ public class TextUtils {
         return String.join("-", splitWords(text)).toLowerCase(Locale.ROOT);
     }
 
+    public static String toSmartKebabCase(String text) {
+        return toKebabCase(smartSplit(text));
+    }
+
     // "SCREAMING-SNAKE-CASE"
     public static String toScreamingSnakeCase(String text) {
         return String.join("_", splitWords(text)).toUpperCase(Locale.ROOT);
+    }
+
+    public static String toSmartScreamingSnakeCase(String text) {
+        return toScreamingSnakeCase(smartSplit(text));
     }
 
     // "Train-Case"
@@ -45,11 +66,19 @@ public class TextUtils {
                 .collect(Collectors.joining("-"));
     }
 
+    public static String toSmartTrainCase(String text) {
+        return toTrainCase(smartSplit(text));
+    }
+
     // "Title Case"
     public static String toTitleCase(String text) {
         return Arrays.stream(splitWords(text))
                 .map(TextUtils::capitalize)
                 .collect(Collectors.joining(" "));
+    }
+
+    public static String toSmartTitleCase(String text) {
+        return toTitleCase(smartSplit(text));
     }
 
     // "UPPER CASE"
@@ -75,7 +104,8 @@ public class TextUtils {
     // abbreviates text
     public static String abbreviate(String text, int maxLength) {
         String input = nonNull(text);
-        return input.length() <= maxLength ? input : input.substring(0, Math.max(0, maxLength - 3)) + "...";
+        return input.length() <= maxLength ? input :
+                input.substring(0, Math.max(0, maxLength - 3)) + "...";
     }
 
     // simplifies text to be single-spaced
@@ -98,8 +128,29 @@ public class TextUtils {
                 .split("\\s+");
     }
 
+    /**
+     * Injects spaces into a single lowercase string by identifying the most
+     * likely compound word boundary (e.g., "neoforge" -> "neo forge").
+     */
+    private static String smartSplit(String text) {
+        String input = nonNull(text).toLowerCase(Locale.ROOT);
+        if (input.length() < 5) return input;
+
+        String spaced = input.replaceAll("(?i)(.{3,})(lib|api|core|mod|forge|craft|work|tool|util|ext|ui)$", "$1 $2");
+        if (!spaced.equals(input)) return spaced;
+
+        int pivot = -1;
+        var matcher = Pattern.compile("[aeiouy][^aeiouy][aeiouy]").matcher(input);
+        while (matcher.find())
+            pivot = matcher.start() + 1;
+
+        return pivot > 2 && pivot < input.length() - 2 ?
+                input.substring(0, pivot) + " " + input.substring(pivot) : input;
+    }
+
     private static String capitalize(String text) {
-        return text.isEmpty() ? "" : text.substring(0, 1).toUpperCase(Locale.ROOT) +
+        return text.isEmpty() ? "" :
+                text.substring(0, 1).toUpperCase(Locale.ROOT) +
                 text.substring(1).toLowerCase(Locale.ROOT);
     }
 

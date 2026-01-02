@@ -4,7 +4,6 @@ import net.electrisoma.visceralib.api.core.utils.TextUtils;
 import net.electrisoma.visceralib.platform.core.services.IEnvHelper;
 import net.electrisoma.visceralib.platform.core.services.IEnvHelper.EnvironmentEnum;
 import net.electrisoma.visceralib.platform.core.services.IPlatformHelper;
-import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 
 import java.util.Collections;
@@ -42,7 +41,7 @@ public class EntrypointMessages {
         if (LOGGERS.add(logger)) {
             logger.info("{} {}: v{} for mc{}",
                     name,
-                    TextUtils.toTitleCase(IPlatformHelper.INSTANCE.getPlatformName()),
+                    TextUtils.toSmartPascalCase(IPlatformHelper.INSTANCE.getPlatformName()),
                     IPlatformHelper.INSTANCE.getVersion(id),
                     IPlatformHelper.INSTANCE.getMinecraftVersion()
             );

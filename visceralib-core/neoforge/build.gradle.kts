@@ -5,29 +5,24 @@ plugins {
 }
 
 fletchingTable {
-    j52j.register("main") {
-        extension("json", "**/*.json5")
-    }
+    j52j.register("main") { extension("json", "**/*.json5") }
 
     accessConverter.register("main") {
-        add("accesswideners/${currentMod.mc}-${currentMod.id}_${currentMod.module}.accesswidener")
-    }
-}
-
-neoForge {
-    enable {
-        version = currentMod.dep("neoforge")
+        add("accesswideners/${project.mod.mc}-${project.mod.id}_${project.mod.module}.accesswidener")
     }
 }
 
 dependencies {
-    compileOnly(currentMod.modrinth("better-modlist", currentMod.dep("better_modlist")))
-    if(property("run_better_modlist").toString().toBoolean())
-        runtimeOnly(currentMod.modrinth("better-modlist", currentMod.dep("better_modlist")))
+    optional(
+        modrinth("better-modlist", project.mod.dep("better_modlist")),
+        project.findProperty("run_better_modlist")?.toString()?.toBoolean() ?: false
+    )
 }
 
 neoForge {
-    val commonResDir = project(common.project.parent!!.path).file("src/main/resources")
+    version = project.mod.dep("neoforge")
+
+    val commonResDir = commonNode.project.parent!!.projectDir.resolve("src/main/resources")
     interfaceInjectionData {
         from(commonResDir.resolve("interfaces.json"))
         publish(commonResDir.resolve("interfaces.json"))
@@ -47,13 +42,13 @@ neoForge {
     }
 
     parchment {
-        currentMod.depOrNull("parchment")?.let {
+        project.mod.depOrNull("parchment")?.let {
             mappingsVersion = it
-            minecraftVersion = currentMod.mc
+            minecraftVersion = project.mod.mc
         }
     }
 
-    mods.register("${currentMod.id}_${currentMod.module}") {
+    mods.register("${project.mod.id}_${project.mod.module}") {
         sourceSet(sourceSets.main.get())
     }
 }
@@ -64,6 +59,6 @@ sourceSets.main {
 
 tasks {
     processResources {
-        exclude("${currentMod.id}_${currentMod.module}.accesswidener")
+        exclude("${project.mod.id}_${project.mod.module}.accesswidener")
     }
 }

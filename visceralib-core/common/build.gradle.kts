@@ -5,13 +5,12 @@ plugins {
 }
 
 loom {
-    accessWidenerPath = common.project.file(
-        "../../src/main/resources/accesswideners/${currentMod.mc}-${currentMod.id}_${currentMod.module}.accesswidener"
-    )
+    val awName = "${project.mod.mc}-${project.mod.id}_${project.mod.module}.accesswidener"
+    accessWidenerPath = commonNode.project.file("../../src/main/resources/accesswideners/$awName")
 
     // interface injection
-    with(stonecutterBuild.node.sibling("fabric")!!.project) {
-        fabricModJsonPath = file("../../src/main/resources/fabric.mod.json")
+    stonecutterBuild.node.sibling("fabric")?.project?.let { fabricProj ->
+        fabricModJsonPath = fabricProj.file("../../src/main/resources/fabric.mod.json")
     }
 
     @Suppress("UnstableApiUsage")
@@ -19,24 +18,20 @@ loom {
 }
 
 fletchingTable {
-    j52j.register("main") {
-        extension("json", "**/*.json5")
-    }
+    j52j.register("main") { extension("json", "**/*.json5") }
 }
 
 dependencies {
 
-    setup(project)
-    minecraft()
-    mappings(layeredMappings())
+    minecraft(project)
+    mappings(layeredMappings(project))
 
-    compileOnly("net.fabricmc:fabric-loader:${currentMod.dep("fabric-loader")}")
+    compileOnly("net.fabricmc:fabric-loader:${project.mod.dep("fabric-loader")}")
     compileOnly("net.fabricmc:sponge-mixin:0.13.2+mixin.0.8.5")
 
-    "io.github.llamalad7:mixinextras-common:0.5.0".let {
-        compileOnly(it)
-        annotationProcessor(it)
-    }
+    val mixinExtras = "io.github.llamalad7:mixinextras-common:${project.mod.dep("mixin_extras")}"
+    annotationProcessor(mixinExtras)
+    compileOnly(mixinExtras)
 }
 
 val commonJava: Configuration by configurations.creating {
