@@ -44,6 +44,8 @@
         "badges": [ "library" ]
       },
       "update_checker": true
+    },
+    "loom:injected_interfaces": {
     }
   }
 }

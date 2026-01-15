@@ -1,6 +1,6 @@
 plugins {
     `multiloader-loader`
-    id("fabric-loom")
+    id("net.fabricmc.fabric-loom-remap")
     id("dev.kikugie.fletching-table.fabric")
 }
 
@@ -58,9 +58,6 @@ loom {
             runDir(loomRunDir.resolve("server").toString())
         }
     }
-
-    @Suppress("UnstableApiUsage")
-    mixin { defaultRefmapName = "${project.mod.id}_${project.mod.module}.refmap.json" }
 }
 
 tasks.named<ProcessResources>("processResources") {

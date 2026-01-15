@@ -31,8 +31,8 @@ neoForge {
 
     val commonResDir = commonNode.project.parent!!.projectDir.resolve("src/main/resources")
     interfaceInjectionData {
-        from(commonResDir.resolve("interfaces.json"))
-        publish(commonResDir.resolve("interfaces.json"))
+        from(commonResDir.resolve("interfaces.json5"))
+        publish(commonResDir.resolve("interfaces.json5"))
     }
 
     runs {

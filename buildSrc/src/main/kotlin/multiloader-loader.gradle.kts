@@ -36,10 +36,15 @@ afterEvaluate {
     val folder = project.mod.module
 
     extensions.findByType<net.neoforged.moddevgradle.dsl.NeoForgeExtension>()?.apply {
-        runs.configureEach { ideFolderName.set(folder) }
+        runs.all { ideFolderName.set(folder) }
     }
 
     extensions.findByType<net.fabricmc.loom.api.LoomGradleExtensionAPI>()?.apply {
-        runConfigs.configureEach { ideConfigFolder.set(folder) }
+        runs {
+            all { ideConfigFolder.set(folder) }
+            getByName("client") {
+                programArgs("--username", "dev")
+            }
+        }
     }
 }

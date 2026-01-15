@@ -1,3 +1,5 @@
+import dev.kikugie.stonecutter.Identifier
+
 plugins {
     `multiloader-loader`
     id("net.neoforged.moddev")
@@ -10,6 +12,15 @@ fletchingTable {
     accessConverter.register("main") {
         add("accesswideners/${project.mod.mc}-${project.mod.id}_${project.mod.module}.accesswidener")
     }
+}
+
+stonecutter {
+    val loader = property("loader")
+    constants.match(
+        loader as Identifier,
+        "fabric",
+        "neoforge"
+    )
 }
 
 dependencies {

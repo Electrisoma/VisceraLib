@@ -83,13 +83,12 @@ fun DependencyHandlerScope.listImplementation(projects: List<Project>, configura
     projects.forEach { "implementation"(project(it.path, configuration)) }
 
 @Suppress("UnstableApiUsage")
-fun layeredMappings(project: Project): Dependency =
-    project.extensions.getByType<LoomGradleExtensionAPI>().layered {
-        officialMojangMappings()
-        project.mod.depOrNull("parchment")?.let { version ->
-            parchment("org.parchmentmc.data:parchment-${project.mod.mc}:$version@zip")
-        }
+fun layeredMappings(project: Project): Dependency = project.extensions.getByType<LoomGradleExtensionAPI>().layered {
+    officialMojangMappings()
+    project.mod.depOrNull("parchment")?.let { version ->
+        parchment("org.parchmentmc.data:parchment-${project.mod.mc}:$version@zip")
     }
+}
 
 fun modrinth(name: String, version: String) = "maven.modrinth:$name:$version"
 fun curseforge(name: String, projectId: String, fileId: String) = "curse.maven:$name-$projectId:$fileId"
@@ -98,7 +97,7 @@ fun RepositoryHandler.strictMaven(url: String, vararg coords: String) {
     exclusiveContent {
         forRepository { maven(url) }
         filter {
-            for (coordinate in coords) {
+            coords.forEach { coordinate ->
                 if (":" in coordinate) {
                     val (group, module) = coordinate.split(":", limit = 2)
                     includeModule(group, module)

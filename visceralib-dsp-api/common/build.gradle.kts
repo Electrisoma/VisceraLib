@@ -1,6 +1,6 @@
 plugins {
     id("multiloader-common")
-    id("fabric-loom")
+    id("net.fabricmc.fabric-loom-remap")
     id("dev.kikugie.fletching-table.fabric")
 }
 
@@ -27,7 +27,6 @@ fletchingTable {
 }
 
 dependencies {
-
     minecraft(project)
     mappings(layeredMappings(project))
 

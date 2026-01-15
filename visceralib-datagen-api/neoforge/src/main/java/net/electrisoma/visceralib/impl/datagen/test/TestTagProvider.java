@@ -21,9 +21,9 @@ public class TestTagProvider {
 
         @Override
         protected void addTags(HolderLookup.@NotNull Provider lookup) {
-            tag(ItemTags.PIGLIN_LOVED)
-                    .add(ModItems.BEST_ITEM.get())
-                    .addTags(ItemTags.PICKAXES, ItemTags.BOATS);
+//            add(ItemTags.PIGLIN_LOVED,
+//                    ModItems.BEST_ITEM.get()
+//            );
         }
     }
 }

@@ -1,6 +1,6 @@
 plugins {
     id("multiloader-common")
-    id("fabric-loom")
+    id("net.fabricmc.fabric-loom-remap")
     id("dev.kikugie.fletching-table.fabric")
 }
 
@@ -14,8 +14,8 @@ loom {
     accessWidenerPath = commonNode.project.file("../../src/main/resources/accesswideners/$awName")
 
     // interface injection
-    stonecutterBuild.node.sibling("fabric")?.project?.let { fabricProj ->
-        fabricModJsonPath = fabricProj.file("../../src/main/resources/fabric.mod.json")
+    with(stonecutterBuild.node.sibling("fabric")!!.project) {
+        fabricModJsonPath = file("../../src/main/resources/fabric.mod.json")
     }
 
     @Suppress("UnstableApiUsage")
@@ -27,7 +27,6 @@ fletchingTable {
 }
 
 dependencies {
-
     minecraft(project)
     mappings(layeredMappings(project))
 

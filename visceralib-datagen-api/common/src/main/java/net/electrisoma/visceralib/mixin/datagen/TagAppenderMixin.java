@@ -14,7 +14,8 @@ import java.util.List;
 @Mixin(TagsProvider.TagAppender.class)
 public abstract class TagAppenderMixin<T> {
 
-    @Unique @SuppressWarnings("unchecked")
+    @Unique
+    @SuppressWarnings("unchecked")
     private VisceralTagProvider.VisceralTagBuilder<T> visceralib$asVisceral() {
         return (Object) this instanceof VisceralTagProvider.VisceralTagBuilder<?> builder
                 ? (VisceralTagProvider.VisceralTagBuilder<T>) builder
