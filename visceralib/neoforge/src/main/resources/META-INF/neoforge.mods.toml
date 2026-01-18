@@ -1,0 +1,31 @@
+modLoader="javafml"
+loaderVersion="*"
+license="${license}"
+issueTrackerURL="${github}/issues"
+
+[[mods]]
+    modId="visceralib"
+    version="${version}"
+    displayName="VisceraLib"
+    authors="${authors}"
+    credits="${contributors}"
+    description="${description}"
+    logoFile="assets/visceralib/logo.png"
+    logoBlur=false
+    displayURL="${github}"
+
+[[dependencies.visceralib]]
+    modId="neoforge"
+    type="required"
+    versionRange="*"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.visceralib]]
+    modId="minecraft"
+    type="required"
+    versionRange="[${minMinecraft},)"
+    ordering="NONE"
+    side="BOTH"
+
+[modproperties.modmenu]
+    badges=[ "library" ]

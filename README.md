@@ -8,7 +8,7 @@ VisceraLib is meant to provide:
 - Implementations of Minecraft or modloader features for easier development.
 - General cleanliness of code by handling things mostly in common.
 
-This project is licensed under [MIT](LICENSE.md)
+This project is licensed under [MIT0](LICENSE.md)
 
 > _This is primarily created for my own personal use 
 > and I feel it is only fair to hold little restrictions for others in such context._\

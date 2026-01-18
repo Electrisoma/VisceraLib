@@ -1,5 +1,3 @@
-import dev.kikugie.stonecutter.Identifier
-
 plugins {
     `multiloader-loader`
     id("net.fabricmc.fabric-loom-remap")
@@ -8,15 +6,6 @@ plugins {
 
 fletchingTable {
     j52j.register("main") { extension("json", "**/*.json5") }
-}
-
-stonecutter {
-    val loader = property("loader")
-    constants.match(
-        loader as Identifier,
-        "fabric",
-        "neoforge"
-    )
 }
 
 dependencies {
@@ -38,7 +27,7 @@ dependencies {
 }
 
 loom {
-    val awName = "${project.mod.mc}-${project.mod.id}_${project.mod.module}.accesswidener"
+    val awName = "${project.mod.mc}-${project.mod.id}_${project.module}.accesswidener"
     accessWidenerPath = commonNode.project.file("../../src/main/resources/accesswideners/$awName")
 
     val loomRunDir = File("../../../../run")
@@ -59,11 +48,11 @@ loom {
 
 tasks.named<ProcessResources>("processResources") {
     val commonResDir = commonNode.project.parent!!.projectDir.resolve("src/main/resources")
-    val awFile = commonResDir.resolve("accesswideners/${project.mod.mc}-${project.mod.id}_${project.mod.module}.accesswidener")
+    val awFile = commonResDir.resolve("accesswideners/${project.mod.mc}-${project.mod.id}_${project.module}.accesswidener")
 
     if (awFile.exists()) {
         from(awFile) {
-            rename(awFile.name, "${project.mod.id}_${project.mod.module}.accesswidener")
+            rename(awFile.name, "${project.mod.id}_${project.module}.accesswidener")
         }
     }
 }

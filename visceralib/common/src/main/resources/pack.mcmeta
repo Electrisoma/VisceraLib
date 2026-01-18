@@ -1,0 +1,6 @@
+{
+  "pack": {
+    "description": "All modules of VisceraLib bundled as 1 library.",
+    "pack_format": 8
+  }
+}

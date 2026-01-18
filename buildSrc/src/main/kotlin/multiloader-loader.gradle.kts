@@ -1,3 +1,5 @@
+import dev.kikugie.stonecutter.Identifier
+
 plugins {
     id("multiloader-common")
 }
@@ -14,6 +16,11 @@ dependencies {
     compileOnly(project(path = commonPath))
     commonJava(project(path = commonPath, configuration = "commonJava"))
     commonResources(project(path = commonPath, configuration = "commonResources"))
+}
+
+java {
+    withSourcesJar()
+    withJavadocJar()
 }
 
 tasks {
@@ -33,7 +40,14 @@ tasks {
 }
 
 afterEvaluate {
-    val folder = project.mod.module
+    val loader = project.loader
+    val folder = project.module
+
+    stonecutterBuild.constants.match(
+        loader as Identifier,
+        "fabric",
+        "neoforge"
+    )
 
     extensions.findByType<net.neoforged.moddevgradle.dsl.NeoForgeExtension>()?.apply {
         runs.all { ideFolderName.set(folder) }
@@ -41,7 +55,10 @@ afterEvaluate {
 
     extensions.findByType<net.fabricmc.loom.api.LoomGradleExtensionAPI>()?.apply {
         runs {
-            all { ideConfigFolder.set(folder) }
+            all {
+                ideConfigFolder.set(folder)
+                ideConfigGenerated(true)
+            }
             getByName("client") {
                 programArgs("--username", "dev")
             }

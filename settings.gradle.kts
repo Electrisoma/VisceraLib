@@ -1,5 +1,7 @@
+import dev.kikugie.stonecutter.settings.tree.TreeBuilder
+
 pluginManagement {
-    fun getProp(prop: String): String? = providers.gradleProperty(prop).getOrElse("")
+    fun getProp(prop: String): String = providers.gradleProperty(prop).getOrElse("")
 
     plugins {
         id("net.fabricmc.fabric-loom-remap") version getProp("loom")
@@ -30,55 +32,53 @@ plugins {
 
 rootProject.name = "visceralib"
 
-include("visceralib-core")
+fun getVersions(prop: String) = providers.gradleProperty(prop).getOrElse("")
+    .split(",").map { it.trim() }.filter { it.isNotEmpty() }
+
+val dists: Map<String, List<String>> = mapOf(
+    "common"   to getVersions("stonecutter_enabled_common_versions"),
+    "fabric"   to getVersions("stonecutter_enabled_fabric_versions"),
+    "neoforge" to getVersions("stonecutter_enabled_neo_versions")
+)
+
+val allVersions = dists.values.flatten().distinct()
+
+fun module(name: String) {
+    include(name)
+
+    stonecutter {
+        kotlinController=true
+        centralScript="build.gradle.kts"
+        create(project=(":$name"), fun TreeBuilder.() {
+            versions(*allVersions.toTypedArray())
+            dists.forEach { (branch, versions) ->
+                branch(branch) { versions(*versions.toTypedArray()) }
+            }
+            vcsVersion = "1.21.1"
+        })
+    }
+}
+
+include("visceralib")
 
 stonecutter {
     kotlinController = true
     centralScript = "build.gradle.kts"
-
-    create(project(":visceralib-core")) {
-        versions("1.21.1")
-        branch("common")
-        branch("fabric")
-        branch("neoforge")
+    create(project=(":visceralib")) {
+        versions(*allVersions.toTypedArray())
+        dists.forEach { (branch, versions) ->
+            branch(branch) { versions(*versions.toTypedArray()) }
+        }
+        vcsVersion = "1.21.1"
     }
 }
 
-//fun getVersions(prop: String) = providers.gradleProperty(prop).getOrElse("")
-//    .split(",").map { it.trim() }.filter { it.isNotEmpty() }
-//
-//val dists: Map<String, List<String>> = mapOf(
-//    "common"   to getVersions("stonecutter_enabled_common_versions"),
-//    "fabric"   to getVersions("stonecutter_enabled_fabric_versions"),
-//    "neoforge" to getVersions("stonecutter_enabled_neo_versions")
-//)
-//
-//val allVersions = dists.values.flatten().distinct()
-
-//fun module(name: String) {
-//    include(name)
-//
-//    stonecutter {
-//        kotlinController=true
-//        centralScript="build.gradle.kts"
-//
-//        create(project(":$name")) {
-//            versions(*allVersions.toTypedArray())
-//            dists.forEach { (branch, versions) ->
-//                branch(branch) { versions(*versions.toTypedArray()) }
-//            }
-//            vcsVersion = "1.21.1"
-//        }
-//    }
-//}
-
-// TODO: networking, item hooks(?)
-//module("visceralib-core")
+module("visceralib-core")
 //module("visceralib-modelloader-api") // empty atm
-//module("visceralib-registration-api")
-//module("visceralib-datagen-api")
-//module("visceralib-configs-api")
-//module("visceralib-dsp-api")
+module("visceralib-registration-api")
+module("visceralib-datagen-api")
+module("visceralib-configs-api")
+module("visceralib-dsp-api")
 //module("visceralib-item-hooks-api") // item stuff
 //module("visceralib-networking-api") // networking
 //module("visceralib-ui-api")         // splashes

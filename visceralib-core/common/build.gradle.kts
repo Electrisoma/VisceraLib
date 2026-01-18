@@ -1,5 +1,3 @@
-import dev.kikugie.stonecutter.Identifier
-
 plugins {
     id("multiloader-common")
     id("net.fabricmc.fabric-loom-remap")
@@ -7,7 +5,7 @@ plugins {
 }
 
 loom {
-    val awName = "${project.mod.mc}-${project.mod.id}_${project.mod.module}.accesswidener"
+    val awName = "${project.mod.mc}-${project.mod.id}_${project.module}.accesswidener"
     accessWidenerPath = commonNode.project.file("../../src/main/resources/accesswideners/$awName")
 
     // interface injection

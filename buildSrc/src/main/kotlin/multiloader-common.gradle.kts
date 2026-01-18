@@ -9,7 +9,7 @@ plugins {
 
 base {
     version = "${project.mod.version}+mc${project.stonecutterBuild.current.version}-${project.loader}"
-    archivesName = "${project.mod.id}-${project.mod.module}"
+    archivesName = "${project.mod.id}-${project.module}"
 }
 
 java {
@@ -44,7 +44,6 @@ tasks {
         "compatibilityLevel" to "JAVA_${project.mod.dep("java_version")}",
         "id"                 to project.mod.id,
         "name"               to project.mod.name,
-        "module"             to project.mod.module,
         "version"            to project.mod.version,
         "group"              to project.mod.group,
         "authors"            to project.mod.authors,

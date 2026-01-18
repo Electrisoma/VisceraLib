@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "visceralib",
+  "version": "${version}",
+  "name": "VisceraLib",
+  "description": "${description}",
+  "authors": [ "${authors}" ],
+  "contributors": [ "${contributors}" ],
+  "contact": {
+    "homepage": "${github}",
+    "sources": "${github}",
+    "issues": "${github}/issues"
+  },
+  "license": "${license}",
+  "icon": "assets/visceralib/logo.png",
+  "environment": "*",
+  "depends": {
+    "fabric-api-base": "*",
+    "fabricloader": ">=${fabric}",
+    "minecraft": "${minecraft}",
+    "java": ">=${java}"
+  },
+  "custom": {
+    "modmenu": {
+      "badges": [ "library" ],
+      "update_checker": true
+    }
+  }
+}

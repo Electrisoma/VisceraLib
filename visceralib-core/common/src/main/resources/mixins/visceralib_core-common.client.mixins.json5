@@ -1,12 +1,12 @@
 {
-  "required": true,
-  "minVersion": "0.8",
-  "package": "net.electrisoma.visceralib.mixin.core.client",
-  "compatibilityLevel": "${compatibilityLevel}",
-  "client": [
+  required: true,
+  minVersion: "0.8",
+  package: "net.electrisoma.visceralib.mixin.core.client",
+  compatibilityLevel: "${compatibilityLevel}",
+  client: [
     "SplashManagerMixin"
   ],
-  "injectors": {
-    "defaultRequire": 1
+  injectors: {
+    defaultRequire: 1
   }
 }

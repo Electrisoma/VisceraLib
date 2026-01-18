@@ -1,5 +1,3 @@
-import dev.kikugie.stonecutter.Identifier
-
 plugins {
     `multiloader-loader`
     id("net.neoforged.moddev")
@@ -10,17 +8,8 @@ fletchingTable {
     j52j.register("main") { extension("json", "**/*.json5") }
 
     accessConverter.register("main") {
-        add("accesswideners/${project.mod.mc}-${project.mod.id}_${project.mod.module}.accesswidener")
+        add("accesswideners/${project.mod.mc}-${project.mod.id}_${project.module}.accesswidener")
     }
-}
-
-stonecutter {
-    val loader = property("loader")
-    constants.match(
-        loader as Identifier,
-        "fabric",
-        "neoforge"
-    )
 }
 
 dependencies {
@@ -59,7 +48,7 @@ neoForge {
         }
     }
 
-    mods.register("${project.mod.id}_${project.mod.module}") {
+    mods.register("${project.mod.id}_${project.module}") {
         sourceSet(sourceSets.main.get())
     }
 }
@@ -70,6 +59,6 @@ sourceSets.main {
 
 tasks {
     processResources {
-        exclude("${project.mod.id}_${project.mod.module}.accesswidener")
+        exclude("${project.mod.id}_${project.module}.accesswidener")
     }
 }

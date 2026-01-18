@@ -15,6 +15,7 @@ val Project.mod get() = ModData(this)
 val Project.stonecutterBuild get() = extensions.getByType<StonecutterBuildExtension>()
 
 val Project.loader get() = findProperty("loader")?.toString()
+val Project.module get() = findProperty("module")?.toString()
 
 val Project.commonNode get() = requireNotNull(stonecutterBuild.node.sibling("common")) {
     "No common project found for $name"
@@ -25,7 +26,6 @@ value class ModData(private val project: Project) {
 
     val id: String           get() = prop("mod.id")
     val name: String         get() = prop("mod.name")
-    val module: String       get() = prop("mod.module")
     val version: String      get() = prop("mod.version")
     val group: String        get() = prop("mod.group")
     val authors: String      get() = prop("mod.authors")
@@ -81,6 +81,12 @@ fun DependencyHandlerScope.listImplementation(projects: List<Project>) =
 
 fun DependencyHandlerScope.listImplementation(projects: List<Project>, configuration: String) =
     projects.forEach { "implementation"(project(it.path, configuration)) }
+
+fun DependencyHandlerScope.listJarJar(projects: List<Project>) =
+    projects.forEach { "jarJar"(it) }
+
+fun DependencyHandlerScope.listInclude(projects: List<Project>) =
+    projects.forEach { "include"(it) }
 
 @Suppress("UnstableApiUsage")
 fun layeredMappings(project: Project): Dependency = project.extensions.getByType<LoomGradleExtensionAPI>().layered {
