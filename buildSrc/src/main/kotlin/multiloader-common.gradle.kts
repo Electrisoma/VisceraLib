@@ -9,7 +9,10 @@ plugins {
 
 base {
     version = "${project.mod.version}+mc${project.stonecutterBuild.current.version}-${project.loader}"
-    archivesName = "${project.mod.id}-${project.module}"
+
+    val moduleSuffix = project.findProperty("module")?.toString()
+        ?.takeIf { it.isNotBlank() }?.let { "-$it" } ?: ""
+    archivesName = "${project.mod.id}$moduleSuffix"
 }
 
 java {
