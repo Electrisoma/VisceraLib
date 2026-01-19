@@ -64,13 +64,13 @@ include("visceralib")
 stonecutter {
     kotlinController = true
     centralScript = "build.gradle.kts"
-    create("visceralib") {
+    create("visceralib", Action<TreeBuilder> {
         versions(*allVersions.toTypedArray())
         dists.forEach { (branch, versions) ->
             branch(branch) { versions(*versions.toTypedArray()) }
         }
         vcsVersion = "1.21.1"
-    }
+    })
 }
 
 module("visceralib-core")

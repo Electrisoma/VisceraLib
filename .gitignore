@@ -18,8 +18,8 @@ libs/
 ## IntelliJ
 
 !.idea/
-!.idea/icon.png
 .idea/*
+!.idea/icon.png
 *.iml
 *.iws
 *.ipr
