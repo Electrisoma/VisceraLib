@@ -42,6 +42,10 @@ dependencies {
 }
 
 tasks {
+    val modId = project.mod.id
+    val moduleName = project.findProperty("module")?.toString()
+    val namespace = if (moduleName.isNullOrBlank()) modId else "${modId}_$moduleName"
+
     val expandProps = mapOf(
         "java"               to project.mod.dep("java_version"),
         "compatibilityLevel" to "JAVA_${project.mod.dep("java_version")}",
@@ -74,6 +78,15 @@ tasks {
     )
 
     processResources {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+        val masterLogo = rootProject.file("branding/logo.png")
+        if (masterLogo.exists()) {
+            from(masterLogo) {
+                into("assets/$namespace")
+            }
+        }
+
         filesMatching("META-INF/neoforge.mods.toml") {
             expand(expandProps)
         }

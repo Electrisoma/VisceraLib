@@ -49,7 +49,7 @@ fun module(name: String) {
     stonecutter {
         kotlinController=true
         centralScript="build.gradle.kts"
-        create(project=(":$name"), fun TreeBuilder.() {
+        create(name, Action<TreeBuilder> {
             versions(*allVersions.toTypedArray())
             dists.forEach { (branch, versions) ->
                 branch(branch) { versions(*versions.toTypedArray()) }
@@ -64,7 +64,7 @@ include("visceralib")
 stonecutter {
     kotlinController = true
     centralScript = "build.gradle.kts"
-    create(project=(":visceralib")) {
+    create("visceralib") {
         versions(*allVersions.toTypedArray())
         dists.forEach { (branch, versions) ->
             branch(branch) { versions(*versions.toTypedArray()) }

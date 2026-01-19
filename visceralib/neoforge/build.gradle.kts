@@ -13,22 +13,25 @@ dependencyProjects.forEach { project.evaluationDependsOn(it.path) }
 dependencies {
     listImplementation(dependencyProjects)
     listJarJar(dependencyProjects)
+
     runtimeOnly(modrinth("better-modlist", project.mod.dep("better_modlist")))
 }
 
 neoForge {
     version = project.mod.dep("neoforge")
 
+    val mdgRunDir = File("../../../../run")
+
     runs {
         register("client") {
             client()
             ideName = "NeoForge Client (${project.path})"
-            gameDirectory = file("../../../../run/client")
+            gameDirectory = file(mdgRunDir.resolve("client").toString())
         }
         register("server") {
             server()
             ideName = "NeoForge Server (${project.path})"
-            gameDirectory = file("../../../../run/server")
+            gameDirectory = file(mdgRunDir.resolve("server").toString())
         }
     }
 
@@ -44,6 +47,4 @@ neoForge {
     }
 }
 
-sourceSets.main {
-    resources.srcDir("src/generated/resources")
-}
+sourceSets.main { resources.srcDir("src/generated/resources") }

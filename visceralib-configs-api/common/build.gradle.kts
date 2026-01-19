@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.sourceSets
+
 plugins {
     id("multiloader-common")
     id("net.fabricmc.fabric-loom-remap")
