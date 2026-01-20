@@ -24,6 +24,7 @@ dependencies {
 
     embedFapi(project, "fabric-api-base")
     embedFapi(project, "fabric-particles-v1")
+    embedFapi(project, "fabric-registry-sync-v0")
 
     listImplementation(commonProjects)
     listImplementation(fabricProjects, "namedElements")

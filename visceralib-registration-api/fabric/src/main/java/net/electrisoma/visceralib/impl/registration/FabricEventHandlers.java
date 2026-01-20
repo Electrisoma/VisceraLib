@@ -8,7 +8,7 @@
 //public class FabricEventHandlers {
 //
 //    public static void onParticleRegistration() {
-//        IParticleRegistrationHelper helper = ParticleRegistrationImpl.getInstance();
-//        VisceralEventBus.post(new ParticleRegistrationEvent(helper));
+//        IParticleRegistrationHelper handle = ParticleRegistrationImpl.getInstance();
+//        VisceralEventBus.post(new ParticleRegistrationEvent(handle));
 //    }
 //}

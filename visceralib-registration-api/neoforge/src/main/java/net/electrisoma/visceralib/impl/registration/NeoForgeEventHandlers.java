@@ -14,7 +14,7 @@
 //
 //    @SubscribeEvent
 //    public static void onParticleRegistration(RegisterParticleProvidersEvent event) {
-//        IParticleRegistrationHelper helper = ParticleRegistrationImpl.getInstance(event);
-//        VisceralEventBus.post(new ParticleRegistrationEvent(helper));
+//        IParticleRegistrationHelper handle = ParticleRegistrationImpl.getInstance(event);
+//        VisceralEventBus.post(new ParticleRegistrationEvent(handle));
 //    }
 //}

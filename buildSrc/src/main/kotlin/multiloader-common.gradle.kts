@@ -42,9 +42,9 @@ dependencies {
 }
 
 tasks {
-    val modId = project.mod.id
-    val moduleName = project.findProperty("module")?.toString()
-    val namespace = if (moduleName.isNullOrBlank()) modId else "${modId}_$moduleName"
+    val modId: String = project.mod.id
+    val moduleName: String? = project.findProperty("module")?.toString()
+    val namespace: String = if (moduleName.isNullOrBlank()) modId else "${modId}_$moduleName"
 
     val expandProps = mapOf(
         "java"               to project.mod.dep("java_version"),

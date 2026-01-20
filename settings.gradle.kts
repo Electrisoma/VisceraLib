@@ -54,7 +54,7 @@ fun module(name: String) {
             dists.forEach { (branch, versions) ->
                 branch(branch) { versions(*versions.toTypedArray()) }
             }
-            vcsVersion = "1.21.1"
+            vcsVersion="1.21.1"
         })
     }
 }
@@ -62,14 +62,14 @@ fun module(name: String) {
 include("visceralib")
 
 stonecutter {
-    kotlinController = true
-    centralScript = "build.gradle.kts"
+    kotlinController=true
+    centralScript="build.gradle.kts"
     create("visceralib", Action<TreeBuilder> {
         versions(*allVersions.toTypedArray())
         dists.forEach { (branch, versions) ->
             branch(branch) { versions(*versions.toTypedArray()) }
         }
-        vcsVersion = "1.21.1"
+        vcsVersion="1.21.1"
     })
 }
 

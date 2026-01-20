@@ -5,13 +5,13 @@
 //
 //public class ParticleRegistrationEvent extends VisceralEvent implements VisceralEvent.ClientSide {
 //
-//    private final IParticleRegistrationHelper helper;
+//    private final IParticleRegistrationHelper handle;
 //
-//    public ParticleRegistrationEvent(IParticleRegistrationHelper helper) {
-//        this.helper = helper;
+//    public ParticleRegistrationEvent(IParticleRegistrationHelper handle) {
+//        this.handle = handle;
 //    }
 //
 //    public IParticleRegistrationHelper getHelper() {
-//        return helper;
+//        return handle;
 //    }
 //}

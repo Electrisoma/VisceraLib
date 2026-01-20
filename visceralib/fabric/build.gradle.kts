@@ -48,3 +48,12 @@ loom {
         }
     }
 }
+
+tasks.matching { it.name == "genSourcesWithVineflower" }.configureEach {
+    val corePath = ":visceralib-core:common:${project.stonecutterBuild.current.version}"
+    val coreProject = rootProject.findProject(corePath)
+
+    if (coreProject != null) {
+        mustRunAfter(coreProject.tasks.matching { it.name == "validateAccessWidener" })
+    }
+}
