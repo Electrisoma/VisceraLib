@@ -14,8 +14,13 @@ val Project.mod get() = ModData(this)
 
 val Project.stonecutterBuild get() = extensions.getByType<StonecutterBuildExtension>()
 
-val Project.loader get() = findProperty("loader")?.toString()
-val Project.module get() = findProperty("module")?.toString()
+val Project.loader: String? get() = findProperty("loader")?.toString()
+val Project.module: String? get() {
+    val name = findProperty("module")?.toString() ?: return null
+    val suffix = findProperty("suffix")?.toString()?.takeIf { it.isNotBlank() }
+    val ver = findProperty("module_version")?.toString()?.takeIf { it.isNotBlank() }
+    return listOfNotNull(name, suffix, ver).joinToString("_")
+}
 
 val Project.commonNode get() = requireNotNull(stonecutterBuild.node.sibling("common")) {
     "No common project found for $name"
@@ -57,7 +62,7 @@ fun DependencyHandlerScope.fabricLoader(project: Project) =
 fun DependencyHandlerScope.embedFapi(project: Project, name: String) {
     val factory = project.extensions.getByType<FabricApiExtension>()
     val module = factory.module(name, fapiVersion(project))
-    add("modImplementation", module)
+    add("modApi", module)
     add("include", module)
 }
 

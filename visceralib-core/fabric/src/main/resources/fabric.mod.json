@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "visceralib_core",
   "version": "${version}",
-  "name": "VisceraLib-Core",
+  "name": "VisceraLib Core",
   "description": "Contains essential code for each VisceraLib module.",
   "authors": [ "${authors}" ],
   "contributors": [ "${contributors}" ],

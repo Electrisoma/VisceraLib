@@ -17,6 +17,8 @@ This project is licensed under [MIT0](LICENSE.md)
 
 ## Usage
 
+# disclaimer: not published yet
+
 Here's how to import VisceraLib into your project:
 
 <details>
@@ -25,13 +27,28 @@ Here's how to import VisceraLib into your project:
 ### Architectury Multiloader:
 
 Kotlin DSL
+
+```kotlin
+modImplementation("net.electrisoma.visceralib:visceralib:${visceralib_version}-common")
+```
+
+Groovy DSL
+
+```groovy
+modImplementation "net.electrisoma.visceralib:visceralib:${visceralib_version}-common"
+```
+
+or
+
+Kotlin DSL
+
 ```kotlin
 listOf(
     "core",
-    "registration",
-    "modelloader"
+    "registration-api-v1",
+    "item-hooks-v1"
 ).forEach { module ->
-    "net.electrisoma.visceralib:visceralib-$module:${visceralib_version}+mc${minecraft_version}-common".let {
+    "net.electrisoma.visceralib:visceralib-$module:${visceralib_version}-common".let {
         modImplementation(it)
     }
 }
@@ -41,12 +58,12 @@ Groovy DSL
 ```groovy
 Set<String> modules = [
         "core",
-        "registration",
-        "modelloader"
+        "registration-api-v1",
+        "item-hooks-v1"
 ]
 
 modules.each {
-    def dep = "net.electrisoma.visceralib:visceralib-${it}:${visceralib_version}+mc${minecraft_version}-common"
+    def dep = "net.electrisoma.visceralib:visceralib-${it}:${visceralib_version}-common"
     modImplementation(dep)
 }
 ```
@@ -54,13 +71,27 @@ modules.each {
 ### Jared's Multiloader Template:
 
 Kotlin DSL
+
+```kotlin
+implementation("net.electrisoma.visceralib:visceralib:${visceralib_version}-common")
+```
+
+Groovy DSL
+
+```groovy
+implementation "net.electrisoma.visceralib:visceralib:${visceralib_version}-common"
+```
+
+or
+
+Kotlin DSL
 ```kotlin
 listOf(
     "core",
-    "registration",
-    "modelloader"
+    "registration-api-v1",
+    "item-hooks-v1"
 ).forEach { module ->
-    "net.electrisoma.visceralib:visceralib-$module:${visceralib_version}+mc${minecraft_version}-common".let {
+    "net.electrisoma.visceralib:visceralib-$module:${visceralib_version}-common".let {
         implementation(it)
     }
 }
@@ -70,12 +101,12 @@ Groovy DSL
 ```groovy
 Set<String> modules = [
         "core",
-        "registration",
-        "modelloader"
+        "registration-api-v1",
+        "item-hooks-v1"
 ]
 
 modules.each {
-    def dep = "net.electrisoma.visceralib:visceralib-${it}:${visceralib_version}+mc${minecraft_version}-common"
+    def dep = "net.electrisoma.visceralib:visceralib-${it}:${visceralib_version}-common"
     implementation(dep)
 }
 ```
@@ -88,14 +119,27 @@ modules.each {
 ### Loom
 
 Kotlin DSL
+
+```kotlin
+modImplementation("net.electrisoma.visceralib:visceralib:${visceralib_version}-fabric")
+```
+
+Groovy DSL
+
+```groovy
+modImplementation "net.electrisoma.visceralib:visceralib:${visceralib_version}-fabric"
+```
+
+Kotlin DSL
 ```kotlin
 listOf(
     "core",
-    "registration",
-    "modelloader"
+    "registration-api-v1",
+    "item-hooks-v1"
 ).forEach { module ->
-    "net.electrisoma.visceralib:visceralib-$module:${visceralib_version}+mc${minecraft_version}-fabric".let {
+    "net.electrisoma.visceralib:visceralib-$module:${visceralib_version}-fabric".let {
         modImplementation(it)
+        include(it)
     }
 }
 ```
@@ -103,14 +147,15 @@ listOf(
 Groovy DSL
 ```groovy
 Set<String> modules = [
-        "core",
-        "registration",
-        "modelloader"
+        "core", 
+        "registration-api-v1", 
+        "item-hooks-v1"
 ]
 
 modules.each {
-    def dep = "net.electrisoma.visceralib:visceralib-${it}:${visceralib_version}+mc${minecraft_version}-fabric"
+    def dep = "net.electrisoma.visceralib:visceralib-${it}:${visceralib_version}-fabric"
     modImplementation(dep)
+    include(dep)
 }
 ```
 
@@ -122,14 +167,27 @@ modules.each {
 ### MDG
 
 Kotlin DSL
+
+```kotlin
+implementation("net.electrisoma.visceralib:visceralib:${visceralib_version}-neoforge")
+```
+
+Groovy DSL
+
+```groovy
+implementation "net.electrisoma.visceralib:visceralib:${visceralib_version}-neoforge"
+```
+
+Kotlin DSL
 ```kotlin
 listOf(
     "core",
-    "registration",
-    "modelloader"
+    "registration-api-v1",
+    "item-hooks-v1"
 ).forEach { module ->
-    "net.electrisoma.visceralib:visceralib-$module:${visceralib_version}+mc${minecraft_version}-neoforge".let {
+    "net.electrisoma.visceralib:visceralib-$module:${visceralib_version}-neoforge".let {
         implementation(it)
+        jarJar(it)
     }
 }
 ```
@@ -138,13 +196,14 @@ Groovy DSL
 ```groovy
 Set<String> modules = [
         "core",
-        "registration",
-        "modelloader"
+        "registration-api-v1",
+        "item-hooks-v1"
 ]
 
 modules.each {
-    def dep = "net.electrisoma.visceralib:visceralib-${it}:${visceralib_version}+mc${minecraft_version}-neoforge"
+    def dep = "net.electrisoma.visceralib:visceralib-${it}:${visceralib_version}-neoforge"
     implementation(dep)
+    jarJar(dep)
 }
 ```
 
@@ -165,11 +224,11 @@ This is to keep things tidy and clean and to give a general concept of what's in
 
 > _This section will have all modules and associated `README.md` files documented for reference._
 
-### - VisceraLib-Core
+### - VisceraLib Core
 See [VisceraLib-Core README](visceralib-core/README.md)
 
-### - VisceraLib-Registration (half-working)
-See [VisceraLib-Registration README](visceralib-registration/README.md)
+### - VisceraLib Item Hooks (v1)
+See [VisceraLib-Registration README](visceralib-item-hooks-v1/README.md)
 
-### - VisceraLib-ModelLoader (not-working)
-See [VisceraLib-ModelLoader README](visceralib-modelloader/README.md)
+### - VisceraLib Registration API (v1) (half-working)
+See [VisceraLib-Registration README](visceralib-registration-api-v1/README.md)

@@ -11,7 +11,8 @@ public interface IPlatformHelper {
      */
     enum PlatformEnum {
         NEOFORGE,
-        FABRIC
+        FABRIC,
+        FORGE
     }
 
     /**

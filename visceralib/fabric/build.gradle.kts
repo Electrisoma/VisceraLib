@@ -17,7 +17,12 @@ dependencies {
 
     runtimeFapi(project, "fabric-api-base")
     runtimeFapi(project, "fabric-data-generation-api-v1")
-    runtimeFapi(project, "fabric-convention-tags-v2")
+    //? != 1.20.1 {
+    // runtimeFapi(project, "fabric-convention-tags-v2")
+    // ?//}
+    //? == 1.20.1 {
+    // runtimeFapi(project, "fabric-convention-tags-v1")
+    // ?//}
     runtimeFapi(project, "fabric-particles-v1")
 
     listImplementation(commonProjects)

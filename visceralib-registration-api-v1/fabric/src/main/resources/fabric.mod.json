@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "id": "visceralib_registration_api_v1",
+  "version": "${version}",
+  "name": "VisceraLib Registration API (v1)",
+  "description": "Contains code to help with registering content in common.",
+  "authors": [ "${authors}" ],
+  "contributors": [ "${contributors}" ],
+  "contact": {
+    "homepage": "${github}",
+    "sources": "${github}",
+    "issues": "${github}/issues"
+  },
+  "license": "${license}",
+  "icon": "assets/visceralib_registration_api_v1/logo.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [ "net.electrisoma.visceralib.impl.registration.v1.EntrypointFabric" ],
+    "client": [ "net.electrisoma.visceralib.impl.registration.v1.client.ClientEntrypointFabric" ]
+  },
+  "mixins": [
+    "mixins/visceralib_registration_api_v1-common.mixins.json",
+    "mixins/visceralib_registration_api_v1-fabric.mixins.json",
+    "mixins/visceralib_registration_api_v1-common.client.mixins.json",
+    "mixins/visceralib_registration_api_v1-fabric.client.mixins.json"
+  ],
+  "depends": {
+    "visceralib_core": "*",
+    "fabric-api-base": "*",
+    "fabric-particles-v1": "*",
+    "fabricloader": ">=${fabric}",
+    "minecraft": "${minecraft}",
+    "java": ">=${java}"
+  },
+  "custom": {
+    "modmenu": {
+      "badges": [ "library" ],
+      "parent": {
+        "id": "${id}",
+        "name": "${name}",
+        "description": "${description}",
+        "icon": "assets/visceralib_registration_api_v1/logo.png",
+        "badges": [ "library" ]
+      },
+      "update_checker": true
+    }
+  }
+}

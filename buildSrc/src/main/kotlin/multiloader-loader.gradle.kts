@@ -41,7 +41,13 @@ tasks {
 
 afterEvaluate {
     val loader = project.loader
-    val folder = project.module
+
+    val name = findProperty("module")?.toString()?.takeIf { it.isNotBlank() }
+    val suffix = findProperty("suffix")?.toString()?.takeIf { it.isNotBlank() }
+    val ver = findProperty("module_version")?.toString()?.takeIf { it.isNotBlank() }
+
+    val base = listOfNotNull(name, suffix).joinToString("-")
+    val configLabel = if (ver != null) "$base/$ver" else base
 
     stonecutterBuild.constants.match(
         loader as Identifier,
@@ -50,13 +56,19 @@ afterEvaluate {
     )
 
     extensions.findByType<net.neoforged.moddevgradle.dsl.NeoForgeExtension>()?.apply {
-        runs.all { ideFolderName.set(folder) }
+        runs.all {
+            if (configLabel.isNotEmpty()) {
+                ideFolderName.set(configLabel)
+            }
+        }
     }
 
     extensions.findByType<net.fabricmc.loom.api.LoomGradleExtensionAPI>()?.apply {
         runs {
             all {
-                ideConfigFolder.set(folder)
+                if (configLabel.isNotEmpty()) {
+                    ideConfigFolder.set(configLabel)
+                }
                 ideConfigGenerated(true)
             }
             getByName("client") {

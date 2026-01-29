@@ -10,9 +10,12 @@ plugins {
 base {
     version = "${project.mod.version}+mc${project.stonecutterBuild.current.version}-${project.loader}"
 
-    val moduleSuffix = project.findProperty("module")?.toString()
-        ?.takeIf { it.isNotBlank() }?.let { "-$it" } ?: ""
-    archivesName = "${project.mod.id}$moduleSuffix"
+    val mName = findProperty("module")?.toString()?.takeIf { it.isNotBlank() }
+    val mSuffix = findProperty("suffix")?.toString()?.takeIf { it.isNotBlank() }
+    val mVer = findProperty("module_version")?.toString()?.takeIf { it.isNotBlank() }
+    val modulePart = listOfNotNull(mName, mSuffix, mVer).joinToString("-")
+
+    archivesName = "${project.mod.id}-${modulePart}"
 }
 
 java {
@@ -43,8 +46,8 @@ dependencies {
 
 tasks {
     val modId: String = project.mod.id
-    val moduleName: String? = project.findProperty("module")?.toString()
-    val namespace: String = if (moduleName.isNullOrBlank()) modId else "${modId}_$moduleName"
+    val moduleSuffix = project.module
+    val namespace: String = if (moduleSuffix.isNullOrBlank()) modId else "${modId}_$moduleSuffix"
 
     val expandProps = mapOf(
         "java"               to project.mod.dep("java_version"),
@@ -87,7 +90,7 @@ tasks {
             }
         }
 
-        filesMatching("META-INF/neoforge.mods.toml") {
+        filesMatching(listOf("META-INF/neoforge.mods.toml", "META-INF/mods.toml")) {
             expand(expandProps)
         }
 
@@ -117,14 +120,14 @@ publishing {
     }
 
     repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/electrisoma/VisceraLib")
-            credentials {
-                username = System.getenv("GITHUB_ACTOR") ?: localProps.getProperty("mavenUsername")
-                password = System.getenv("GITHUB_TOKEN") ?: localProps.getProperty("mavenToken")
-            }
-        }
-        mavenLocal()
+//        maven {
+//            name = "GitHubPackages"
+//            url = uri("https://maven.pkg.github.com/electrisoma/VisceraLib")
+//            credentials {
+//                username = System.getenv("GITHUB_ACTOR") ?: localProps.getProperty("ghpUsername")
+//                password = System.getenv("GITHUB_TOKEN") ?: localProps.getProperty("ghpToken")
+//            }
+//        }
+//        mavenLocal()
     }
 }

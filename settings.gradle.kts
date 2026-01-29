@@ -74,11 +74,11 @@ stonecutter {
 }
 
 module("visceralib-core")
-//module("visceralib-modelloader-api") // empty atm
-module("visceralib-registration-api")
-module("visceralib-datagen-api")
-module("visceralib-configs-api")
-module("visceralib-dsp-api")
-//module("visceralib-item-hooks-api") // item stuff
-//module("visceralib-networking-api") // networking
-//module("visceralib-ui-api")         // splashes
+//module("visceralib-modelloader-api-v1") // empty atm
+module("visceralib-registration-api-v1")
+//module("visceralib-datagen-api-v1") //temp
+//module("visceralib-configs-api-v1") //temp
+//module("visceralib-dsp-api-v1")     //temp
+module("visceralib-item-hooks-v1")
+//module("visceralib-networking-api-v1") // networking
+//module("visceralib-ui-api-v1")         // splashes

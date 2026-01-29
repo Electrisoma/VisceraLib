@@ -4,7 +4,7 @@ build/
 gradle-app.setting
 out/
 logs/
-.kotlin
+.kotlin/
 classes/
 .vscode
 .architectury-transformer

@@ -6,7 +6,7 @@ issueTrackerURL="${github}/issues"
 [[mods]]
     modId="visceralib_core"
     version="${version}"
-    displayName="VisceraLib-Core"
+    displayName="VisceraLib Core"
     authors="${authors}"
     credits="${contributors}"
     description="Contains essential code for each ${name} module."
