@@ -1,4 +1,7 @@
-# VisceraLib
+<p align="center"><img src="./branding/big/logo.png" alt="Logo" width="256">
+<h1 align="center">VisceraLib<br>
+	<a href="https://github.com/Electrisoma/VisceraLib/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Electrisoma/VisceraLib?style=flat&color=900c3f" alt="License"></a>
+</h1>
 
 Multiproject library for general ease of development within a multiloader environment.
 This library can be used in single loader projects as well for its unique APIs, but it is primarily for multiloader.
@@ -8,7 +11,7 @@ VisceraLib is meant to provide:
 - Implementations of Minecraft or modloader features for easier development.
 - General cleanliness of code by handling things mostly in common.
 
-This project is licensed under [MIT0](LICENSE.md)
+This project is licensed under [MIT-0](LICENSE)
 
 > _This is primarily created for my own personal use 
 > and I feel it is only fair to hold little restrictions for others in such context._\

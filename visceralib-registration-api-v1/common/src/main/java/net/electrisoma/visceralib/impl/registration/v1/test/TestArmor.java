@@ -9,7 +9,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
 public final class TestArmor extends ArmorItem {
 
@@ -26,7 +25,7 @@ public final class TestArmor extends ArmorItem {
     }
 
     @Override
-    public @Nullable ResourceLocation viscera$getArmorTexture(
+    public ResourceLocation viscera$getArmorTexture(
             ItemStack stack,
             Entity entity,
             EquipmentSlot slot,
