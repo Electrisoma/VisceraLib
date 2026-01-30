@@ -43,7 +43,7 @@ public class ModItems {
  * );
 **/
 
-    // Forces class loading
+    // Required to force class loading
     public static void init() {}
 }
 ```
@@ -59,16 +59,10 @@ to return custom builders instead of raw RegistryObjects.
 #### Creating a Custom Helper
 ```java
 public class MyRegistrationHelper extends AbstractRegistrationHelper<MyRegistrationHelper> {
-    
-    private TestRegistrationHelper(String modId) {
-        super(new VisceralRegistry(modId));
-    }
 
-    public static TestRegistrationHelper of(String modId) {
-        return new TestRegistrationHelper(modId);
-    }
+    // ... constructor and of() method ...
 
-    // Redirect the 'item' method to return our custom builder
+    // Returns a builder instead of a RegistryObject immediately    
     public <T extends Item> ItemBuilder<T, TestRegistrationHelper> item(
             String name,
             Function<Item.Properties, T> factory
@@ -121,7 +115,7 @@ public class ModItems {
             .properties(p -> p.stacksTo(1))
             .register();
 
-    // Forces class loading
+    // Required to force class loading
     public static void init() {}
 }
 ```
@@ -130,29 +124,35 @@ public class ModItems {
 Finally, ensure your static fields are initialized during your mod's entry point 
 (e.g., the `ModInitializer` on Fabric or the constructor on NeoForge).
 
-#### Common initialization
+#### Main Mod Class
 ```java
 public class MyMod {
 
     public static void init() {
         // Calling `init()` forces the JVM to load the class and process static fields
         ModItems.init();
+        // ModBlocks.init();
+        // ModEntities.init();
+        // etc
     }
 }
 ```
 
-#### NeoForge initialization
+#### Loader Entrypoints
+Call your common `init()` during the earliest possible phase of each loader.
+
+#### NeoForge
 ```java
 @Mod(Constants.MOD_ID)
 public class MyModNeoForge {
 
-    public MyModNeoForge(IEventBus modEventBus, ModContainer modContainer) {
+    public MyModNeoForge(IEventBus modBus) {
         MyMod.init();
     }
 }
 ```
 
-#### Fabric initialization
+#### Fabric
 ```java
 public class MyModFabric implements ModInitializer {
 
