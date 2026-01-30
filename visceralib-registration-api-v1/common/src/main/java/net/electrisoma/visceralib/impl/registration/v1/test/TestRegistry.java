@@ -3,31 +3,46 @@ package net.electrisoma.visceralib.impl.registration.v1.test;
 import net.electrisoma.visceralib.api.registration.v1.registry.register.RegistryObject;
 import net.electrisoma.visceralib.api.registration.v1.registry.register.VisceralRegistrationHelper;
 import net.electrisoma.visceralib.impl.registration.v1.Constants;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.*;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.electrisoma.visceralib.impl.registration.v1.test.helper.TestRegistrationHelper;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterials;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
 
 public final class TestRegistry {
 
-    public static final VisceralRegistrationHelper REGISTRY = Constants.registry();
+    public static final VisceralRegistrationHelper NORMAL_REGISTRY = Constants.registry();
+    public static final TestRegistrationHelper BUILDER_REGISTRY = Constants.testRegistry();
 
     static {
-        REGISTRY.withTab(TestCreativeTabs.TEST_TAB);
+        NORMAL_REGISTRY.withTab(TestCreativeTabs.NORMAL_TAB);
     }
 
-    public static RegistryObject<Item> TEST_ITEM = REGISTRY.item(
-            "test_item",
-            () -> new TestPickItem(new Item.Properties().rarity(Rarity.EPIC))
+    public static RegistryObject<TestPickItem> FABRIC_ITEM = NORMAL_REGISTRY.register(
+            BuiltInRegistries.ITEM,
+            "fabric_test_item",
+            () -> new TestPickItem(new Item.Properties().rarity(Rarity.EPIC).stacksTo(1))
     );
 
-    public static RegistryObject<Item> TEST_ITEM_1 = REGISTRY.item(
-            "test_item",
-            () -> new TestPickItem(new Item.Properties().rarity(Rarity.EPIC))
+    public static RegistryObject<TestPickItem> NORMAL_ITEM = NORMAL_REGISTRY.item(
+            "normal_test_item",
+            () -> new TestPickItem(new Item.Properties().rarity(Rarity.EPIC).stacksTo(1))
     );
 
-    public static RegistryObject<Item> TEST_ARMOR = REGISTRY.item(
+    public static RegistryObject<TestPickItem> BACKPORTED_ITEM = NORMAL_REGISTRY.item(
+            "backported_test_item",
+            TestPickItem::new,
+            () -> new Item.Properties().rarity(Rarity.EPIC).stacksTo(1)
+    );
+
+    public static RegistryObject<TestPickItem> BUILDER_ITEM = BUILDER_REGISTRY
+            .item("builder_test_item", TestPickItem::new)
+            .properties(p -> p.rarity(Rarity.EPIC))
+            .properties(p -> p.stacksTo(1))
+            .register();
+
+    public static RegistryObject<Item> TEST_ARMOR = NORMAL_REGISTRY.item(
             "test_armor",
             () -> new TestArmor(ArmorMaterials.NETHERITE, ArmorItem.Type.CHESTPLATE, new Item.Properties())
     );
@@ -51,20 +66,20 @@ public final class TestRegistry {
 //            .bucket(reg -> BuiltInRegistries.ITEM.get(RLUtils.path("visceralib", "oil_bucket")))
 //            .build();
 //
-//    public static final RegistryObject<FlowingFluid> OIL_STILL = REGISTRY.fluid(
+//    public static final RegistryObject<FlowingFluid> OIL_STILL = NORMAL_REGISTRY.fluid(
 //            "oil",
 //            OIL_PROPS,
-//            () -> new OilFluid.Source(OIL_PROPS, REGISTRY),
-//            () -> new OilFluid.Flowing(OIL_PROPS, REGISTRY),
+//            () -> new OilFluid.Source(OIL_PROPS, NORMAL_REGISTRY),
+//            () -> new OilFluid.Flowing(OIL_PROPS, NORMAL_REGISTRY),
 //            (fluid) -> new Item.Properties()
 //    );
 //
-//    public static final RegistryObject<FlowingFluid> OIL_FLOWING = REGISTRY.fluid(
+//    public static final RegistryObject<FlowingFluid> OIL_FLOWING = NORMAL_REGISTRY.fluid(
 //            "flowing_oil",
-//            () -> new OilFluid.Flowing(OIL_PROPS, REGISTRY)
+//            () -> new OilFluid.Flowing(OIL_PROPS, NORMAL_REGISTRY)
 //    );
 //
-//    public static final RegistryObject<Block> OIL_BLOCK = REGISTRY.block(
+//    public static final RegistryObject<Block> OIL_BLOCK = NORMAL_REGISTRY.block(
 //            "oil",
 //            () -> new LiquidBlock(OIL_STILL.get(), BlockBehaviour.Properties.ofFullCopy(Blocks.WATER))
 //    );

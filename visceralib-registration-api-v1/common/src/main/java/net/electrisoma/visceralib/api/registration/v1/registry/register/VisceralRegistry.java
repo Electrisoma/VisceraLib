@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
@@ -22,7 +22,7 @@ public record VisceralRegistry(String modId) {
     private static final Logger LOG = LoggerFactory.getLogger("VisceralRegistry");
 
     private static final Multimap<ResourceKey<?>, Registration<?, ?>> ENTRIES =
-            Multimaps.newMultimap(new ConcurrentHashMap<>(), CopyOnWriteArrayList::new);
+            Multimaps.newMultimap(new ConcurrentHashMap<>(), ConcurrentLinkedQueue::new);
     public static final Multimap<ResourceKey<?>, Registration<?, ?>> ENTRIES_VIEW =
             Multimaps.unmodifiableMultimap(ENTRIES);
 
@@ -50,9 +50,8 @@ public record VisceralRegistry(String modId) {
 
         ENTRIES.put(registry.key(), registration);
 
-        if (IPlatformHelper.INSTANCE.isCurrent(IPlatformHelper.PlatformEnum.FABRIC)) {
+        if (IPlatformHelper.INSTANCE.isCurrent(IPlatformHelper.PlatformEnum.FABRIC))
             registration.register();
-        }
 
         return holder;
     }

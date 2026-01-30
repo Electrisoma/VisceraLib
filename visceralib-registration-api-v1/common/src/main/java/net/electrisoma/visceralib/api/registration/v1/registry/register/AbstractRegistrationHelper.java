@@ -14,6 +14,7 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.material.Fluid;
 
@@ -34,7 +35,7 @@ public abstract class AbstractRegistrationHelper<SELF extends AbstractRegistrati
         return (SELF) this;
     }
 
-    protected <R, T extends R> RegistryObject<T> register(
+    public <R, T extends R> RegistryObject<T> register(
             Registry<R> registry,
             String name,
             Supplier<T> supplier
@@ -48,8 +49,26 @@ public abstract class AbstractRegistrationHelper<SELF extends AbstractRegistrati
         return register(BuiltInRegistries.BLOCK, name, supplier);
     }
 
+    // 1.21.11 backport
+    public <T extends Block> RegistryObject<T> block(
+            String name,
+            Function<BlockBehaviour.Properties, ? extends T> factory,
+            Supplier<BlockBehaviour.Properties> supplier
+    ) {
+        return register(BuiltInRegistries.BLOCK, name, () -> factory.apply(supplier.get()));
+    }
+
     public <T extends Item> RegistryObject<T> item(String name, Supplier<T> supplier) {
         return register(BuiltInRegistries.ITEM, name, supplier);
+    }
+
+    // 1.21.11 backport
+    public <T extends Item> RegistryObject<T> item(
+            String name,
+            Function<Item.Properties, ? extends T> factory,
+            Supplier<Item.Properties> supplier
+    ) {
+        return register(BuiltInRegistries.ITEM, name, () -> factory.apply(supplier.get()));
     }
 
     public <T extends Block> RegistryObject<T> blockWithItem(String name, Supplier<T> blockSupplier) {
@@ -58,14 +77,43 @@ public abstract class AbstractRegistrationHelper<SELF extends AbstractRegistrati
         return blockObj;
     }
 
+    // 1.21.11 backport
+    public <T extends Block> RegistryObject<T> blockWithItem(
+            String name,
+            Function<BlockBehaviour.Properties, ? extends T> factory,
+            Supplier<BlockBehaviour.Properties> supplier
+    ) {
+        RegistryObject<T> blockObj = block(name, () -> factory.apply(supplier.get()));
+        item(name, () -> new BlockItem(blockObj.get(), new Item.Properties()));
+        return blockObj;
+    }
+
     // gameplay
 
-    public <T extends BlockEntityType<?>> RegistryObject<T> blockEntity(String name, Supplier<T> supplier) {
+    public <T extends BlockEntityType<?>> RegistryObject<T> blockEntityType(String name, Supplier<T> supplier) {
         return register(BuiltInRegistries.BLOCK_ENTITY_TYPE, name, supplier);
     }
 
-    public <T extends EntityType<?>> RegistryObject<T> entity(String name, Supplier<T> supplier) {
+    // 1.21.11 backport
+    public <T extends BlockEntityType<?>> RegistryObject<T> blockEntityType(
+            String name,
+            Function<BlockEntityType.BlockEntitySupplier<?>, ? extends T> factory,
+            Supplier<BlockEntityType.BlockEntitySupplier<?>> supplier
+    ) {
+        return register(BuiltInRegistries.BLOCK_ENTITY_TYPE, name, () -> factory.apply(supplier.get()));
+    }
+
+    public <T extends EntityType<?>> RegistryObject<T> entityType(String name, Supplier<T> supplier) {
         return register(BuiltInRegistries.ENTITY_TYPE, name, supplier);
+    }
+
+    // 1.21.11 backport
+    public <T extends EntityType<?>> RegistryObject<T> entityType(
+            String name,
+            Function<EntityType.EntityFactory<?>, ? extends T> factory,
+            Supplier<EntityType.EntityFactory<?>> supplier
+    ) {
+        return register(BuiltInRegistries.ENTITY_TYPE, name, () -> factory.apply(supplier.get()));
     }
 
     public <T extends Fluid> RegistryObject<T> fluid(String name, Supplier<T> supplier) {

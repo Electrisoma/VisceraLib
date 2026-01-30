@@ -3,6 +3,7 @@ package net.electrisoma.visceralib.api.registration.v1.registry.register;
 import net.electrisoma.visceralib.api.core.resources.RLUtils;
 import net.electrisoma.visceralib.platform.registration.v1.services.ITabHelper;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
@@ -29,16 +30,17 @@ public final class VisceralRegistrationHelper extends AbstractRegistrationHelper
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    protected <R, T extends R> RegistryObject<T> register(Registry<R> reg, String name, Supplier<T> supplier) {
+    public <R, T extends R> RegistryObject<T> register(Registry<R> reg, String name, Supplier<T> supplier) {
         RegistryObject<T> obj = super.register(reg, name, supplier);
-
-        if (activeTab != null && reg.key().equals(Registries.ITEM)) {
-            tabMap.computeIfAbsent(activeTab, k -> new CopyOnWriteArrayList<>())
-                    .add((RegistryObject<? extends Item>) obj);
-        }
-
+        if (activeTab != null && reg == BuiltInRegistries.ITEM)
+            tryAddToTab(obj);
         return obj;
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> void tryAddToTab(RegistryObject<T> obj) {
+        tabMap.computeIfAbsent(activeTab, k -> new CopyOnWriteArrayList<>())
+                .add((RegistryObject<? extends Item>) obj);
     }
 
     public void withTab(RegistryObject<CreativeModeTab> tab) {
@@ -54,9 +56,8 @@ public final class VisceralRegistrationHelper extends AbstractRegistrationHelper
 
             builder.displayItems((params, output) ->
                     tabMap.forEach((handle, list) -> {
-                        if (handle.key().location().equals(tabId)) {
+                        if (handle.key().location().equals(tabId))
                             list.forEach(item -> output.accept(item.get()));
-                        }
                     })
             );
         }));
