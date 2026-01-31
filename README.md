@@ -3,6 +3,8 @@
 	<a href="https://github.com/Electrisoma/VisceraLib/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Electrisoma/VisceraLib?style=flat&color=900c3f" alt="License"></a>
 </h1>
 
+## About
+
 Multiproject library for general ease of development within a multiloader environment.
 This library can be used in single loader projects as well for its unique APIs, but it is primarily for multiloader.
 
