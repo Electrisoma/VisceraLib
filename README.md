@@ -1,10 +1,7 @@
-<p style="text-align: center;">
-  <img src="./branding/big/logo.png" alt="Logo" width="256"><br>
-  <span style="font-size: 2em; font-weight: bold;">VisceraLib</span><br>
-  <a href="https://github.com/Electrisoma/VisceraLib/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/Electrisoma/VisceraLib?style=flat&color=900c3f" alt="License">
-  </a>
-</p>
+<p align="center"><img src="./branding/big/logo.png" alt="Logo" width="256">
+<h1 align="center">VisceraLib<br>
+	<a href="https://github.com/Electrisoma/VisceraLib/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Electrisoma/VisceraLib?style=flat&color=900c3f" alt="License"></a>
+</h1>
 
 Multiproject library for general ease of development within a multiloader environment.
 This library can be used in single loader projects as well for its unique APIs, but it is primarily for multiloader.
@@ -222,6 +219,7 @@ modules.each {
 If you feel you have something to contribute then I would be happy to accept meaningful contributions 
 for the sake of furthering this project.
 
+> [!NOTE]
 > _This section may receive updates with time._
 
 ## Modules
@@ -230,6 +228,7 @@ Each of these modules has some amount of documentation attached to it via a `REA
 (similar to the one you're reading right now).
 This is to keep things tidy and clean and to give a general concept of what's inside the module.
 
+> [!NOTE]
 > _This section will have all modules and associated `README.md` files documented for reference._
 
 ### - VisceraLib Core
