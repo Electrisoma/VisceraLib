@@ -1,7 +1,7 @@
 package net.electrisoma.visceralib.impl.registration.v1.test;
 
 import net.electrisoma.visceralib.api.registration.v1.registry.register.RegistryObject;
-import net.electrisoma.visceralib.api.registration.v1.registry.register.VisceralRegistrationHelper;
+import net.electrisoma.visceralib.api.registration.v1.registry.VisceralRegistrationHelper;
 import net.electrisoma.visceralib.impl.registration.v1.Constants;
 import net.electrisoma.visceralib.impl.registration.v1.test.helper.TestRegistrationHelper;
 import net.minecraft.network.chat.Component;
@@ -22,8 +22,6 @@ public final class TestCreativeTabs {
             "builder_tab", builder -> builder
                     .title(Component.literal("builder_tab"))
                     .icon(() -> new ItemStack(TestRegistry.BUILDER_ITEM.get()))
-                    .displayItems((itemDisplayParameters, output) ->
-                            output.accept(TestRegistry.BUILDER_ITEM.get()))
     );
 
     public static void init() {}

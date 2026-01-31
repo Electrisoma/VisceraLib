@@ -1,8 +1,11 @@
 package net.electrisoma.visceralib.impl.registration.v1.test.helper.builders;
 
-import net.electrisoma.visceralib.api.registration.v1.registry.register.AbstractRegistrationHelper;
+import net.electrisoma.visceralib.api.registration.v1.registry.AbstractRegistrationHelper;
 import net.electrisoma.visceralib.api.registration.v1.registry.register.RegistryObject;
+import net.electrisoma.visceralib.platform.registration.v1.services.ITabFiller;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 
 import java.util.function.Function;
@@ -15,6 +18,7 @@ public class ItemBuilder<T extends Item, H extends AbstractRegistrationHelper<?>
     private final String name;
     private final Function<Item.Properties, T> factory;
     private Supplier<Item.Properties> properties = Item.Properties::new;
+    private ResourceKey<CreativeModeTab> tabKey;
 
     public ItemBuilder(H helper, String name, Function<Item.Properties, T> factory) {
         this.helper = helper;
@@ -28,9 +32,20 @@ public class ItemBuilder<T extends Item, H extends AbstractRegistrationHelper<?>
         return this;
     }
 
+    public ItemBuilder<T, H> tab(ResourceKey<CreativeModeTab> tabKey) {
+        this.tabKey = tabKey;
+        return this;
+    }
+
     public RegistryObject<T> register() {
-        return helper.register(BuiltInRegistries.ITEM, name, () ->
+        RegistryObject<T> obj = helper.register(BuiltInRegistries.ITEM, name, () ->
                 factory.apply(properties.get())
         );
+
+        if (tabKey != null) {
+            ITabFiller.INSTANCE.addBinding(tabKey, obj::get);
+        }
+
+        return obj;
     }
 }

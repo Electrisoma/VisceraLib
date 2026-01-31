@@ -1,14 +1,11 @@
 package net.electrisoma.visceralib.impl.registration.v1.test;
 
 import net.electrisoma.visceralib.api.registration.v1.registry.register.RegistryObject;
-import net.electrisoma.visceralib.api.registration.v1.registry.register.VisceralRegistrationHelper;
+import net.electrisoma.visceralib.api.registration.v1.registry.VisceralRegistrationHelper;
 import net.electrisoma.visceralib.impl.registration.v1.Constants;
 import net.electrisoma.visceralib.impl.registration.v1.test.helper.TestRegistrationHelper;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterials;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.*;
 
 public final class TestRegistry {
 
@@ -40,6 +37,15 @@ public final class TestRegistry {
             .item("builder_test_item", TestPickItem::new)
             .properties(p -> p.rarity(Rarity.EPIC))
             .properties(p -> p.stacksTo(1))
+            .tab(TestCreativeTabs.BUILDER_TAB.key())
+            .register();
+
+    public static RegistryObject<TestSwordItem> SWORD_ITEM = BUILDER_REGISTRY
+            .item("test_sword_item", TestSwordItem::new)
+            .properties(p -> p.rarity(Rarity.EPIC))
+            .properties(p -> p.stacksTo(1))
+            .properties(p -> p.attributes(SwordItem.createAttributes(Tiers.IRON, 3, -2.4F)))
+            .tab(TestCreativeTabs.BUILDER_TAB.key())
             .register();
 
     public static RegistryObject<Item> TEST_ARMOR = NORMAL_REGISTRY.item(

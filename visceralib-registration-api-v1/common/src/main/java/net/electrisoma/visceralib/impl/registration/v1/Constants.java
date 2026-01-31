@@ -1,12 +1,10 @@
 package net.electrisoma.visceralib.impl.registration.v1;
 
-import net.electrisoma.visceralib.api.registration.v1.registry.register.AbstractRegistrationHelper;
-import net.electrisoma.visceralib.api.registration.v1.registry.register.VisceralRegistrationHelper;
-import net.electrisoma.visceralib.impl.registration.v1.test.TestRegistry;
+import net.electrisoma.visceralib.api.registration.v1.registry.VisceralRegistrationHelper;
 import net.electrisoma.visceralib.impl.registration.v1.test.helper.TestRegistrationHelper;
+import org.jetbrains.annotations.ApiStatus.Internal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jetbrains.annotations.ApiStatus.Internal;
 
 public final class Constants {
 

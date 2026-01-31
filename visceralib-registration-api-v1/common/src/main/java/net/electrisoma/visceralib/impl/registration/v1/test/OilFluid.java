@@ -1,6 +1,6 @@
 package net.electrisoma.visceralib.impl.registration.v1.test;
 
-import net.electrisoma.visceralib.api.registration.v1.registry.register.VisceralRegistrationHelper;
+import net.electrisoma.visceralib.api.registration.v1.registry.VisceralRegistrationHelper;
 import net.electrisoma.visceralib.api.registration.v1.registry.register.fluid.VisceralFluid;
 import net.electrisoma.visceralib.api.registration.v1.registry.register.fluid.VisceralFluidProperties;
 

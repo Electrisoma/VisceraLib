@@ -1,6 +1,7 @@
 package net.electrisoma.visceralib.impl.registration.v1;
 
 import net.electrisoma.visceralib.api.registration.v1.registry.register.VisceralRegistry;
+import net.electrisoma.visceralib.platform.core.services.IPlatformHelper;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -12,6 +13,7 @@ import java.util.Objects;
 public class EntrypointNeoForge {
 
     public EntrypointNeoForge(IEventBus modEventBus, ModContainer modContainer) {
+        IPlatformHelper.INSTANCE.registerModBus(modEventBus);
         Entrypoint.init();
         modEventBus.addListener(RegistrationEvents::onRegister);
     }

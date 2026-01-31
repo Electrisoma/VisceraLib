@@ -234,10 +234,10 @@ This is to keep things tidy and clean and to give a general concept of what's in
 > _This section will have all modules and associated `README.md` files documented for reference._
 
 ### - VisceraLib Core
-See [VisceraLib-Core README](visceralib-core/README.md)
+See [VisceraLib Core README](visceralib-core/README.md)
 
 ### - VisceraLib Item Hooks (v1)
-See [VisceraLib-Registration README](visceralib-item-hooks-v1/README.md)
+See [VisceraLib Item Hooks (v1) README](visceralib-item-hooks-v1/README.md)
 
 ### - VisceraLib Registration API (v1)
-See [VisceraLib-Registration README](visceralib-registration-api-v1/README.md)
+See [VisceraLib Registration API (v1) README](visceralib-registration-api-v1/README.md)

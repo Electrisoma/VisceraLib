@@ -6,6 +6,10 @@ public interface IPlatformHelper {
 
     IPlatformHelper INSTANCE = ServiceHelper.load(IPlatformHelper.class);
 
+    <T> void registerModBus(T modBus);
+
+    <T> T getModEventBus();
+
     /**
      * Supported modding platforms.
      */

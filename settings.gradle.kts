@@ -76,7 +76,7 @@ stonecutter {
 module("visceralib-core")
 //module("visceralib-modelloader-api-v1") // empty atm
 module("visceralib-registration-api-v1")
-//module("visceralib-datagen-api-v1") //temp
+module("visceralib-datagen-api-v1") //temp
 //module("visceralib-configs-api-v1") //temp
 //module("visceralib-dsp-api-v1")     //temp
 module("visceralib-item-hooks-v1")

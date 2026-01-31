@@ -11,6 +11,14 @@ public final class PlatformHelperImpl implements IPlatformHelper {
     private String cachedMcVersion;
 
     @Override
+    public <T> void registerModBus(T modBus) {}
+
+    @Override
+    public <T> T getModEventBus() {
+        return null;
+    }
+
+    @Override
     public PlatformEnum getPlatformInfo() {
         return PlatformEnum.FABRIC;
     }

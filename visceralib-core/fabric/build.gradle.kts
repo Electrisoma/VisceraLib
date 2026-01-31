@@ -14,6 +14,7 @@ dependencies {
     fabricLoader(project)
 
     embedFapi(project, "fabric-api-base")
+    embedFapi(project, "fabric-lifecycle-events-v1")
 
     modOptional(
         "com.terraformersmc:modmenu:${project.mod.dep("modmenu")}",
@@ -23,7 +24,6 @@ dependencies {
     runtimeFapi(project, "fabric-resource-loader-v0")
     runtimeFapi(project, "fabric-screen-api-v1")
     runtimeFapi(project, "fabric-key-binding-api-v1")
-    runtimeFapi(project, "fabric-lifecycle-events-v1")
 }
 
 loom {

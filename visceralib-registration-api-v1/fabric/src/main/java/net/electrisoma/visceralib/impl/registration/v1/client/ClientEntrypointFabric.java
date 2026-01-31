@@ -9,7 +9,5 @@ public class ClientEntrypointFabric implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         IEnvHelper.INSTANCE.runIfCurrent(EnvironmentEnum.CLIENT, ClientEntrypoint::init);
-
-//        FabricEventHandlers.onParticleRegistration();
     }
 }

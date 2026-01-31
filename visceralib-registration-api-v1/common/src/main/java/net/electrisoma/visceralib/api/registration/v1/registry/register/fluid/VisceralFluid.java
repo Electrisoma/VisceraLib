@@ -1,6 +1,6 @@
 package net.electrisoma.visceralib.api.registration.v1.registry.register.fluid;
 
-import net.electrisoma.visceralib.api.registration.v1.registry.register.VisceralRegistrationHelper;
+import net.electrisoma.visceralib.api.registration.v1.registry.VisceralRegistrationHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;

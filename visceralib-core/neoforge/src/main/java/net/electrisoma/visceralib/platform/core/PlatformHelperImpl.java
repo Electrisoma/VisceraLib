@@ -2,6 +2,7 @@ package net.electrisoma.visceralib.platform.core;
 
 import com.google.auto.service.AutoService;
 import net.electrisoma.visceralib.platform.core.services.IPlatformHelper;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLLoader;
 
@@ -10,6 +11,20 @@ public final class PlatformHelperImpl implements IPlatformHelper {
 
     private String cachedModVersion;
     private String cachedMcVersion;
+    private IEventBus modBus;
+
+    @Override
+    public <T> void registerModBus(T modBus) {
+        if (!(modBus instanceof IEventBus bus))
+            return;
+        this.modBus = bus;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <T> T getModEventBus() {
+        return (T) modBus;
+    }
 
     @Override
     public PlatformEnum getPlatformInfo() {

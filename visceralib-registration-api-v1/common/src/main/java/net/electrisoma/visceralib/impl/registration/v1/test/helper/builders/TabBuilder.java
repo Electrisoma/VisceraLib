@@ -1,6 +1,6 @@
 package net.electrisoma.visceralib.impl.registration.v1.test.helper.builders;
 
-import net.electrisoma.visceralib.api.registration.v1.registry.register.AbstractRegistrationHelper;
+import net.electrisoma.visceralib.api.registration.v1.registry.AbstractRegistrationHelper;
 import net.electrisoma.visceralib.api.registration.v1.registry.register.RegistryObject;
 import net.electrisoma.visceralib.platform.registration.v1.services.ITabHelper;
 import net.minecraft.network.chat.Component;
