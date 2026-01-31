@@ -1,7 +1,10 @@
-<p align="center"><img src="./branding/big/logo.png" alt="Logo" width="256">
-<h1 align="center">VisceraLib<br>
-	<a href="https://github.com/Electrisoma/VisceraLib/blob/main/LICENSE"><img src="https://img.shields.io/github/license/Electrisoma/VisceraLib?style=flat&color=900c3f" alt="License"></a>
-</h1>
+<p style="text-align: center;">
+  <img src="./branding/big/logo.png" alt="Logo" width="256"><br>
+  <span style="font-size: 2em; font-weight: bold;">VisceraLib</span><br>
+  <a href="https://github.com/Electrisoma/VisceraLib/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/Electrisoma/VisceraLib?style=flat&color=900c3f" alt="License">
+  </a>
+</p>
 
 Multiproject library for general ease of development within a multiloader environment.
 This library can be used in single loader projects as well for its unique APIs, but it is primarily for multiloader.
@@ -13,6 +16,7 @@ VisceraLib is meant to provide:
 
 This project is licensed under [MIT-0](LICENSE)
 
+> [!NOTE]
 > _This is primarily created for my own personal use 
 > and I feel it is only fair to hold little restrictions for others in such context._\
 > _This is meant to help me, and if other projects want to use it to help them 
@@ -20,7 +24,8 @@ This project is licensed under [MIT-0](LICENSE)
 
 ## Usage
 
-# disclaimer: not published yet
+> [!WARNING]
+> This library has yet to be released.
 
 Here's how to import VisceraLib into your project:
 
@@ -233,5 +238,5 @@ See [VisceraLib-Core README](visceralib-core/README.md)
 ### - VisceraLib Item Hooks (v1)
 See [VisceraLib-Registration README](visceralib-item-hooks-v1/README.md)
 
-### - VisceraLib Registration API (v1) (half-working)
+### - VisceraLib Registration API (v1)
 See [VisceraLib-Registration README](visceralib-registration-api-v1/README.md)
