@@ -1,6 +1,6 @@
 package net.electrisoma.visceralib.impl.datagen.v1.test;
 
-import net.electrisoma.visceralib.api.datagen.providers.VisceralTagProvider;
+import net.electrisoma.visceralib.api.datagen.v1.providers.VisceralTagProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import org.jetbrains.annotations.NotNull;
