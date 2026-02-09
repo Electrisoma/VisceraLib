@@ -39,8 +39,8 @@ dependencies {
     annotationProcessor(mixinExtras)
     compileOnly(mixinExtras)
 
-    dependencyProjects.forEach { sub ->
-        compileOnly(sub)
+    dependencyProjects.forEach {
+        implementation(it)
     }
 }
 

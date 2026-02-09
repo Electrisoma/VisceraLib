@@ -26,12 +26,12 @@ dependencies {
     embedFapi(project, "fabric-data-generation-api-v1")
     embedFapi(project, "fabric-convention-tags-v2")
 
-    commonProjects.forEach { sub ->
-        compileOnly(sub)
+    commonProjects.forEach {
+        implementation(it)
     }
 
-    fabricProjects.forEach { sub ->
-        compileOnly(project(sub.path, "namedElements"))
+    fabricProjects.forEach {
+        implementation(project(it.path, "namedElements"))
     }
 
     modCompileOnly("com.terraformersmc:modmenu:${mod.dep("modmenu")}")

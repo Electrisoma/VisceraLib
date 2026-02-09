@@ -25,11 +25,15 @@ configurations {
 }
 
 dependencies {
-    neoforgeProjects.forEach { sub ->
-        api(sub)
-        jarJar(sub)
-        "accessTransformersApi"(sub)
-        "interfaceInjectionDataApi"(sub)
+    commonProjects.forEach {
+        api(it)
+    }
+
+    neoforgeProjects.forEach {
+        api(it)
+        jarJar(it)
+        "accessTransformersApi"(it)
+        "interfaceInjectionDataApi"(it)
     }
 
     "localRuntime"(modrinth("better-modlist", mod.dep("better_modlist")))

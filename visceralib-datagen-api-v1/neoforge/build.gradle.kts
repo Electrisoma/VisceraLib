@@ -24,8 +24,8 @@ configurations {
 }
 
 dependencies {
-    dependencyProjects.forEach { sub ->
-        compileOnly(sub)
+    dependencyProjects.forEach {
+        implementation(it)
     }
 
     compileOnly(modrinth("better-modlist", mod.dep("better_modlist")))

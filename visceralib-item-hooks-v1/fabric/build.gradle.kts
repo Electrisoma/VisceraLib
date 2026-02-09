@@ -27,12 +27,12 @@ dependencies {
     embedFapi(project, "fabric-item-api-v1")
     runtimeFapi(project, "fabric-registry-sync-v0")
 
-    commonProjects.forEach { sub ->
-        compileOnly(sub)
+    commonProjects.forEach {
+        implementation(it)
     }
 
-    fabricProjects.forEach { sub ->
-        compileOnly(project(sub.path, "namedElements"))
+    fabricProjects.forEach {
+        implementation(project(it.path, "namedElements"))
     }
 
     modCompileOnly("com.terraformersmc:modmenu:${mod.dep("modmenu")}")

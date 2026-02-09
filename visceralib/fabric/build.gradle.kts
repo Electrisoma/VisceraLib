@@ -20,9 +20,13 @@ dependencies {
     runtimeFapi(project, "fabric-convention-tags-v2")
     runtimeFapi(project, "fabric-particles-v1")
 
-    fabricProjects.forEach { sub ->
-        api(project(sub.path, "namedElements"))
-        include(project(sub.path, "namedElements"))
+    commonProjects.forEach {
+        api(it)
+    }
+
+    fabricProjects.forEach {
+        api(project(it.path, "namedElements"))
+        include(project(it.path, "namedElements"))
     }
 
     modLocalRuntime("com.terraformersmc:modmenu:${mod.dep("modmenu")}")

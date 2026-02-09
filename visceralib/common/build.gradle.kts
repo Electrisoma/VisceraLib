@@ -15,8 +15,8 @@ dependencies {
 
     compileOnly("net.fabricmc:fabric-loader:${mod.dep("fabric_loader")}")
 
-    dependencyProjects.forEach { sub ->
-        api(sub)
+    dependencyProjects.forEach {
+        api(it)
     }
 }
 
