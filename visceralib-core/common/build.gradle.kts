@@ -5,7 +5,7 @@ plugins {
 }
 
 loom {
-    val awName = "${project.mod.mc}-${project.mod.id}_${project.module}.accesswidener"
+    val awName = "${mod.mc}-${mod.id}_${module}.accesswidener"
     accessWidenerPath = commonNode.project.file("../../src/main/resources/accesswideners/$awName")
 
     // interface injection
@@ -25,10 +25,10 @@ dependencies {
     minecraft(project)
     mappings(layeredMappings(project))
 
-    compileOnly("net.fabricmc:fabric-loader:${project.mod.dep("fabric_loader")}")
+    compileOnly("net.fabricmc:fabric-loader:${mod.dep("fabric_loader")}")
     compileOnly("net.fabricmc:sponge-mixin:0.13.2+mixin.0.8.5")
 
-    val mixinExtras = "io.github.llamalad7:mixinextras-common:${project.mod.dep("mixin_extras")}"
+    val mixinExtras = "io.github.llamalad7:mixinextras-common:${mod.dep("mixin_extras")}"
     annotationProcessor(mixinExtras)
     compileOnly(mixinExtras)
 }

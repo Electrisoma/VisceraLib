@@ -4,8 +4,8 @@ plugins {
 }
 
 val visceralibProjects = rootProject.subprojects.filter { it.path.startsWith(":visceralib-") }
-val commonProjects = visceralibProjects.filter { it.name == project.mod.mc && it.parent?.name == "common" }
-val fabricProjects = visceralibProjects.filter { it.name == project.mod.mc && it.parent?.name == "fabric" }
+val commonProjects     = visceralibProjects.filter { it.name == mod.mc && it.parent?.name == "common" }
+val fabricProjects     = visceralibProjects.filter { it.name == mod.mc && it.parent?.name == "fabric" }
 
 val dependencyProjects = commonProjects + fabricProjects
 dependencyProjects.forEach { evaluationDependsOn(it.path) }
@@ -20,16 +20,12 @@ dependencies {
     runtimeFapi(project, "fabric-convention-tags-v2")
     runtimeFapi(project, "fabric-particles-v1")
 
-    commonProjects.forEach { sub ->
-        modApi(sub)
-    }
-
     fabricProjects.forEach { sub ->
-        modApi(sub)
-        include(sub)
+        api(project(sub.path, "namedElements"))
+        include(project(sub.path, "namedElements"))
     }
 
-    modRuntimeOnly("com.terraformersmc:modmenu:${project.mod.dep("modmenu")}")
+    modLocalRuntime("com.terraformersmc:modmenu:${mod.dep("modmenu")}")
 
     runtimeFapi(project, "fabric-resource-loader-v0")
     runtimeFapi(project, "fabric-screen-api-v1")
@@ -55,7 +51,7 @@ loom {
 }
 
 tasks.matching { it.name == "genSourcesWithVineflower" }.configureEach {
-    val corePath = ":visceralib-core:common:${project.stonecutterBuild.current.version}"
+    val corePath = ":visceralib-core:common:${stonecutterBuild.current.version}"
     val coreProject = rootProject.findProject(corePath)
 
     if (coreProject != null) {

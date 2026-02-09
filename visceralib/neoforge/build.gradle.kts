@@ -4,8 +4,8 @@ plugins {
 }
 
 val visceralibProjects = rootProject.subprojects.filter { it.path.startsWith(":visceralib-") }
-val commonProjects = visceralibProjects.filter { it.name == project.mod.mc && it.parent?.name == "common" }
-val neoforgeProjects = visceralibProjects.filter { it.name == project.mod.mc && it.parent?.name == "neoforge" }
+val commonProjects     = visceralibProjects.filter { it.name == mod.mc && it.parent?.name == "common" }
+val neoforgeProjects   = visceralibProjects.filter { it.name == mod.mc && it.parent?.name == "neoforge" }
 
 val dependencyProjects = commonProjects + neoforgeProjects
 dependencyProjects.forEach { project.evaluationDependsOn(it.path) }
@@ -13,19 +13,18 @@ dependencyProjects.forEach { project.evaluationDependsOn(it.path) }
 configurations {
     val accessTransformersApi by creating
     val interfaceInjectionDataApi by creating
+    val localRuntime by creating
 
     named("accessTransformers") { extendsFrom(accessTransformersApi) }
     named("accessTransformersElements") { extendsFrom(accessTransformersApi) }
 
     named("interfaceInjectionData") { extendsFrom(interfaceInjectionDataApi) }
     named("interfaceInjectionDataElements") { extendsFrom(interfaceInjectionDataApi) }
+
+    runtimeClasspath.get().extendsFrom(localRuntime)
 }
 
 dependencies {
-    commonProjects.forEach { sub ->
-        api(sub)
-    }
-
     neoforgeProjects.forEach { sub ->
         api(sub)
         jarJar(sub)
@@ -33,35 +32,35 @@ dependencies {
         "interfaceInjectionDataApi"(sub)
     }
 
-    runtimeOnly(modrinth("better-modlist", project.mod.dep("better_modlist")))
+    "localRuntime"(modrinth("better-modlist", mod.dep("better_modlist")))
 }
 
 neoForge {
-    version = project.mod.dep("neoforge")
+    version = mod.dep("neoforge")
 
     val mdgRunDir = File("../../../../run")
 
     runs {
         register("client") {
             client()
-            ideName = "NeoForge Client (${project.path})"
+            ideName = "NeoForge Client (${path})"
             gameDirectory = file(mdgRunDir.resolve("client").toString())
         }
         register("server") {
             server()
-            ideName = "NeoForge Server (${project.path})"
+            ideName = "NeoForge Server (${path})"
             gameDirectory = file(mdgRunDir.resolve("server").toString())
         }
     }
 
     parchment {
-        project.mod.depOrNull("parchment")?.let {
+        mod.depOrNull("parchment")?.let {
             mappingsVersion = it
-            minecraftVersion = project.mod.mc
+            minecraftVersion = mod.mc
         }
     }
 
-    val commonResDir = project.projectDir.parentFile.parentFile.resolve("src/main/resources")
+    val commonResDir = projectDir.parentFile.parentFile.resolve("src/main/resources")
 
     interfaceInjectionData {
         from(commonResDir.resolve("interfaces.json"))
@@ -74,7 +73,7 @@ neoForge {
             publish(sharedAt)
     }
 
-    mods.register(project.mod.id) {
+    mods.register(mod.id) {
         sourceSet(sourceSets.main.get())
     }
 }

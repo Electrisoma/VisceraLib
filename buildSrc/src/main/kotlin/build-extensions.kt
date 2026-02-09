@@ -74,22 +74,6 @@ fun DependencyHandlerScope.runtimeFapi(project: Project, name: String) {
     add("modRuntimeOnly", factory.module(name, fapiVersion(project)))
 }
 
-fun DependencyHandlerScope.optional(dependencyNotation: Any, runtime: Boolean = true) {
-    add("compileOnly", dependencyNotation).apply {
-        if (this is ModuleDependency) isTransitive = false
-        if (this is ProjectDependency) isTransitive = false
-    }
-    if (runtime) add("runtimeOnly", dependencyNotation)
-}
-
-fun DependencyHandlerScope.modOptional(dependencyNotation: Any, runtime: Boolean = true) {
-    add("modCompileOnly", dependencyNotation).apply {
-        if (this is ModuleDependency) isTransitive = false
-        if (this is ProjectDependency) isTransitive = false
-    }
-    if (runtime) add("modRuntimeOnly", dependencyNotation)
-}
-
 fun DependencyHandlerScope.listImplementation(projects: List<Project>) {
     projects.forEach { proj ->
         add("implementation", proj).apply {

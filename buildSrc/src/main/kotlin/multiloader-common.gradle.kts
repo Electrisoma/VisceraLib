@@ -8,19 +8,20 @@ plugins {
 }
 
 base {
-    version = "${project.mod.version}+mc${project.stonecutterBuild.current.version}-${project.loader}"
+    version = "${mod.version}+mc${stonecutterBuild.current.version}-${loader}"
+    group = "${mod.group}.${mod.id}"
 
     val mName = findProperty("module")?.toString()?.takeIf { it.isNotBlank() }
     val mSuffix = findProperty("suffix")?.toString()?.takeIf { it.isNotBlank() }
     val mVer = findProperty("module_version")?.toString()?.takeIf { it.isNotBlank() }
     val modulePart = listOfNotNull(mName, mSuffix, mVer).joinToString("-")
 
-    archivesName = project.mod.id + modulePart.takeIf { it.isNotBlank() }?.let { "-$it" }.orEmpty()
+    archivesName = mod.id + modulePart.takeIf { it.isNotBlank() }?.let { "-$it" }.orEmpty()
 }
 
 java {
-    toolchain.languageVersion.set(project.providers.provider {
-        JavaLanguageVersion.of(project.mod.dep("java_version").toInt())
+    toolchain.languageVersion.set(providers.provider {
+        JavaLanguageVersion.of(mod.dep("java_version").toInt())
     })
 
     withSourcesJar()
@@ -39,34 +40,34 @@ repositories {
 }
 
 dependencies {
-    annotationProcessor("com.google.auto.service:auto-service:${project.mod.dep("auto_service")}")
-    compileOnly("com.google.auto.service:auto-service-annotations:${project.mod.dep("auto_service")}")
-    api("com.google.code.findbugs:jsr305:${project.mod.dep("find_bugs")}")
+    annotationProcessor("com.google.auto.service:auto-service:${mod.dep("auto_service")}")
+    compileOnly("com.google.auto.service:auto-service-annotations:${mod.dep("auto_service")}")
+    api("com.google.code.findbugs:jsr305:${mod.dep("find_bugs")}")
 }
 
 tasks {
-    val modId: String = project.mod.id
-    val moduleSuffix = project.module
+    val modId: String = mod.id
+    val moduleSuffix = module
     val namespace: String = if (moduleSuffix.isNullOrBlank()) modId else "${modId}_$moduleSuffix"
 
     val expandProps = mapOf(
-        "java"               to project.mod.dep("java_version"),
-        "compatibilityLevel" to "JAVA_${project.mod.dep("java_version")}",
-        "id"                 to project.mod.id,
-        "name"               to project.mod.name,
-        "version"            to project.mod.version,
-        "group"              to project.mod.group,
-        "authors"            to project.mod.authors,
-        "contributors"       to project.mod.contributors,
-        "description"        to project.mod.description,
-        "license"            to project.mod.license,
-        "github"             to project.mod.github,
-        "minecraft"          to project.mod.mc,
-        "loader"             to project.loader,
-        "minMinecraft"       to project.mod.dep("min_minecraft_version"),
-        "fabric"             to project.mod.depOrNull("fabric_loader"),
-        "FApi"               to project.mod.depOrNull("fabric_api"),
-        "neoForge"           to project.mod.depOrNull("neoforge")
+        "java"               to mod.dep("java_version"),
+        "compatibilityLevel" to "JAVA_${mod.dep("java_version")}",
+        "id"                 to mod.id,
+        "name"               to mod.name,
+        "version"            to mod.version,
+        "group"              to mod.group,
+        "authors"            to mod.authors,
+        "contributors"       to mod.contributors,
+        "description"        to mod.description,
+        "license"            to mod.license,
+        "github"             to mod.github,
+        "minecraft"          to mod.mc,
+        "loader"             to loader,
+        "minMinecraft"       to mod.dep("min_minecraft_version"),
+        "fabric"             to mod.depOrNull("fabric_loader"),
+        "FApi"               to mod.depOrNull("fabric_api"),
+        "neoForge"           to mod.depOrNull("neoforge")
     ).filterValues { !it.isNullOrBlank() }
 
     val jsonExpandProps: Map<String, String> = expandProps.mapValues { (_, v) -> v.toString().replace("\n", "\\\\n") }
@@ -106,9 +107,20 @@ tasks {
     }
 
     jar {
+        from(rootProject.file("LICENSE")) {
+            rename { "${it}_${mod.name}" }
+        }
+
         manifest {
             attributes(
-                "Fabric-Loom-Remap" to "true"
+                "Fabric-Loom-Remap"      to "true",
+                "Specification-Title"    to mod.name,
+                "Specification-Vendor"   to mod.authors,
+                "Specification-Version"  to mod.version,
+                "Implementation-Title"   to name,
+                "Implementation-Version" to stonecutterBuild.current.version,
+                "Implementation-Vendor"  to mod.authors,
+                "Built-On-Minecraft"     to mod.mc
             )
         }
     }
@@ -122,14 +134,13 @@ tasks {
 }
 
 val localProps = Properties().apply {
-    project.rootDir.resolve("local.properties").takeIf { it.exists() }?.inputStream()?.use(::load)
+    rootDir.resolve("local.properties").takeIf { it.exists() }?.inputStream()?.use(::load)
 }
 
 publishing {
     publications {
         register<MavenPublication>("mavenJava") {
             artifactId = base.archivesName.get()
-            groupId = "${project.mod.group}.${project.mod.id}"
             from(components["java"])
         }
     }

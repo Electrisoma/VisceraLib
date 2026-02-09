@@ -14,7 +14,7 @@ repositories {
 }
 
 val props = Properties().apply {
-    project.rootDir.parentFile.resolve("gradle.properties").inputStream().use { load(it) }
+    rootDir.parentFile.resolve("gradle.properties").inputStream().use { load(it) }
 }
 
 dependencies {

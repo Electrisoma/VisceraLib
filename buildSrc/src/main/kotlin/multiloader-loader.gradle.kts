@@ -13,7 +13,7 @@ val commonResources: Configuration by configurations.creating {
 
 dependencies {
     val commonPath = commonNode.hierarchy.toString()
-    compileOnly(project(path = commonPath))
+    compileOnly(project(commonPath))
     commonJava(project(path = commonPath, configuration = "commonJava"))
     commonResources(project(path = commonPath, configuration = "commonResources"))
 }
@@ -40,7 +40,7 @@ tasks {
 }
 
 afterEvaluate {
-    val loader = project.loader
+    val loader = loader
 
     val name = findProperty("module")?.toString()?.takeIf { it.isNotBlank() }
     val suffix = findProperty("suffix")?.toString()?.takeIf { it.isNotBlank() }

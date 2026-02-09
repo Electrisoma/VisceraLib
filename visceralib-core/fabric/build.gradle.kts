@@ -16,10 +16,8 @@ dependencies {
     embedFapi(project, "fabric-api-base")
     embedFapi(project, "fabric-lifecycle-events-v1")
 
-    modOptional(
-        "com.terraformersmc:modmenu:${project.mod.dep("modmenu")}",
-        project.findProperty("run_modmenu")?.toString()?.toBoolean() ?: false
-    )
+    modCompileOnly("com.terraformersmc:modmenu:${mod.dep("modmenu")}")
+    modLocalRuntime("com.terraformersmc:modmenu:${mod.dep("modmenu")}")
 
     runtimeFapi(project, "fabric-resource-loader-v0")
     runtimeFapi(project, "fabric-screen-api-v1")
@@ -27,7 +25,7 @@ dependencies {
 }
 
 loom {
-    val awName = "${project.mod.mc}-${project.mod.id}_${project.module}.accesswidener"
+    val awName = "${mod.mc}-${mod.id}_${module}.accesswidener"
     accessWidenerPath = commonNode.project.file("../../src/main/resources/accesswideners/$awName")
 
     val loomRunDir = File("../../../../run")
@@ -48,11 +46,11 @@ loom {
 
 tasks.named<ProcessResources>("processResources") {
     val commonResDir = commonNode.project.parent!!.projectDir.resolve("src/main/resources")
-    val awFile = commonResDir.resolve("accesswideners/${project.mod.mc}-${project.mod.id}_${project.module}.accesswidener")
+    val awFile = commonResDir.resolve("accesswideners/${mod.mc}-${mod.id}_${module}.accesswidener")
 
     if (awFile.exists()) {
         from(awFile) {
-            rename(awFile.name, "${project.mod.id}_${project.module}.accesswidener")
+            rename(awFile.name, "${mod.id}_${module}.accesswidener")
         }
     }
 }

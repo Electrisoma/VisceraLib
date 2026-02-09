@@ -8,15 +8,18 @@ fletchingTable {
     j52j.register("main") { extension("json", "**/*.json5") }
 
     accessConverter.register("main") {
-        add("accesswideners/${project.mod.mc}-${project.mod.id}_${project.module}.accesswidener")
+        add("accesswideners/${mod.mc}-${mod.id}_${module}.accesswidener")
     }
 }
 
+configurations {
+    create("localRuntime")
+    runtimeClasspath.get().extendsFrom(configurations["localRuntime"])
+}
+
 dependencies {
-    optional(
-        modrinth("better-modlist", project.mod.dep("better_modlist")),
-        project.findProperty("run_better_modlist")?.toString()?.toBoolean() ?: false
-    )
+    compileOnly(modrinth("better-modlist", mod.dep("better_modlist")))
+    "localRuntime"(modrinth("better-modlist", mod.dep("better_modlist")))
 }
 
 val syncAT = tasks.register<Copy>("syncAT") {
@@ -27,7 +30,7 @@ val syncAT = tasks.register<Copy>("syncAT") {
 }
 
 neoForge {
-    version = project.mod.dep("neoforge")
+    version = mod.dep("neoforge")
 
     val commonResDir = commonNode.project.parent!!.projectDir.resolve("src/main/resources")
 
@@ -45,34 +48,28 @@ neoForge {
     runs {
         register("client") {
             client()
-            ideName = "NeoForge Client (${project.path})"
+            ideName = "NeoForge Client (${path})"
             gameDirectory = file(mdgRunDir.resolve("client").toString())
         }
         register("server") {
             server()
-            ideName = "NeoForge Server (${project.path})"
+            ideName = "NeoForge Server (${path})"
             gameDirectory = file(mdgRunDir.resolve("server").toString())
         }
     }
 
     parchment {
-        project.mod.depOrNull("parchment")?.let {
+        mod.depOrNull("parchment")?.let {
             mappingsVersion = it
-            minecraftVersion = project.mod.mc
+            minecraftVersion = mod.mc
         }
     }
 
-    mods.register("${project.mod.id}_${project.module}") {
+    mods.register("${mod.id}_${module}") {
         sourceSet(sourceSets.main.get())
     }
 }
 
-sourceSets.main {
-    resources.srcDir("src/generated/resources")
-}
-
-tasks {
-    processResources {
-        exclude("**/${project.mod.id}_${project.module}.accesswidener")
-    }
+tasks.processResources {
+    exclude("**/${mod.id}_${module}.accesswidener")
 }

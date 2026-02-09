@@ -5,10 +5,10 @@ plugins {
 }
 
 val commonProjects: List<Project> = listOf(
-    project(":visceralib-core:common:${project.mod.mc}")
+    project(":visceralib-core:common:${mod.mc}")
 )
 val fabricProjects: List<Project> = listOf(
-    project(":visceralib-core:fabric:${project.mod.mc}")
+    project(":visceralib-core:fabric:${mod.mc}")
 )
 val dependencyProjects = commonProjects + fabricProjects
 dependencyProjects.forEach { evaluationDependsOn(it.path) }
@@ -26,14 +26,16 @@ dependencies {
     embedFapi(project, "fabric-data-generation-api-v1")
     embedFapi(project, "fabric-convention-tags-v2")
 
-    dependencyProjects.forEach { sub ->
-        modCompileOnly(sub)
+    commonProjects.forEach { sub ->
+        compileOnly(sub)
     }
 
-    modOptional(
-        "com.terraformersmc:modmenu:${project.mod.dep("modmenu")}",
-        project.findProperty("run_modmenu")?.toString()?.toBoolean() ?: false
-    )
+    fabricProjects.forEach { sub ->
+        compileOnly(project(sub.path, "namedElements"))
+    }
+
+    modCompileOnly("com.terraformersmc:modmenu:${mod.dep("modmenu")}")
+    modLocalRuntime("com.terraformersmc:modmenu:${mod.dep("modmenu")}")
 
     runtimeFapi(project, "fabric-resource-loader-v0")
     runtimeFapi(project, "fabric-screen-api-v1")
@@ -42,7 +44,7 @@ dependencies {
 }
 
 loom {
-    val awName = "${project.mod.mc}-${project.mod.id}_${project.module}.accesswidener"
+    val awName = "${mod.mc}-${mod.id}_${module}.accesswidener"
     accessWidenerPath = commonNode.project.file("../../src/main/resources/accesswideners/$awName")
 
     val loomRunDir = File("../../../../run")
@@ -63,16 +65,16 @@ loom {
 tasks {
     named<ProcessResources>("processResources") {
         val commonResDir = commonNode.project.parent!!.projectDir.resolve("src/main/resources")
-        val awFile = commonResDir.resolve("accesswideners/${project.mod.mc}-${project.mod.id}_${project.module}.accesswidener")
+        val awFile = commonResDir.resolve("accesswideners/${mod.mc}-${mod.id}_${module}.accesswidener")
 
         if (awFile.exists()) {
             from(awFile) {
-                rename(awFile.name, "${project.mod.id}_${project.module}.accesswidener")
+                rename(awFile.name, "${mod.id}_${module}.accesswidener")
             }
         }
     }
     matching { it.name == "genSourcesWithVineflower" }.configureEach {
-        val corePath = ":visceralib-core:fabric:${project.stonecutterBuild.current.version}"
+        val corePath = ":visceralib-core:fabric:${stonecutterBuild.current.version}"
         val coreProject = rootProject.findProject(corePath)
 
         if (coreProject != null) {

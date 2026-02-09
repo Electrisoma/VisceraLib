@@ -4,7 +4,7 @@ plugins {
 }
 
 val visceralibProjects = rootProject.subprojects.filter { it.path.startsWith(":visceralib-") }
-val commonProjects = visceralibProjects.filter { it.name == project.mod.mc && it.parent?.name == "common" }
+val commonProjects     = visceralibProjects.filter { it.name == mod.mc && it.parent?.name == "common" }
 
 val dependencyProjects = commonProjects
 dependencyProjects.forEach { project.evaluationDependsOn(it.path) }
@@ -13,7 +13,7 @@ dependencies {
     minecraft(project)
     mappings(layeredMappings(project))
 
-    compileOnly("net.fabricmc:fabric-loader:${project.mod.dep("fabric_loader")}")
+    compileOnly("net.fabricmc:fabric-loader:${mod.dep("fabric_loader")}")
 
     dependencyProjects.forEach { sub ->
         api(sub)
@@ -42,7 +42,7 @@ artifacts {
 }
 
 tasks.matching { it.name == "genSourcesWithVineflower" }.configureEach {
-    val corePath = ":visceralib-core:common:${project.stonecutterBuild.current.version}"
+    val corePath = ":visceralib-core:common:${stonecutterBuild.current.version}"
     val coreProject = rootProject.findProject(corePath)
 
     if (coreProject != null) {

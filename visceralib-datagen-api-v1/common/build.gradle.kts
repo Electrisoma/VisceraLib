@@ -10,7 +10,7 @@ val dependencyProjects: List<Project> = listOf(
 dependencyProjects.forEach { project.evaluationDependsOn(it.path) }
 
 loom {
-    val awName = "${project.mod.mc}-${project.mod.id}_${project.module}.accesswidener"
+    val awName = "${mod.mc}-${mod.id}_${module}.accesswidener"
     accessWidenerPath = commonNode.project.file("../../src/main/resources/accesswideners/$awName")
 
     // interface injection
@@ -30,10 +30,10 @@ dependencies {
     minecraft(project)
     mappings(layeredMappings(project))
 
-    compileOnly("net.fabricmc:fabric-loader:${project.mod.dep("fabric_loader")}")
+    compileOnly("net.fabricmc:fabric-loader:${mod.dep("fabric_loader")}")
     compileOnly("net.fabricmc:sponge-mixin:0.13.2+mixin.0.8.5")
 
-    val mixinExtras = "io.github.llamalad7:mixinextras-common:${project.mod.dep("mixin_extras")}"
+    val mixinExtras = "io.github.llamalad7:mixinextras-common:${mod.dep("mixin_extras")}"
     annotationProcessor(mixinExtras)
     compileOnly(mixinExtras)
 
@@ -64,7 +64,7 @@ artifacts {
 }
 
 tasks.matching { it.name == "genSourcesWithVineflower" }.configureEach {
-    val corePath = ":visceralib-core:common:${project.stonecutterBuild.current.version}"
+    val corePath = ":visceralib-core:common:${stonecutterBuild.current.version}"
     val coreProject = rootProject.findProject(corePath)
 
     if (coreProject != null) {
