@@ -15,7 +15,7 @@ base {
     val mVer = findProperty("module_version")?.toString()?.takeIf { it.isNotBlank() }
     val modulePart = listOfNotNull(mName, mSuffix, mVer).joinToString("-")
 
-    archivesName = "${project.mod.id}-${modulePart}"
+    archivesName = project.mod.id + modulePart.takeIf { it.isNotBlank() }?.let { "-$it" }.orEmpty()
 }
 
 java {
@@ -64,8 +64,8 @@ tasks {
         "minecraft"          to project.mod.mc,
         "loader"             to project.loader,
         "minMinecraft"       to project.mod.dep("min_minecraft_version"),
-        "fabric"             to project.mod.depOrNull("fabric-loader"),
-        "FApi"               to project.mod.depOrNull("fabric-api"),
+        "fabric"             to project.mod.depOrNull("fabric_loader"),
+        "FApi"               to project.mod.depOrNull("fabric_api"),
         "neoForge"           to project.mod.depOrNull("neoforge")
     ).filterValues { !it.isNullOrBlank() }
 
@@ -90,7 +90,7 @@ tasks {
             }
         }
 
-        filesMatching(listOf("META-INF/neoforge.mods.toml", "META-INF/mods.toml")) {
+        filesMatching(listOf("META-INF/neoforge.mods.toml")) {
             expand(expandProps)
         }
 
@@ -103,6 +103,21 @@ tasks {
 
     withType<ProcessResources>().configureEach {
         mustRunAfter(tasks.matching { it.name.contains("stonecutterGenerate") })
+    }
+
+    jar {
+        manifest {
+            attributes(
+                "Fabric-Loom-Remap" to "true"
+            )
+        }
+    }
+
+    javadoc {
+        exclude("**/package-info.java")
+        exclude("net/electrisoma/visceralib/impl/**")
+        exclude("net/electrisoma/visceralib/mixin/**")
+        exclude("net/electrisoma/visceralib/platform/**")
     }
 }
 
@@ -128,6 +143,6 @@ publishing {
 //                password = System.getenv("GITHUB_TOKEN") ?: localProps.getProperty("ghpToken")
 //            }
 //        }
-//        mavenLocal()
+        mavenLocal()
     }
 }

@@ -17,17 +17,17 @@ dependencies {
 
     runtimeFapi(project, "fabric-api-base")
     runtimeFapi(project, "fabric-data-generation-api-v1")
-    //? != 1.20.1 {
-    // runtimeFapi(project, "fabric-convention-tags-v2")
-    // ?//}
-    //? == 1.20.1 {
-    // runtimeFapi(project, "fabric-convention-tags-v1")
-    // ?//}
+    runtimeFapi(project, "fabric-convention-tags-v2")
     runtimeFapi(project, "fabric-particles-v1")
 
-    listImplementation(commonProjects)
-    listImplementation(fabricProjects, "namedElements")
-    listInclude(fabricProjects)
+    commonProjects.forEach { sub ->
+        modApi(sub)
+    }
+
+    fabricProjects.forEach { sub ->
+        modApi(sub)
+        include(sub)
+    }
 
     modRuntimeOnly("com.terraformersmc:modmenu:${project.mod.dep("modmenu")}")
 

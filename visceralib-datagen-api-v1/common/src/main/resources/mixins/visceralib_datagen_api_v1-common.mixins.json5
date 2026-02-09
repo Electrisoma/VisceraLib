@@ -5,7 +5,7 @@
   compatibilityLevel: "${compatibilityLevel}",
   mixins: [
     "TagAppenderMixin",
-    "TagsProviderMixin"
+    "TagsProviderMixin",
   ],
   injectors: {
     defaultRequire: 1

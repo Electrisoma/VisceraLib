@@ -11,10 +11,6 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 public final class ClientEntrypointNeoForge {
 
     public ClientEntrypointNeoForge(IEventBus modEventBus) {
-        modEventBus.addListener(ClientEntrypointNeoForge::init);
-    }
-
-    public static void init(final FMLClientSetupEvent event) {
         IEnvHelper.INSTANCE.runIfCurrent(IEnvHelper.EnvironmentEnum.CLIENT, ClientEntrypoint::init);
     }
 }

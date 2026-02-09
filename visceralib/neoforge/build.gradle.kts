@@ -10,9 +10,28 @@ val neoforgeProjects = visceralibProjects.filter { it.name == project.mod.mc && 
 val dependencyProjects = commonProjects + neoforgeProjects
 dependencyProjects.forEach { project.evaluationDependsOn(it.path) }
 
+configurations {
+    val accessTransformersApi by creating
+    val interfaceInjectionDataApi by creating
+
+    named("accessTransformers") { extendsFrom(accessTransformersApi) }
+    named("accessTransformersElements") { extendsFrom(accessTransformersApi) }
+
+    named("interfaceInjectionData") { extendsFrom(interfaceInjectionDataApi) }
+    named("interfaceInjectionDataElements") { extendsFrom(interfaceInjectionDataApi) }
+}
+
 dependencies {
-    listImplementation(dependencyProjects)
-    listJarJar(dependencyProjects)
+    commonProjects.forEach { sub ->
+        api(sub)
+    }
+
+    neoforgeProjects.forEach { sub ->
+        api(sub)
+        jarJar(sub)
+        "accessTransformersApi"(sub)
+        "interfaceInjectionDataApi"(sub)
+    }
 
     runtimeOnly(modrinth("better-modlist", project.mod.dep("better_modlist")))
 }
@@ -42,9 +61,20 @@ neoForge {
         }
     }
 
+    val commonResDir = project.projectDir.parentFile.parentFile.resolve("src/main/resources")
+
+    interfaceInjectionData {
+        from(commonResDir.resolve("interfaces.json"))
+        publish(commonResDir.resolve("interfaces.json"))
+    }
+
+    accessTransformers {
+        val sharedAt = commonResDir.resolve("META-INF/accesstransformer.cfg")
+        if (sharedAt.exists())
+            publish(sharedAt)
+    }
+
     mods.register(project.mod.id) {
         sourceSet(sourceSets.main.get())
     }
 }
-
-sourceSets.main { resources.srcDir("src/generated/resources") }

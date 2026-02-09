@@ -14,6 +14,9 @@ issueTrackerURL="${github}/issues"
     logoBlur=false
     displayURL="${github}"
 
+[[accessTransformers]]
+    file="META-INF/accesstransformer.cfg"
+
 [[dependencies.visceralib]]
     modId="neoforge"
     type="required"

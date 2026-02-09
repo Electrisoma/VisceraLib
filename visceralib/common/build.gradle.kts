@@ -13,9 +13,11 @@ dependencies {
     minecraft(project)
     mappings(layeredMappings(project))
 
-    compileOnly("net.fabricmc:fabric-loader:${project.mod.dep("fabric-loader")}")
+    compileOnly("net.fabricmc:fabric-loader:${project.mod.dep("fabric_loader")}")
 
-    listImplementation(dependencyProjects)
+    dependencyProjects.forEach { sub ->
+        api(sub)
+    }
 }
 
 val commonJava: Configuration by configurations.creating {

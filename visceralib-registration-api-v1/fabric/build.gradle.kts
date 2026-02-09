@@ -5,12 +5,10 @@ plugins {
 }
 
 val commonProjects: List<Project> = listOf(
-    project(":visceralib-core:common:${project.mod.mc}"),
-    project(":visceralib-item-hooks-v1:common:${project.mod.mc}")
+    project(":visceralib-core:common:${project.mod.mc}")
 )
 val fabricProjects: List<Project> = listOf(
-    project(":visceralib-core:fabric:${project.mod.mc}"),
-    project(":visceralib-item-hooks-v1:fabric:${project.mod.mc}")
+    project(":visceralib-core:fabric:${project.mod.mc}")
 )
 val dependencyProjects = commonProjects + fabricProjects
 dependencyProjects.forEach { evaluationDependsOn(it.path) }
@@ -30,8 +28,9 @@ dependencies {
     embedFapi(project, "fabric-item-group-api-v1")
     embedFapi(project, "fabric-item-api-v1")
 
-    listImplementation(commonProjects)
-    listImplementation(fabricProjects, "namedElements")
+    dependencyProjects.forEach { sub ->
+        modCompileOnly(sub)
+    }
 
     modOptional(
         "com.terraformersmc:modmenu:${project.mod.dep("modmenu")}",

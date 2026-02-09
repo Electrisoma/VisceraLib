@@ -4,6 +4,9 @@ import net.fabricmc.loom.api.fabricapi.FabricApiExtension
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
+import org.gradle.api.artifacts.ExternalModuleDependency
+import org.gradle.api.artifacts.ModuleDependency
+import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.kotlin.dsl.DependencyHandlerScope
 import org.gradle.kotlin.dsl.getByType
@@ -51,13 +54,13 @@ value class ModData(private val project: Project) {
 }
 
 private fun fapiVersion(project: Project) =
-    "${project.mod.dep("fabric-api")}+${project.mod.mc}"
+    "${project.mod.dep("fabric_api")}+${project.mod.mc}"
 
 fun DependencyHandlerScope.minecraft(project: Project) =
     add("minecraft", "com.mojang:minecraft:${project.mod.mc}")
 
 fun DependencyHandlerScope.fabricLoader(project: Project) =
-    add("modImplementation", "net.fabricmc:fabric-loader:${project.mod.dep("fabric-loader")}")
+    add("modImplementation", "net.fabricmc:fabric-loader:${project.mod.dep("fabric_loader")}")
 
 fun DependencyHandlerScope.embedFapi(project: Project, name: String) {
     val factory = project.extensions.getByType<FabricApiExtension>()
@@ -72,26 +75,48 @@ fun DependencyHandlerScope.runtimeFapi(project: Project, name: String) {
 }
 
 fun DependencyHandlerScope.optional(dependencyNotation: Any, runtime: Boolean = true) {
-    add("compileOnly", dependencyNotation)
+    add("compileOnly", dependencyNotation).apply {
+        if (this is ModuleDependency) isTransitive = false
+        if (this is ProjectDependency) isTransitive = false
+    }
     if (runtime) add("runtimeOnly", dependencyNotation)
 }
 
 fun DependencyHandlerScope.modOptional(dependencyNotation: Any, runtime: Boolean = true) {
-    add("modCompileOnly", dependencyNotation)
+    add("modCompileOnly", dependencyNotation).apply {
+        if (this is ModuleDependency) isTransitive = false
+        if (this is ProjectDependency) isTransitive = false
+    }
     if (runtime) add("modRuntimeOnly", dependencyNotation)
 }
 
-fun DependencyHandlerScope.listImplementation(projects: List<Project>) =
-    projects.forEach { "implementation"(it) }
+fun DependencyHandlerScope.listImplementation(projects: List<Project>) {
+    projects.forEach { proj ->
+        add("implementation", proj).apply {
+            if (this is ProjectDependency) isTransitive = false
+        }
+    }
+}
 
-fun DependencyHandlerScope.listImplementation(projects: List<Project>, configuration: String) =
-    projects.forEach { "implementation"(project(it.path, configuration)) }
+fun DependencyHandlerScope.listImplementation(projects: List<Project>, configuration: String) {
+    projects.forEach { proj ->
+        add("implementation", project(proj.path, configuration)).apply {
+            if (this is ProjectDependency) isTransitive = false
+        }
+    }
+}
 
-fun DependencyHandlerScope.listJarJar(projects: List<Project>) =
-    projects.forEach { "jarJar"(it) }
+fun DependencyHandlerScope.listCompile(projects: List<Project>) {
+    projects.forEach { proj ->
+        add("compileOnly", proj)
+    }
+}
 
-fun DependencyHandlerScope.listInclude(projects: List<Project>) =
-    projects.forEach { "include"(it) }
+fun DependencyHandlerScope.listModCompile(projects: List<Project>) {
+    projects.forEach { proj ->
+        add("modCompileOnly", proj)
+    }
+}
 
 @Suppress("UnstableApiUsage")
 fun layeredMappings(project: Project): Dependency = project.extensions.getByType<LoomGradleExtensionAPI>().layered {

@@ -20,6 +20,7 @@ public abstract class LivingEntityFluidPhysicsMixin {
             float factor = 1000f / Math.max(1, vf.getAttributes().viscosity());
             return speed * factor;
         }
+
         return speed;
     }
 }

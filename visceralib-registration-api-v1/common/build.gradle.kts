@@ -5,8 +5,7 @@ plugins {
 }
 
 val dependencyProjects: List<Project> = listOf(
-    project(":visceralib-core:common:${project.mod.mc}"),
-    project(":visceralib-item-hooks-v1:common:${project.mod.mc}")
+    project(":visceralib-core:common:${project.mod.mc}")
 )
 dependencyProjects.forEach { project.evaluationDependsOn(it.path) }
 
@@ -31,14 +30,16 @@ dependencies {
     minecraft(project)
     mappings(layeredMappings(project))
 
-    compileOnly("net.fabricmc:fabric-loader:${project.mod.dep("fabric-loader")}")
+    compileOnly("net.fabricmc:fabric-loader:${project.mod.dep("fabric_loader")}")
     compileOnly("net.fabricmc:sponge-mixin:0.13.2+mixin.0.8.5")
 
     val mixinExtras = "io.github.llamalad7:mixinextras-common:${project.mod.dep("mixin_extras")}"
     annotationProcessor(mixinExtras)
     compileOnly(mixinExtras)
 
-    listImplementation(dependencyProjects)
+    dependencyProjects.forEach { sub ->
+        compileOnly(sub)
+    }
 }
 
 val commonJava: Configuration by configurations.creating {

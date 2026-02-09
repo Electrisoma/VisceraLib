@@ -13,9 +13,4 @@ public final class ClientEntrypointNeoForge {
     public ClientEntrypointNeoForge(IEventBus modEventBus, ModContainer modContainer) {
         IEnvHelper.INSTANCE.runIfCurrent(IEnvHelper.EnvironmentEnum.CLIENT, ClientEntrypoint::init);
     }
-
-    public static class ClientEvents {
-
-//        public static void init(final FMLClientSetupEvent event) {}
-    }
 }

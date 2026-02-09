@@ -5,20 +5,25 @@ import net.minecraft.resources.ResourceLocation;
 public class RLUtils {
 
     /**
-     * Creates a {@link ResourceLocation} using version-appropriate factory methods.
-     * <p>
-     * <b>Version Compatibility:</b>
-     * <ul>
-     * <li><b>1.21+:</b> Uses {@code ResourceLocation.fromNamespaceAndPath(namespace, path)}</li>
-     * <li><b>1.20.x and below:</b> Uses {@code new ResourceLocation(namespace, path)}</li>
-     * </ul>
-     * @param namespace The namespace (usually your mod ID).
-     * @param path      The path (the name of the texture, model, or data entry).
+     * Simple ResourceLocation.fromNamespaceAndPath wrapper to make typing out a resource location more bearable.
+     * Can also be expanded in the future to have versioned replacements with support for newer versions.
+     *
+     * @param namespace the namespace (usually your mod ID).
+     * @param path      the path (the name of the texture, model, or data entry).
      * @return A new {@link ResourceLocation} instance.
      */
     public static ResourceLocation path(String namespace, String path) {
-        return /*? =1.21.1 {*/ResourceLocation.fromNamespaceAndPath
-                /*?} else {*//*new ResourceLocation*//*?}*/(namespace, path);
+        return ResourceLocation.fromNamespaceAndPath(namespace, path);
+    }
+
+    /**
+     * Simple ResourceLocation.withDefaultNamespace wrapper to make typing the minecraft resource location easier.
+     *
+     * @param path the path (the name of the texture, model, or data entry).
+     * @return A new {@link ResourceLocation} instance.
+     */
+    public static ResourceLocation mc(String path) {
+        return ResourceLocation.withDefaultNamespace(path);
     }
 
     public static String getPathOrDefault(ResourceLocation location, String defaultValue) {

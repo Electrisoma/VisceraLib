@@ -1,6 +1,6 @@
 package net.electrisoma.visceralib.api.registration.v1.registry.register.fluid;
 
-import net.electrisoma.visceralib.api.registration.v1.registry.VisceralRegistrationHelper;
+import net.electrisoma.visceralib.api.registration.v1.registry.VisceralRegistryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
@@ -20,9 +20,9 @@ import net.minecraft.world.level.material.FluidState;
 public abstract class VisceralFluid extends FlowingFluid {
 
     private final VisceralFluidProperties props;
-    private final VisceralRegistrationHelper helper;
+    private final VisceralRegistryHelper helper;
 
-    protected VisceralFluid(VisceralFluidProperties props, VisceralRegistrationHelper helper) {
+    protected VisceralFluid(VisceralFluidProperties props, VisceralRegistryHelper helper) {
         this.props = props;
         this.helper = helper;
     }
@@ -108,7 +108,7 @@ public abstract class VisceralFluid extends FlowingFluid {
 
     public static class Flowing extends VisceralFluid {
 
-        public Flowing(VisceralFluidProperties props, VisceralRegistrationHelper helper) {
+        public Flowing(VisceralFluidProperties props, VisceralRegistryHelper helper) {
             super(props, helper);
         }
 
@@ -128,7 +128,7 @@ public abstract class VisceralFluid extends FlowingFluid {
 
     public static class Source extends VisceralFluid {
 
-        public Source(VisceralFluidProperties props, VisceralRegistrationHelper helper) {
+        public Source(VisceralFluidProperties props, VisceralRegistryHelper helper) {
             super(props, helper);
         }
 

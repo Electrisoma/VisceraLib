@@ -25,7 +25,7 @@ dependencies {
     minecraft(project)
     mappings(layeredMappings(project))
 
-    compileOnly("net.fabricmc:fabric-loader:${project.mod.dep("fabric-loader")}")
+    compileOnly("net.fabricmc:fabric-loader:${project.mod.dep("fabric_loader")}")
     compileOnly("net.fabricmc:sponge-mixin:0.13.2+mixin.0.8.5")
 
     val mixinExtras = "io.github.llamalad7:mixinextras-common:${project.mod.dep("mixin_extras")}"
