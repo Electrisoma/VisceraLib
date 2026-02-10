@@ -3,42 +3,54 @@ plugins {
     id("net.fabricmc.fabric-loom-remap")
 }
 
-val visceralibProjects = rootProject.subprojects.filter { it.path.startsWith(":visceralib-") }
-val commonProjects     = visceralibProjects.filter { it.name == mod.mc && it.parent?.name == "common" }
-val fabricProjects     = visceralibProjects.filter { it.name == mod.mc && it.parent?.name == "fabric" }
+val vProjects = rootProject.childProjects.values.filter { it.name.startsWith("visceralib-") }
+val commonProjects = vProjects.filter { it.name.endsWith("-common") }
+val fabricProjects = vProjects.filter {
+    it.name.endsWith("-fabric") && it != project
+}
 
 val dependencyProjects = commonProjects + fabricProjects
 dependencyProjects.forEach { evaluationDependsOn(it.path) }
 
 dependencies {
-    minecraft(project)
-    mappings(layeredMappings(project))
-    fabricLoader(project)
+    minecraft("com.mojang:minecraft:${mod.mc}")
+    @Suppress("UnstableApiUsage")
+    mappings(loom.layered {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${mod.mc}:${mod.ver("parchment")}@zip")
+    })
+    modImplementation("net.fabricmc:fabric-loader:${mod.ver("fabric_loader")}")
 
-    runtimeFapi(project, "fabric-api-base")
-    runtimeFapi(project, "fabric-data-generation-api-v1")
-    runtimeFapi(project, "fabric-convention-tags-v2")
-    runtimeFapi(project, "fabric-particles-v1")
+    val fapiVersion = "${mod.ver("fabric_api")}+${mod.mc}"
 
-//    commonProjects.forEach {
-//        api(it)
-//    }
+    listOf(
+        "fabric-api-base",
+        "fabric-data-generation-api-v1",
+        "fabric-convention-tags-v2",
+        "fabric-particles-v1"
+    ).forEach { module ->
+        modRuntimeOnly(fabricApi.module(module, fapiVersion))
+    }
 
     fabricProjects.forEach {
         api(project(it.path, "namedElements"))
         include(it)
     }
 
-    modLocalRuntime("com.terraformersmc:modmenu:${mod.dep("modmenu")}")
+    modLocalRuntime("com.terraformersmc:modmenu:${mod.ver("modmenu")}")
 
-    runtimeFapi(project, "fabric-resource-loader-v0")
-    runtimeFapi(project, "fabric-screen-api-v1")
-    runtimeFapi(project, "fabric-key-binding-api-v1")
-    runtimeFapi(project, "fabric-lifecycle-events-v1")
+    listOf(
+        "fabric-resource-loader-v0",
+        "fabric-screen-api-v1",
+        "fabric-key-binding-api-v1",
+        "fabric-lifecycle-events-v1"
+    ).forEach { module ->
+        modRuntimeOnly(fabricApi.module(module, fapiVersion))
+    }
 }
 
 loom {
-    val loomRunDir = File("../../../../run")
+    val loomRunDir = File("../../../run")
 
     runs {
         getByName("client") {
@@ -51,14 +63,5 @@ loom {
             configName = "Fabric Server"
             runDir(loomRunDir.resolve("server").toString())
         }
-    }
-}
-
-tasks.matching { it.name == "genSourcesWithVineflower" }.configureEach {
-    val corePath = ":visceralib-core:common:${stonecutterBuild.current.version}"
-    val coreProject = rootProject.findProject(corePath)
-
-    if (coreProject != null) {
-        mustRunAfter(coreProject.tasks.matching { it.name == "validateAccessWidener" })
     }
 }

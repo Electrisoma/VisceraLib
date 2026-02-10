@@ -8,7 +8,7 @@ fletchingTable {
     j52j.register("main") { extension("json", "**/*.json5") }
 
     accessConverter.register("main") {
-        add("accesswideners/${mod.mc}-${mod.id}_${module}.accesswidener")
+        add("accesswideners/${mod.mc}-${mod.id}_${mod.module}.accesswidener")
     }
 }
 
@@ -18,8 +18,8 @@ configurations {
 }
 
 dependencies {
-    compileOnly(modrinth("better-modlist", mod.dep("better_modlist")))
-    "localRuntime"(modrinth("better-modlist", mod.dep("better_modlist")))
+    compileOnly(modrinth("better-modlist", mod.ver("better_modlist")))
+    "localRuntime"(modrinth("better-modlist", mod.ver("better_modlist")))
 }
 
 val syncAT = tasks.register<Copy>("syncAT") {
@@ -30,9 +30,11 @@ val syncAT = tasks.register<Copy>("syncAT") {
 }
 
 neoForge {
-    version = mod.dep("neoforge")
+    version = mod.ver("neoforge")
 
-    val commonResDir = commonNode.project.parent!!.projectDir.resolve("src/main/resources")
+    val moduleBaseName = project.name.substringBeforeLast("-")
+    val commonProject = project(":$moduleBaseName-common")
+    val commonResDir = commonProject.projectDir.resolve("src/main/resources")
 
     interfaceInjectionData {
         from(commonResDir.resolve("interfaces.json"))
@@ -43,7 +45,7 @@ neoForge {
         publish(syncAT.map { it.destinationDir.resolve("accesstransformer.cfg") })
     }
 
-    val mdgRunDir = File("../../../../run")
+    val mdgRunDir = File("../../../run")
 
     runs {
         register("client") {
@@ -59,17 +61,17 @@ neoForge {
     }
 
     parchment {
-        mod.depOrNull("parchment")?.let {
+        mod.ver("parchment").let {
             mappingsVersion = it
             minecraftVersion = mod.mc
         }
     }
 
-    mods.register("${mod.id}_${module}") {
+    mods.register("${mod.id}_${mod.module}") {
         sourceSet(sourceSets.main.get())
     }
 }
 
 tasks.processResources {
-    exclude("**/${mod.id}_${module}.accesswidener")
+    exclude("**/${mod.id}_${mod.module}.accesswidener")
 }

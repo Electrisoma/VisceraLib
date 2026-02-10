@@ -3,12 +3,14 @@ plugins {
     id("net.neoforged.moddev")
 }
 
-val visceralibProjects = rootProject.subprojects.filter { it.path.startsWith(":visceralib-") }
-val commonProjects     = visceralibProjects.filter { it.name == mod.mc && it.parent?.name == "common" }
-val neoforgeProjects   = visceralibProjects.filter { it.name == mod.mc && it.parent?.name == "neoforge" }
+val vProjects = rootProject.childProjects.values.filter { it.name.startsWith("visceralib-") }
+val commonProjects = vProjects.filter { it.name.endsWith("-common") }
+val neoforgeProjects = vProjects.filter {
+    it.name.endsWith("-neoforge") && it != project
+}
 
 val dependencyProjects = commonProjects + neoforgeProjects
-dependencyProjects.forEach { project.evaluationDependsOn(it.path) }
+dependencyProjects.forEach { evaluationDependsOn(it.path) }
 
 configurations {
     val accessTransformersApi by creating
@@ -25,10 +27,6 @@ configurations {
 }
 
 dependencies {
-//    commonProjects.forEach {
-//        api(it)
-//    }
-
     neoforgeProjects.forEach {
         api(it)
         jarJar(it)
@@ -36,13 +34,13 @@ dependencies {
         "interfaceInjectionDataApi"(it)
     }
 
-    "localRuntime"(modrinth("better-modlist", mod.dep("better_modlist")))
+    "localRuntime"(modrinth("better-modlist", mod.ver("better_modlist")))
 }
 
 neoForge {
-    version = mod.dep("neoforge")
+    version = mod.ver("neoforge")
 
-    val mdgRunDir = File("../../../../run")
+    val mdgRunDir = File("../../../run")
 
     runs {
         register("client") {
@@ -58,13 +56,13 @@ neoForge {
     }
 
     parchment {
-        mod.depOrNull("parchment")?.let {
+        mod.ver("parchment").let {
             mappingsVersion = it
             minecraftVersion = mod.mc
         }
     }
 
-    val commonResDir = projectDir.parentFile.parentFile.resolve("src/main/resources")
+    val commonResDir = projectDir.resolve("src/main/resources")
 
     interfaceInjectionData {
         from(commonResDir.resolve("interfaces.json"))

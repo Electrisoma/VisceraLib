@@ -3,17 +3,21 @@ plugins {
     id("net.fabricmc.fabric-loom-remap")
 }
 
-val visceralibProjects = rootProject.subprojects.filter { it.path.startsWith(":visceralib-") }
-val commonProjects     = visceralibProjects.filter { it.name == mod.mc && it.parent?.name == "common" }
-
-val dependencyProjects = commonProjects
+val dependencyProjects = rootProject.childProjects.values.filter {
+    it.name.startsWith("visceralib-") &&
+            it.name.endsWith("-common") &&
+            it != project
+}
 dependencyProjects.forEach { project.evaluationDependsOn(it.path) }
 
 dependencies {
-    minecraft(project)
-    mappings(layeredMappings(project))
+    minecraft("com.mojang:minecraft:${mod.mc}")
+    mappings(loom.layered {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${mod.mc}:${mod.ver("parchment")}@zip")
+    })
 
-    compileOnly("net.fabricmc:fabric-loader:${mod.dep("fabric_loader")}")
+    compileOnly("net.fabricmc:fabric-loader:${mod.ver("fabric_loader")}")
 
     dependencyProjects.forEach {
         api(it)
@@ -38,14 +42,5 @@ artifacts {
     }
     mainSourceSet.resources.sourceDirectories.files.forEach {
         add(commonResources.name, it)
-    }
-}
-
-tasks.matching { it.name == "genSourcesWithVineflower" }.configureEach {
-    val corePath = ":visceralib-core:common:${stonecutterBuild.current.version}"
-    val coreProject = rootProject.findProject(corePath)
-
-    if (coreProject != null) {
-        mustRunAfter(coreProject.tasks.matching { it.name == "validateAccessWidener" })
     }
 }

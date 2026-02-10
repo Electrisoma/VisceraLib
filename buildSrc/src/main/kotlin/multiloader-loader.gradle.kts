@@ -12,7 +12,15 @@ val commonResources: Configuration by configurations.creating {
 }
 
 dependencies {
-    val commonPath = commonNode.hierarchy.toString()
+    val moduleBaseName = project.name.substringBeforeLast("-")
+
+    val commonProjectName = "$moduleBaseName-common"
+
+    val commonProject = rootProject.childProjects[commonProjectName]
+        ?: throw IllegalStateException("Could not find common sibling '$commonProjectName' for ${project.name}")
+
+    val commonPath = commonProject.path
+
     compileOnly(project(path = commonPath))
     commonJava(project(path = commonPath, configuration = "commonJava"))
     commonResources(project(path = commonPath, configuration = "commonResources"))
@@ -40,35 +48,35 @@ tasks {
 }
 
 afterEvaluate {
-    val loader = loader
+//    val loader = "loader"()
+//
+//    val name = "module"().takeIf { it.isNotBlank() }
+//    val suffix = "suffix"().takeIf { it.isNotBlank() }
+//    val ver = "module_version"().takeIf { it.isNotBlank() }
+//
+//    val base = listOfNotNull(name, suffix).joinToString("-")
+//    val configLabel = if (ver != null) "$base/$ver" else base
 
-    val name = findProperty("module")?.toString()?.takeIf { it.isNotBlank() }
-    val suffix = findProperty("suffix")?.toString()?.takeIf { it.isNotBlank() }
-    val ver = findProperty("module_version")?.toString()?.takeIf { it.isNotBlank() }
-
-    val base = listOfNotNull(name, suffix).joinToString("-")
-    val configLabel = if (ver != null) "$base/$ver" else base
-
-    stonecutterBuild.constants.match(
-        loader as Identifier,
-        "fabric",
-        "neoforge"
-    )
+//    stonecutterBuild.constants.match(
+//        loader as Identifier,
+//        "fabric",
+//        "neoforge"
+//    )
 
     extensions.findByType<net.neoforged.moddevgradle.dsl.NeoForgeExtension>()?.apply {
         runs.all {
-            if (configLabel.isNotEmpty()) {
-                ideFolderName.set(configLabel)
-            }
+//            if (configLabel.isNotEmpty()) {
+//                ideFolderName.set(configLabel)
+//            }
         }
     }
 
     extensions.findByType<net.fabricmc.loom.api.LoomGradleExtensionAPI>()?.apply {
         runs {
             all {
-                if (configLabel.isNotEmpty()) {
-                    ideConfigFolder.set(configLabel)
-                }
+//                if (configLabel.isNotEmpty()) {
+//                    ideConfigFolder.set(configLabel)
+//                }
                 ideConfigGenerated(true)
             }
             getByName("client") {

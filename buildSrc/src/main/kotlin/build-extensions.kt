@@ -1,17 +1,8 @@
-import dev.kikugie.stonecutter.build.StonecutterBuildExtension
-import net.fabricmc.loom.api.LoomGradleExtensionAPI
-import net.fabricmc.loom.api.fabricapi.FabricApiExtension
-import org.gradle.api.GradleException
 import org.gradle.api.Project
-import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.dsl.RepositoryHandler
-import org.gradle.kotlin.dsl.DependencyHandlerScope
-import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.maven
 
 val Project.mod get() = ModData(this)
-
-val Project.stonecutterBuild get() = extensions.getByType<StonecutterBuildExtension>()
 
 val Project.loader: String? get() = findProperty("loader")?.toString()
 val Project.module: String? get() {
@@ -21,61 +12,31 @@ val Project.module: String? get() {
     return listOfNotNull(name, suffix, ver).joinToString("_")
 }
 
-val Project.commonNode get() = requireNotNull(stonecutterBuild.node.sibling("common")) {
-    "No common project found for $name"
-}
+class ModData(private val project: Project) {
 
-@JvmInline
-value class ModData(private val project: Project) {
+    val id: String           get() = prop("mod_id")
+    val name: String         get() = prop("mod_name")
+    val version: String      get() = prop("mod_version")
+    val group: String        get() = prop("mod_group")
+    val module: String get() = project.findProperty("module")?.toString() ?: ""
 
-    val id: String           get() = prop("mod.id")
-    val name: String         get() = prop("mod.name")
-    val version: String      get() = prop("mod.version")
-    val group: String        get() = prop("mod.group")
-    val authors: String      get() = prop("mod.authors")
-    val contributors: String get() = prop("mod.contributors")
-    val description: String  get() = prop("mod.description")
-    val license: String      get() = prop("mod.license")
-    val github: String       get() = prop("mod.github")
+    val authors: String      get() = prop("mod_authors")
+    val contributors: String get() = prop("mod_contributors")
+    val description: String  get() = prop("mod_description")
+    val license: String      get() = prop("mod_license")
+    val github: String       get() = prop("mod_github")
 
-    val mc: String get() = depOrNull("minecraft") ?: project.stonecutterBuild.current.version
+    val mc: String           get() = prop("minecraft_version")
+    val minMc: String        get() = prop("min_minecraft_version")
+    val java: String         get() = prop("java_version")
 
-    fun dep(key: String): String = requireNotNull(depOrNull(key)) { "Missing 'deps.$key' in gradle.properties" }
+    fun ver(key: String): String = project.providers.gradleProperty(key).getOrElse("")
+        .takeIf { it.isNotBlank() }
+        ?: throw IllegalStateException("Version key '$key' is missing in gradle.properties")
 
-    fun depOrNull(key: String): String? =
-        project.findProperty("deps.$key")?.toString()?.takeIf { it.isNotBlank() }
-
-    private fun prop(key: String): String =
-        project.findProperty(key)?.toString() ?: throw GradleException("Property '$key' is missing!")
-}
-
-private fun fapiVersion(project: Project) =
-    "${project.mod.dep("fabric_api")}+${project.mod.mc}"
-
-fun DependencyHandlerScope.minecraft(project: Project) =
-    add("minecraft", "com.mojang:minecraft:${project.mod.mc}")
-
-fun DependencyHandlerScope.fabricLoader(project: Project) =
-    add("modImplementation", "net.fabricmc:fabric-loader:${project.mod.dep("fabric_loader")}")
-
-fun DependencyHandlerScope.embedFapi(project: Project, name: String) {
-    val factory = project.extensions.getByType<FabricApiExtension>()
-    val module = factory.module(name, fapiVersion(project))
-    add("modApi", module)
-    add("include", module)
-}
-
-fun DependencyHandlerScope.runtimeFapi(project: Project, name: String) {
-    val factory = project.extensions.getByType<FabricApiExtension>()
-    add("modRuntimeOnly", factory.module(name, fapiVersion(project)))
-}
-
-@Suppress("UnstableApiUsage")
-fun layeredMappings(project: Project): Dependency = project.extensions.getByType<LoomGradleExtensionAPI>().layered {
-    officialMojangMappings()
-    project.mod.depOrNull("parchment")?.let { version ->
-        parchment("org.parchmentmc.data:parchment-${project.mod.mc}:$version@zip")
-    }
+    private fun prop(key: String): String = project.providers.gradleProperty(key).getOrElse("")
+        .takeIf { it.isNotBlank() }
+        ?: throw IllegalStateException("Property '$key' is missing in gradle.properties")
 }
 
 fun modrinth(name: String, version: String) = "maven.modrinth:$name:$version"

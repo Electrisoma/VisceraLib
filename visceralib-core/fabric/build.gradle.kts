@@ -9,26 +9,46 @@ fletchingTable {
 }
 
 dependencies {
-    minecraft(project)
-    mappings(layeredMappings(project))
-    fabricLoader(project)
+    minecraft("com.mojang:minecraft:${mod.mc}")
+    @Suppress("UnstableApiUsage")
+    mappings(loom.layered {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${mod.mc}:${mod.ver("parchment")}@zip")
+    })
+    modImplementation("net.fabricmc:fabric-loader:${mod.ver("fabric_loader")}")
 
-    embedFapi(project, "fabric-api-base")
-    embedFapi(project, "fabric-lifecycle-events-v1")
+    val fapiVersion = "${mod.ver("fabric_api")}+${mod.mc}"
 
-    modCompileOnly("com.terraformersmc:modmenu:${mod.dep("modmenu")}")
-    modLocalRuntime("com.terraformersmc:modmenu:${mod.dep("modmenu")}")
+    listOf(
+        "fabric-api-base",
+        "fabric-lifecycle-events-v1"
+    ).forEach { module ->
+        val dep = fabricApi.module(module, fapiVersion)
+        modApi(dep)
+        include(dep)
+    }
 
-    runtimeFapi(project, "fabric-resource-loader-v0")
-    runtimeFapi(project, "fabric-screen-api-v1")
-    runtimeFapi(project, "fabric-key-binding-api-v1")
+    modCompileOnly("com.terraformersmc:modmenu:${mod.ver("modmenu")}")
+    modLocalRuntime("com.terraformersmc:modmenu:${mod.ver("modmenu")}")
+
+    listOf(
+        "fabric-resource-loader-v0",
+        "fabric-screen-api-v1",
+        "fabric-key-binding-api-v1"
+    ).forEach { module ->
+        modRuntimeOnly(fabricApi.module(module, fapiVersion))
+    }
 }
 
-loom {
-    val awName = "${mod.mc}-${mod.id}_${module}.accesswidener"
-    accessWidenerPath = commonNode.project.file("../../src/main/resources/accesswideners/$awName")
+val moduleBaseName = project.name.substringBeforeLast("-")
+val commonProject: Project = project(":$moduleBaseName-common")
 
-    val loomRunDir = File("../../../../run")
+loom {
+    val commonResDir = commonProject.projectDir.resolve("src/main/resources")
+    val awFile = commonResDir.resolve("accesswideners/${mod.mc}-$moduleBaseName.accesswidener")
+    accessWidenerPath.set(awFile)
+
+    val loomRunDir = File("../../../run")
 
     runs {
         getByName("client") {
@@ -45,12 +65,12 @@ loom {
 }
 
 tasks.named<ProcessResources>("processResources") {
-    val commonResDir = commonNode.project.parent!!.projectDir.resolve("src/main/resources")
-    val awFile = commonResDir.resolve("accesswideners/${mod.mc}-${mod.id}_${module}.accesswidener")
+    val commonResDir = commonProject.projectDir.resolve("src/main/resources")
+    val awFile = commonResDir.resolve("accesswideners/${mod.mc}-$moduleBaseName.accesswidener")
 
     if (awFile.exists()) {
         from(awFile) {
-            rename(awFile.name, "${mod.id}_${module}.accesswidener")
+            rename(awFile.name, "${mod.id}_${mod.ver("module")}.accesswidener")
         }
     }
 }
