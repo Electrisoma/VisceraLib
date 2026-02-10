@@ -4,14 +4,10 @@ import net.fabricmc.loom.api.fabricapi.FabricApiExtension
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
-import org.gradle.api.artifacts.ExternalModuleDependency
-import org.gradle.api.artifacts.ModuleDependency
-import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.kotlin.dsl.DependencyHandlerScope
 import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.maven
-import org.gradle.kotlin.dsl.project
 
 val Project.mod get() = ModData(this)
 
@@ -72,34 +68,6 @@ fun DependencyHandlerScope.embedFapi(project: Project, name: String) {
 fun DependencyHandlerScope.runtimeFapi(project: Project, name: String) {
     val factory = project.extensions.getByType<FabricApiExtension>()
     add("modRuntimeOnly", factory.module(name, fapiVersion(project)))
-}
-
-fun DependencyHandlerScope.listImplementation(projects: List<Project>) {
-    projects.forEach { proj ->
-        add("implementation", proj).apply {
-            if (this is ProjectDependency) isTransitive = false
-        }
-    }
-}
-
-fun DependencyHandlerScope.listImplementation(projects: List<Project>, configuration: String) {
-    projects.forEach { proj ->
-        add("implementation", project(proj.path, configuration)).apply {
-            if (this is ProjectDependency) isTransitive = false
-        }
-    }
-}
-
-fun DependencyHandlerScope.listCompile(projects: List<Project>) {
-    projects.forEach { proj ->
-        add("compileOnly", proj)
-    }
-}
-
-fun DependencyHandlerScope.listModCompile(projects: List<Project>) {
-    projects.forEach { proj ->
-        add("modCompileOnly", proj)
-    }
 }
 
 @Suppress("UnstableApiUsage")

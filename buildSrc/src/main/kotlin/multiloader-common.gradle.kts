@@ -7,10 +7,10 @@ plugins {
     idea
 }
 
-base {
-    version = "${mod.version}+mc${stonecutterBuild.current.version}-${loader}"
-    group = "${mod.group}.${mod.id}"
+version = "${mod.version}+mc${stonecutterBuild.current.version}-${loader}"
+group = "${mod.group}.${mod.id}"
 
+base {
     val mName = findProperty("module")?.toString()?.takeIf { it.isNotBlank() }
     val mSuffix = findProperty("suffix")?.toString()?.takeIf { it.isNotBlank() }
     val mVer = findProperty("module_version")?.toString()?.takeIf { it.isNotBlank() }
@@ -118,7 +118,7 @@ tasks {
                 "Specification-Vendor"   to mod.authors,
                 "Specification-Version"  to mod.version,
                 "Implementation-Title"   to name,
-                "Implementation-Version" to stonecutterBuild.current.version,
+                "Implementation-Version" to mod.version,
                 "Implementation-Vendor"  to mod.authors,
                 "Built-On-Minecraft"     to mod.mc
             )
@@ -140,7 +140,6 @@ val localProps = Properties().apply {
 publishing {
     publications {
         register<MavenPublication>("mavenJava") {
-            artifactId = base.archivesName.get()
             from(components["java"])
         }
     }

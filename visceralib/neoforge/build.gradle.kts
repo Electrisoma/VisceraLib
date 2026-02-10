@@ -25,9 +25,9 @@ configurations {
 }
 
 dependencies {
-    commonProjects.forEach {
-        api(it)
-    }
+//    commonProjects.forEach {
+//        api(it)
+//    }
 
     neoforgeProjects.forEach {
         api(it)
