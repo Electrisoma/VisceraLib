@@ -70,7 +70,7 @@ tasks.named<ProcessResources>("processResources") {
 
     if (awFile.exists()) {
         from(awFile) {
-            rename(awFile.name, "${mod.id}_${mod.ver("module")}.accesswidener")
+            rename(awFile.name, "${mod.id}_${mod.module}.accesswidener")
         }
     }
 }

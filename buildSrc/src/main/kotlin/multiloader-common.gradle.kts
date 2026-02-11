@@ -37,7 +37,8 @@ dependencies {
 }
 
 tasks {
-    val namespace: String = if (mod.module.isBlank()) mod.id else "${mod.id}_${mod.module}"
+    val moduleSuffix = mod.module
+    val namespace = if (moduleSuffix.isBlank()) mod.id else "${mod.id}_$moduleSuffix"
 
     val expandProps = mapOf(
         "java"               to mod.java,
