@@ -8,6 +8,11 @@ val moduleBase = listOfNotNull(mod.id, mod.module, mod.suffix, mod.moduleVer)
     .filter { it.isNotBlank() }
     .joinToString("-")
 
+val dependencyProjects: List<Project> = listOf(
+    project(":visceralib-core-common")
+)
+dependencyProjects.forEach { project.evaluationDependsOn(it.path) }
+
 loom {
     val awName = "${mod.mc}-$moduleBase.accesswidener"
     accessWidenerPath = file("src/main/resources/accesswideners/$awName")
@@ -38,6 +43,10 @@ dependencies {
     val mixinExtras = "io.github.llamalad7:mixinextras-common:${mod.ver("mixin_extras")}"
     annotationProcessor(mixinExtras)
     compileOnly(mixinExtras)
+
+    dependencyProjects.forEach {
+        implementation(it)
+    }
 }
 
 val commonJava: Configuration by configurations.creating {

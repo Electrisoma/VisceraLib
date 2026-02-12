@@ -40,7 +40,7 @@ dependencies {
 neoForge {
     version = mod.ver("neoforge")
 
-    val mdgRunDir = File("../../../run")
+    val mdgRunDir = File("../../run")
 
     runs {
         register("client") {

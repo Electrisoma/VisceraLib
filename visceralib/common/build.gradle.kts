@@ -12,6 +12,7 @@ dependencyProjects.forEach { project.evaluationDependsOn(it.path) }
 
 dependencies {
     minecraft("com.mojang:minecraft:${mod.mc}")
+    @Suppress("UnstableApiUsage")
     mappings(loom.layered {
         officialMojangMappings()
         parchment("org.parchmentmc.data:parchment-${mod.mc}:${mod.ver("parchment")}@zip")

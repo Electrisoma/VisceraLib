@@ -10,6 +10,12 @@ val moduleBase = listOfNotNull(mod.id, mod.module, mod.suffix, mod.moduleVer)
 
 val commonProject: Project = project(":$moduleBase-common")
 
+val dependencyProjects: List<Project> = listOf(
+    project(":visceralib-core-common"),
+    project(":visceralib-core-neoforge")
+)
+dependencyProjects.forEach { project.evaluationDependsOn(it.path) }
+
 fletchingTable {
     j52j.register("main") { extension("json", "**/*.json5") }
 
@@ -17,7 +23,6 @@ fletchingTable {
         add("accesswideners/${mod.mc}-$moduleBase.accesswidener")
     }
 }
-println("accesswideners/${mod.mc}-$moduleBase.accesswidener")
 
 configurations {
     create("localRuntime")
@@ -25,6 +30,10 @@ configurations {
 }
 
 dependencies {
+    dependencyProjects.forEach {
+        implementation(it)
+    }
+
     compileOnly(modrinth("better-modlist", mod.ver("better_modlist")))
     "localRuntime"(modrinth("better-modlist", mod.ver("better_modlist")))
 }

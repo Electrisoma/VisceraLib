@@ -1,16 +1,27 @@
 plugins {
     `multiloader-loader`
     id("net.fabricmc.fabric-loom-remap")
+    id("dev.kikugie.fletching-table.fabric")
 }
 
-val vProjects = rootProject.childProjects.values.filter { it.name.startsWith("visceralib-") }
-val commonProjects = vProjects.filter { it.name.endsWith("-common") }
-val fabricProjects = vProjects.filter {
-    it.name.endsWith("-fabric") && it != project
-}
+val moduleBase = listOfNotNull(mod.id, mod.module, mod.suffix, mod.moduleVer)
+    .filter { it.isNotBlank() }
+    .joinToString("-")
 
+val commonProject: Project = project(":$moduleBase-common")
+
+val commonProjects: List<Project> = listOf(
+    project(":visceralib-core-common")
+)
+val fabricProjects: List<Project> = listOf(
+    project(":visceralib-core-fabric")
+)
 val dependencyProjects = commonProjects + fabricProjects
 dependencyProjects.forEach { evaluationDependsOn(it.path) }
+
+fletchingTable {
+    j52j.register("main") { extension("json", "**/*.json5") }
+}
 
 dependencies {
     minecraft("com.mojang:minecraft:${mod.mc}")
@@ -26,17 +37,22 @@ dependencies {
     listOf(
         "fabric-api-base",
         "fabric-data-generation-api-v1",
-        "fabric-convention-tags-v2",
-        "fabric-particles-v1"
+        "fabric-convention-tags-v2"
     ).forEach { module ->
-        modRuntimeOnly(fabricApi.module(module, fapiVersion))
+        val dep = fabricApi.module(module, fapiVersion)
+        modApi(dep)
+        include(dep)
+    }
+
+    commonProjects.forEach {
+        implementation(it)
     }
 
     fabricProjects.forEach {
-        api(project(it.path, "namedElements"))
-        include(it)
+        implementation(project(it.path, "namedElements"))
     }
 
+    modCompileOnly("com.terraformersmc:modmenu:${mod.ver("modmenu")}")
     modLocalRuntime("com.terraformersmc:modmenu:${mod.ver("modmenu")}")
 
     listOf(
@@ -50,6 +66,10 @@ dependencies {
 }
 
 loom {
+    val commonResDir = commonProject.projectDir.resolve("src/main/resources")
+    val awFile = commonResDir.resolve("accesswideners/${mod.mc}-$moduleBase.accesswidener")
+    accessWidenerPath.set(awFile)
+
     val loomRunDir = File("../../run")
 
     runs {
@@ -62,6 +82,17 @@ loom {
             server()
             configName = "Fabric Server"
             runDir(loomRunDir.resolve("server").toString())
+        }
+    }
+}
+
+tasks.named<ProcessResources>("processResources") {
+    val commonResDir = commonProject.projectDir.resolve("src/main/resources")
+    val awFile = commonResDir.resolve("accesswideners/${mod.mc}-$moduleBase.accesswidener")
+
+    if (awFile.exists()) {
+        from(awFile) {
+            rename(awFile.name, "${mod.id}_$moduleBase.accesswidener")
         }
     }
 }

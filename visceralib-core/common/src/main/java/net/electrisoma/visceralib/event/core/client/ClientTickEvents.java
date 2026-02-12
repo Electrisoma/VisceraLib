@@ -14,11 +14,9 @@ public class ClientTickEvents implements IVisceralListener {
 
     @Override
     public void register() {
-        ITickHelper.INSTANCE.registerTickListener(() -> {
-            for (Runnable task : TICK_TASKS) {
-                task.run();
-            }
-        });
+        ITickHelper.INSTANCE.registerTickListener(() ->
+            TICK_TASKS.forEach(Runnable::run)
+        );
     }
 
     public static void addTickTask(Runnable task) {

@@ -4,7 +4,7 @@ import org.gradle.kotlin.dsl.maven
 import java.util.Properties
 
 val Project.mod get() = ModData(this)
-val Project.loader: String? get() = findProperty("loader")?.toString()
+val Project.loader: String? get() = propFromFile("loader.properties", "loader")
 
 class ModData(private val project: Project) {
 
@@ -12,9 +12,10 @@ class ModData(private val project: Project) {
     val name:         String get() = prop("mod_name")
     val version:      String get() = prop("mod_version")
     val group:        String get() = prop("mod_group")
-    val module:       String get() = project.file("../gradle.properties").takeIf { it.exists() }?.let { file ->
-        Properties().apply { file.inputStream().use(::load) }.getProperty("module")
-    } ?: ""
+
+    val module:       String get() = moduleProps.getProperty("module") ?: ""
+    val suffix:       String get() = moduleProps.getProperty("suffix") ?: ""
+    val moduleVer:    String get() = moduleProps.getProperty("moduleVer") ?: ""
 
     val authors:      String get() = prop("mod_authors")
     val contributors: String get() = prop("mod_contributors")
@@ -33,7 +34,16 @@ class ModData(private val project: Project) {
     private fun prop(key: String): String = project.providers.gradleProperty(key).getOrElse("")
         .takeIf { it.isNotBlank() }
         ?: throw IllegalStateException("Property '$key' is missing in gradle.properties")
+
+    private val moduleProps: Properties by lazy { project.loadProps("../module.properties") }
 }
+
+private fun Project.loadProps(path: String): Properties = Properties().apply {
+    file(path).takeIf { it.exists() }?.inputStream()?.use(::load)
+}
+
+private fun Project.propFromFile(path: String, key: String): String? =
+    loadProps(path).getProperty(key)
 
 fun modrinth(name: String, version: String) = "maven.modrinth:$name:$version"
 fun curseforge(name: String, projectId: String, fileId: String) = "curse.maven:$name-$projectId:$fileId"

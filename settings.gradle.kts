@@ -32,6 +32,17 @@ plugins {
 
 rootProject.name = "visceralib"
 
+fun getVersions(prop: String) = providers.gradleProperty(prop).getOrElse("")
+    .split(",").map { it.trim() }.filter { it.isNotEmpty() }
+
+val dists: Map<String, List<String>> = mapOf(
+    "common"   to getVersions("stonecutter_enabled_common_versions"),
+    "fabric"   to getVersions("stonecutter_enabled_fabric_versions"),
+    "neoforge" to getVersions("stonecutter_enabled_neo_versions")
+)
+
+val allVersions = dists.values.flatten().distinct()
+
 fun module(name: String) {
     val loaders = providers.gradleProperty("supported_loaders").getOrElse("").split(",")
     val platforms = listOf("common") + loaders.map { it.trim() }.filter { it.isNotEmpty() }
@@ -45,6 +56,9 @@ fun module(name: String) {
 
 module("visceralib")
 module("visceralib-core")
+module("visceralib-datagen-api-v1")
+module("visceralib-item-hooks-v1")
+module("visceralib-registration-api-v1")
 
 //fun getVersions(prop: String) = providers.gradleProperty(prop).getOrElse("")
 //    .split(",").map { it.trim() }.filter { it.isNotEmpty() }
@@ -86,9 +100,6 @@ module("visceralib-core")
 //        vcsVersion="1.21.1"
 //    })
 //}
-
-//module("visceralib-core")
-//module("visceralib-datagen-api-v1")
 
 //module("visceralib-modelloader-api-v1") // empty atm
 //module("visceralib-registration-api-v1")

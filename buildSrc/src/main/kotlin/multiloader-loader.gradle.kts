@@ -13,7 +13,6 @@ val commonResources: Configuration by configurations.creating {
 
 dependencies {
     val moduleBaseName = project.name.substringBeforeLast("-")
-
     val commonProjectName = "$moduleBaseName-common"
 
     val commonProject = rootProject.childProjects[commonProjectName]
@@ -48,14 +47,14 @@ tasks {
 }
 
 afterEvaluate {
-//    val loader = "loader"()
-//
-//    val name = "module"().takeIf { it.isNotBlank() }
-//    val suffix = "suffix"().takeIf { it.isNotBlank() }
-//    val ver = "module_version"().takeIf { it.isNotBlank() }
-//
-//    val base = listOfNotNull(name, suffix).joinToString("-")
-//    val configLabel = if (ver != null) "$base/$ver" else base
+    val loader = loader
+
+    val name = mod.module.takeIf { it.isNotBlank() }
+    val suffix = mod.suffix.takeIf { it.isNotBlank() }
+    val ver = mod.moduleVer.takeIf { it.isNotBlank() }
+
+    val base = listOfNotNull(name, suffix).joinToString("-")
+    val configLabel = if (ver != null) "$base/$ver" else base
 
 //    stonecutterBuild.constants.match(
 //        loader as Identifier,
@@ -65,18 +64,18 @@ afterEvaluate {
 
     extensions.findByType<net.neoforged.moddevgradle.dsl.NeoForgeExtension>()?.apply {
         runs.all {
-//            if (configLabel.isNotEmpty()) {
-//                ideFolderName.set(configLabel)
-//            }
+            if (configLabel.isNotEmpty()) {
+                ideFolderName.set(configLabel)
+            }
         }
     }
 
     extensions.findByType<net.fabricmc.loom.api.LoomGradleExtensionAPI>()?.apply {
         runs {
             all {
-//                if (configLabel.isNotEmpty()) {
-//                    ideConfigFolder.set(configLabel)
-//                }
+                if (configLabel.isNotEmpty()) {
+                    ideConfigFolder.set(configLabel)
+                }
                 ideConfigGenerated(true)
             }
             getByName("client") {

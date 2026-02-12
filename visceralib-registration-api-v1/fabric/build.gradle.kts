@@ -4,7 +4,20 @@ plugins {
     id("dev.kikugie.fletching-table.fabric")
 }
 
-val commonProject: Project = project(":${mod.id}-${mod.module}-common")
+val moduleBase = listOfNotNull(mod.id, mod.module, mod.suffix, mod.moduleVer)
+    .filter { it.isNotBlank() }
+    .joinToString("-")
+
+val commonProject: Project = project(":$moduleBase-common")
+
+val commonProjects: List<Project> = listOf(
+    project(":visceralib-core-common")
+)
+val fabricProjects: List<Project> = listOf(
+    project(":visceralib-core-fabric")
+)
+val dependencyProjects = commonProjects + fabricProjects
+dependencyProjects.forEach { evaluationDependsOn(it.path) }
 
 fletchingTable {
     j52j.register("main") { extension("json", "**/*.json5") }
@@ -23,11 +36,22 @@ dependencies {
 
     listOf(
         "fabric-api-base",
-        "fabric-lifecycle-events-v1"
+        "fabric-particles-v1",
+        "fabric-registry-sync-v0",
+        "fabric-item-group-api-v1",
+        "fabric-item-api-v1"
     ).forEach { module ->
         val dep = fabricApi.module(module, fapiVersion)
         modApi(dep)
         include(dep)
+    }
+
+    commonProjects.forEach {
+        implementation(it)
+    }
+
+    fabricProjects.forEach {
+        implementation(project(it.path, "namedElements"))
     }
 
     modCompileOnly("com.terraformersmc:modmenu:${mod.ver("modmenu")}")
@@ -36,7 +60,8 @@ dependencies {
     listOf(
         "fabric-resource-loader-v0",
         "fabric-screen-api-v1",
-        "fabric-key-binding-api-v1"
+        "fabric-key-binding-api-v1",
+        "fabric-lifecycle-events-v1"
     ).forEach { module ->
         modRuntimeOnly(fabricApi.module(module, fapiVersion))
     }
@@ -44,7 +69,7 @@ dependencies {
 
 loom {
     val commonResDir = commonProject.projectDir.resolve("src/main/resources")
-    val awFile = commonResDir.resolve("accesswideners/${mod.mc}-${mod.id}-${mod.module}.accesswidener")
+    val awFile = commonResDir.resolve("accesswideners/${mod.mc}-$moduleBase.accesswidener")
     accessWidenerPath.set(awFile)
 
     val loomRunDir = File("../../run")
@@ -65,11 +90,11 @@ loom {
 
 tasks.named<ProcessResources>("processResources") {
     val commonResDir = commonProject.projectDir.resolve("src/main/resources")
-    val awFile = commonResDir.resolve("accesswideners/${mod.mc}-${mod.id}-${mod.module}.accesswidener")
+    val awFile = commonResDir.resolve("accesswideners/${mod.mc}-$moduleBase.accesswidener")
 
     if (awFile.exists()) {
         from(awFile) {
-            rename(awFile.name, "${mod.id}_${mod.module}.accesswidener")
+            rename(awFile.name, "${mod.id}_$moduleBase.accesswidener")
         }
     }
 }

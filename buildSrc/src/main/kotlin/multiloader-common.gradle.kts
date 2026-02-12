@@ -7,9 +7,9 @@ plugins {
     idea
 }
 
-val moduleBaseName = project.name.substringBeforeLast("-")
+val suffix = mod.module.takeIf { it.isNotBlank() }?.let { "-$it" } ?: ""
 
-group = mod.group
+group = "${mod.group}.${mod.id}"
 version = "${mod.version}+mc${mod.mc}"
 
 java {
@@ -37,8 +37,14 @@ dependencies {
 }
 
 tasks {
-    val moduleSuffix = mod.module
-    val namespace = if (moduleSuffix.isBlank()) mod.id else "${mod.id}_$moduleSuffix"
+    val namespaceParts = listOfNotNull(
+        mod.id,
+        mod.module,
+        mod.suffix,
+        mod.moduleVer
+    ).filter { it.isNotBlank() }
+
+    val namespace = namespaceParts.joinToString("_")
 
     val expandProps = mapOf(
         "java"               to mod.java,
