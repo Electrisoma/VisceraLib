@@ -3,10 +3,14 @@ plugins {
     id("net.neoforged.moddev")
 }
 
-val vProjects = rootProject.childProjects.values.filter { it.name.startsWith("visceralib-") }
-val commonProjects = vProjects.filter { it.name.endsWith("-common") }
+val currentMc = mod.mc
+
+val vProjects = rootProject.childProjects.values.flatMap { it.childProjects.values }
+    .filter { it.name == currentMc && it.parent?.name?.startsWith("visceralib-") == true }
+
+val commonProjects = vProjects.filter { it.parent?.name?.endsWith("-common") == true }
 val neoforgeProjects = vProjects.filter {
-    it.name.endsWith("-neoforge") && it != project
+    it.parent?.name?.endsWith("-neoforge") == true && it != project
 }
 
 val dependencyProjects = commonProjects + neoforgeProjects
@@ -30,8 +34,8 @@ dependencies {
     neoforgeProjects.forEach {
         api(it)
         jarJar(it)
-        "accessTransformersApi"(it)
-        "interfaceInjectionDataApi"(it)
+        "accessTransformersApi"(project(it.path, "accessTransformersElements"))
+        "interfaceInjectionDataApi"(project(it.path, "interfaceInjectionDataElements"))
     }
 
     "localRuntime"(modrinth("better-modlist", mod.ver("better_modlist")))

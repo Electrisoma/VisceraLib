@@ -20,5 +20,6 @@ val props = Properties().apply {
 dependencies {
     implementation("net.fabricmc.fabric-loom-remap:net.fabricmc.fabric-loom-remap.gradle.plugin:${props["loom"]}")
     implementation("net.neoforged.moddev:net.neoforged.moddev.gradle.plugin:${props["mdg"]}")
-    implementation("dev.kikugie:stonecutter:${props["stonecutter"]}")
+    implementation("com.diffplug.spotless:spotless-plugin-gradle:8.1.0")
+    //implementation("dev.kikugie:stonecutter:${props["stonecutter"]}")
 }

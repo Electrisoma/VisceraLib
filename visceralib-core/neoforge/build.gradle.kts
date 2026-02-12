@@ -17,7 +17,6 @@ fletchingTable {
         add("accesswideners/${mod.mc}-$moduleBase.accesswidener")
     }
 }
-println("accesswideners/${mod.mc}-$moduleBase.accesswidener")
 
 configurations {
     create("localRuntime")
@@ -39,9 +38,8 @@ val syncAT = tasks.register<Copy>("syncAT") {
 neoForge {
     version = mod.ver("neoforge")
 
-    val commonResDir = commonProject.projectDir.resolve("src/main/resources")
-
     interfaceInjectionData {
+        val commonResDir = project(":$moduleBase-common").projectDir.resolve("src/main/resources")
         from(commonResDir.resolve("interfaces.json"))
         publish(commonResDir.resolve("interfaces.json"))
     }

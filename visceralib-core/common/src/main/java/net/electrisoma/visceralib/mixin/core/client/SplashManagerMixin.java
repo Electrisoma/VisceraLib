@@ -16,7 +16,10 @@ import java.util.List;
 public class SplashManagerMixin {
 
     @Inject(
-            method = "prepare(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)Ljava/util/List;",
+            method = "prepare(" +
+                    "Lnet/minecraft/server/packs/resources/ResourceManager;" +
+                    "Lnet/minecraft/util/profiling/ProfilerFiller;" +
+                    ")Ljava/util/List;",
             at = @At("RETURN"),
             cancellable = true
     )

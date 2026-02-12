@@ -1,4 +1,4 @@
-import dev.kikugie.stonecutter.Identifier
+//import dev.kikugie.stonecutter.Identifier
 
 plugins {
     id("multiloader-common")
@@ -12,7 +12,7 @@ val commonResources: Configuration by configurations.creating {
 }
 
 dependencies {
-    val moduleBaseName = project.name.substringBeforeLast("-")
+    val moduleBaseName = project.parent?.name?.substringBeforeLast("-")
     val commonProjectName = "$moduleBaseName-common"
 
     val commonProject = rootProject.childProjects[commonProjectName]

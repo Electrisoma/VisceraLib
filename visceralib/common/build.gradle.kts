@@ -3,6 +3,8 @@ plugins {
     id("net.fabricmc.fabric-loom-remap")
 }
 
+val currentMc = mod.mc
+
 val dependencyProjects = rootProject.childProjects.values.filter {
     it.name.startsWith("visceralib-") &&
             it.name.endsWith("-common") &&

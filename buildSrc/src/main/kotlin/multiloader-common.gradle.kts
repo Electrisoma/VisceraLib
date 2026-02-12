@@ -3,6 +3,7 @@ import java.util.*
 plugins {
     id("java")
     id("java-library")
+    id("com.diffplug.spotless")
     `maven-publish`
     idea
 }
@@ -17,6 +18,21 @@ java {
 
     withSourcesJar()
     withJavadocJar()
+}
+
+spotless {
+    java {
+        target("src/*/*/net/electrisoma/visceralib/**/*.java")
+
+        endWithNewline()
+        trimTrailingWhitespace()
+        removeUnusedImports()
+        importOrder("net.fabricmc", "net.neoforged", "net.electrisoma", "net.minecraft", "", "java", "javax")
+        leadingSpacesToTabs(4)
+
+        replaceRegex("class-level javadoc indentation fix", "^\\*", " *")
+        replaceRegex("method-level javadoc indentation fix", "\t\\*", "\t *")
+    }
 }
 
 repositories {
