@@ -11,6 +11,7 @@
 //import java.util.function.Consumer;
 //
 //public class RendererEventsImpl implements IRendererEvents {
+
 //
 //    @Override
 //    public void registerEntityRenderers(Consumer<EntityRendererRegistrar> consumer) {

@@ -1,28 +1,18 @@
 plugins {
     id("multiloader-common")
     id("net.fabricmc.fabric-loom-remap")
-    id("dev.kikugie.fletching-table.fabric")
+    alias(libs.plugins.fletchingtable.fab)
 }
 
-val moduleBase = listOfNotNull(mod.id, mod.module, mod.suffix, mod.moduleVer)
-    .filter { it.isNotBlank() }
-    .joinToString("-")
-
-val dependencyProjects: List<Project> = listOf(
-    project(":visceralib-core-common")
-)
-dependencyProjects.forEach { project.evaluationDependsOn(it.path) }
+val commonProjects = finder.dependOn(listOf(project(":visceralib-core-common")))
 
 loom {
-    val awName = "${mod.mc}-$moduleBase.accesswidener"
-    accessWidenerPath = file("src/main/resources/accesswideners/$awName")
+    accessWidenerPath.set(mod.commonAW)
 
     // interface injection
-    val fabricProject: Project? = rootProject.findProject("$moduleBase-fabric")
-    fabricProject?.let { fabricModJsonPath.set(it.file("src/main/resources/fabric.mod.json")) }
-
-    @Suppress("UnstableApiUsage")
-    mixin { useLegacyMixinAp = false }
+    rootProject.findProject("${mod.moduleBase}-fabric")?.let {
+        fabricModJsonPath.set(it.file("src/main/resources/fabric.mod.json"))
+    }
 }
 
 fletchingTable {
@@ -44,7 +34,7 @@ dependencies {
     annotationProcessor(mixinExtras)
     compileOnly(mixinExtras)
 
-    dependencyProjects.forEach {
+    commonProjects.forEach {
         implementation(it)
     }
 }
@@ -60,12 +50,8 @@ val commonResources: Configuration by configurations.creating {
 }
 
 artifacts {
-    val mainSourceSet = sourceSets.getByName("main")
-
-    mainSourceSet.java.sourceDirectories.files.forEach {
-        add(commonJava.name, it)
-    }
-    mainSourceSet.resources.sourceDirectories.files.forEach {
-        add(commonResources.name, it)
+    sourceSets.main.get().let { main ->
+        main.java.sourceDirectories.forEach { add(commonJava.name, it) }
+        main.resources.sourceDirectories.forEach { add(commonResources.name, it) }
     }
 }

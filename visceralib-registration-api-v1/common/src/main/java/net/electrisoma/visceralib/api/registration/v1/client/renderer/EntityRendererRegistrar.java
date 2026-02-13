@@ -6,5 +6,6 @@ import net.minecraft.world.entity.EntityType;
 
 @FunctionalInterface
 public interface EntityRendererRegistrar {
-    <T extends Entity> void register(EntityType<? extends T> type, EntityRendererProvider<T> renderer);
+
+	<T extends Entity> void register(EntityType<? extends T> type, EntityRendererProvider<T> renderer);
 }

@@ -9,34 +9,34 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
 
 public interface EnchantmentHook {
 
-    default boolean viscera$isEnchantableWithBook(
-            ItemStack stack,
-            ItemStack book
-    ) {
-        return true;
-    }
+	default boolean viscera$isEnchantableWithBook(
+			ItemStack stack,
+			ItemStack book
+	) {
+		return true;
+	}
 
-    default int viscera$getEnchantmentLevel(ItemStack stack, Holder<Enchantment> enchantment) {
-        return stack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY).getLevel(enchantment);
-    }
+	default int viscera$getEnchantmentLevel(ItemStack stack, Holder<Enchantment> enchantment) {
+		return stack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY).getLevel(enchantment);
+	}
 
-    default ItemEnchantments viscera$getAllEnchantments(ItemStack stack) {
-        return stack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
-    }
+	default ItemEnchantments viscera$getAllEnchantments(ItemStack stack) {
+		return stack.getOrDefault(DataComponents.ENCHANTMENTS, ItemEnchantments.EMPTY);
+	}
 
-    default int viscera$getEnchantmentValue(ItemStack stack) {
-        return stack.getItem().getEnchantmentValue();
-    }
+	default int viscera$getEnchantmentValue(ItemStack stack) {
+		return stack.getItem().getEnchantmentValue();
+	}
 
-    default boolean viscera$isCompatibleWithEnchantment(
-            ItemStack stack,
-            Holder<Enchantment> enchantment,
-            boolean isPrimary
-    ) {
-        if (!isPrimary)
-            return stack.is(Items.ENCHANTED_BOOK) || enchantment.value().isSupportedItem(stack);
-        if (stack.is(Items.BOOK)) return true;
-        return viscera$isCompatibleWithEnchantment(stack, enchantment, false) &&
-                enchantment.value().definition().primaryItems().map(stack::is).orElse(true);
-    }
+	default boolean viscera$isCompatibleWithEnchantment(
+			ItemStack stack,
+			Holder<Enchantment> enchantment,
+			boolean isPrimary
+	) {
+		if (!isPrimary)
+			return stack.is(Items.ENCHANTED_BOOK) || enchantment.value().isSupportedItem(stack);
+		if (stack.is(Items.BOOK)) return true;
+		return viscera$isCompatibleWithEnchantment(stack, enchantment, false) &&
+				enchantment.value().definition().primaryItems().map(stack::is).orElse(true);
+	}
 }

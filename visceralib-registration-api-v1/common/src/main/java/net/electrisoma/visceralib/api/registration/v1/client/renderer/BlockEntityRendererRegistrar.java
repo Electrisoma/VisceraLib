@@ -6,5 +6,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 
 @FunctionalInterface
 public interface BlockEntityRendererRegistrar {
-    <T extends BlockEntity> void register(BlockEntityType<? extends T> type, BlockEntityRendererProvider<T> renderer);
+
+	<T extends BlockEntity> void register(BlockEntityType<? extends T> type, BlockEntityRendererProvider<T> renderer);
 }

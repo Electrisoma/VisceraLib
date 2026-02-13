@@ -18,28 +18,28 @@ import net.minecraft.resources.ResourceKey;
  */
 public class RegistryObject<T> extends Holder.Reference<T> {
 
-    /**
-     * Constructs a new standalone RegistryObject.
-     *
-     * @param owner the HolderOwner; usually the Registry responsible for this holder.
-     * @param key   the ResourceKey identifying the entry in the registry.
-     */
-    public RegistryObject(HolderOwner<T> owner, ResourceKey<T> key) {
-        super(Type.STAND_ALONE, owner, key, null);
-    }
+	/**
+	 * Constructs a new standalone RegistryObject.
+	 *
+	 * @param owner the HolderOwner; usually the Registry responsible for this holder.
+	 * @param key   the ResourceKey identifying the entry in the registry.
+	 */
+	public RegistryObject(HolderOwner<T> owner, ResourceKey<T> key) {
+		super(Type.STAND_ALONE, owner, key, null);
+	}
 
-    /**
-     * Retrieves the registered value.
-     * <p>
-     * This is shorthand for #value().
-     * <p>
-     * Note that this will throw an exception
-     * if the value has not been bound yet.
-     *
-     * @return the registered object.
-     * @throws IllegalStateException if the value is not yet bound.
-     */
-    public T get() {
-        return value();
-    }
+	/**
+	 * Retrieves the registered value.
+	 * <p>
+	 * This is shorthand for #value().
+	 * <p>
+	 * Note that this will throw an exception
+	 * if the value has not been bound yet.
+	 *
+	 * @return the registered object.
+	 * @throws IllegalStateException if the value is not yet bound.
+	 */
+	public T get() {
+		return value();
+	}
 }

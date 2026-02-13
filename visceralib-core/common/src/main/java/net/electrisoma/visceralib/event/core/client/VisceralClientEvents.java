@@ -4,12 +4,13 @@ import java.util.ServiceLoader;
 
 public class VisceralClientEvents {
 
-    private static final ServiceLoader<IVisceralClientListener> LISTENERS =
-            ServiceLoader.load(IVisceralClientListener.class);
+	private static final ServiceLoader<IVisceralClientListener> LISTENERS =
+			ServiceLoader.load(IVisceralClientListener.class);
 
-    public static void registerAll() {
-        for (IVisceralClientListener listener : LISTENERS) {
-            listener.register();
-        }
-    }
+	public static void registerAll() {
+
+		for (IVisceralClientListener listener : LISTENERS) {
+			listener.register();
+		}
+	}
 }

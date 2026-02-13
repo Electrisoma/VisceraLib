@@ -8,47 +8,49 @@ import java.util.ServiceLoader;
 
 public class ServiceHelper {
 
-    private static final Logger LOG = LoggerFactory.getLogger("VisceraLib/ServiceHelper");
+	private static final Logger LOG = LoggerFactory.getLogger("VisceraLib/ServiceHelper");
 
-    /**
-     * Loads an optional service that can exist or not.
-     * Only logs that it doesn't exist.
-     * No runtime exception.
-     *
-     * @param <T> The type of the service interface.
-     * @param clazz The Class object of the service interface
-     * @return An Optional containing the service instance if found, otherwise an empty Optional.
-     */
-    public static <T> Optional<T> find(Class<T> clazz) {
-        Optional<T> loadedService = ServiceLoader
-                .load(clazz)
-                .findFirst();
+	/**
+	 * Loads an optional service that can exist or not.
+	 * Only logs that it doesn't exist.
+	 * No runtime exception.
+	 *
+	 * @param <T> The type of the service interface.
+	 * @param clazz The Class object of the service interface
+	 * @return An Optional containing the service instance if found, otherwise an empty Optional.
+	 */
+	public static <T> Optional<T> find(Class<T> clazz) {
 
-        if (loadedService.isPresent()) {
-            LOG.debug("Found implementation {} for service {}",
-                    loadedService.get().getClass().getName(), clazz.getName()
-            );
-        } else {
-            LOG.debug("No implementation found for optional service {}",
-                    clazz.getName()
-            );
-        }
+		Optional<T> loadedService = ServiceLoader
+				.load(clazz)
+				.findFirst();
 
-        return loadedService;
-    }
+		if (loadedService.isPresent()) {
+			LOG.debug("Found implementation {} for service {}",
+					loadedService.get().getClass().getName(), clazz.getName()
+			);
+		} else {
+			LOG.debug("No implementation found for optional service {}",
+					clazz.getName()
+			);
+		}
 
-    /**
-     * Loads a mandatory service that must exist.
-     * Otherwise, it will throw a runtime exception.
-     *
-     * @param <T> The type of the service interface.
-     * @param clazz The Class object of the service interface.
-     * @return The first available implementation of the service.
-     * @throws IllegalStateException if no implementation is found.
-     */
-    public static <T> T load(Class<T> clazz) {
-        return find(clazz).orElseThrow(() ->
-                new IllegalStateException("Failed to load mandatory service for class: " + clazz.getName())
-        );
-    }
+		return loadedService;
+	}
+
+	/**
+	 * Loads a mandatory service that must exist.
+	 * Otherwise, it will throw a runtime exception.
+	 *
+	 * @param <T> The type of the service interface.
+	 * @param clazz The Class object of the service interface.
+	 * @return The first available implementation of the service.
+	 * @throws IllegalStateException if no implementation is found.
+	 */
+	public static <T> T load(Class<T> clazz) {
+
+		return find(clazz).orElseThrow(() ->
+				new IllegalStateException("Failed to load mandatory service for class: " + clazz.getName())
+		);
+	}
 }

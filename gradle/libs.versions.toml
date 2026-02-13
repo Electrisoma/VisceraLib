@@ -1,0 +1,23 @@
+[versions]
+loom="1.14-SNAPSHOT"
+mdg="2.0.134"
+#stonecutter="0.8.3"
+fletching_table="0.1.0-alpha.22"
+autoservice="1.1.1"
+find_bugs="3.0.2"
+spotless = "8.1.0"
+
+[libraries]
+
+loom = { module = "net.fabricmc.fabric-loom-remap:net.fabricmc.fabric-loom-remap.gradle.plugin", version.ref = "loom" }
+mdg = { module = "net.neoforged.moddev:net.neoforged.moddev.gradle.plugin", version.ref = "mdg" }
+spotless = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
+
+findbugs = { module = "com.google.code.findbugs:jsr305", version.ref = "find_bugs"}
+autoservice = { module = "com.google.auto.service:auto-service", version.ref = "autoservice" }
+autoservice_annotations = { module = "com.google.auto.service:auto-service-annotations", version.ref = "autoservice" }
+
+[plugins]
+
+fletchingtable_neo = { id = "dev.kikugie.fletching-table.neoforge", version.ref = "fletching_table"}
+fletchingtable_fab = { id = "dev.kikugie.fletching-table.fabric", version.ref = "fletching_table"}

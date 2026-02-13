@@ -6,8 +6,8 @@ import net.electrisoma.visceralib.impl.core.Constants;
 
 public final class ClientEntrypoint {
 
-    public static void init() {
-        EntrypointMessages.onClient(Constants.LOG, Constants.MOD_ID, Constants.NAME);
-        VisceralClientEvents.registerAll();
-    }
+	public static void init() {
+		EntrypointMessages.onClient(Constants.LOG, Constants.MOD_ID, Constants.NAME);
+		VisceralClientEvents.registerAll();
+	}
 }

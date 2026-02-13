@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 
 public interface IParticleEvents {
 
-    IParticleEvents INSTANCE = ServiceHelper.load(IParticleEvents.class);
+	IParticleEvents INSTANCE = ServiceHelper.load(IParticleEvents.class);
 
-    void registerProviders(Consumer<IParticleRegistrationHelper> consumer);
+	void registerProviders(Consumer<IParticleRegistrationHelper> consumer);
 }

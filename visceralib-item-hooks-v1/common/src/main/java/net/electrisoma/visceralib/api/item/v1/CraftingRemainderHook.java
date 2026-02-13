@@ -7,9 +7,9 @@ import java.util.Optional;
 
 public interface CraftingRemainderHook {
 
-    default ItemStack viscera$getCraftingRemaining(ItemStack stack) {
-        return Optional.ofNullable(stack.getItem().getCraftingRemainingItem())
-                .map(Item::getDefaultInstance)
-                .orElse(ItemStack.EMPTY);
-    }
+	default ItemStack viscera$getCraftingRemaining(ItemStack stack) {
+		return Optional.ofNullable(stack.getItem().getCraftingRemainingItem())
+				.map(Item::getDefaultInstance)
+				.orElse(ItemStack.EMPTY);
+	}
 }

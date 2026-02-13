@@ -1,13 +1,4 @@
 pluginManagement {
-    fun getProp(prop: String): String = providers.gradleProperty(prop).getOrElse("")
-
-    plugins {
-        id("dev.kikugie.fletching-table.fabric") version getProp("fletching_table")
-        id("dev.kikugie.fletching-table.neoforge") version getProp("fletching_table")
-        id("net.fabricmc.fabric-loom-remap") version getProp("loom")
-        id("net.neoforged.moddev") version getProp("mdg")
-    }
-
     repositories {
         gradlePluginPortal()
         mavenCentral()
@@ -19,11 +10,7 @@ pluginManagement {
 }
 
 plugins {
-    id("dev.kikugie.fletching-table.fabric") apply false
-    id("dev.kikugie.fletching-table.neoforge") apply false
-    id("net.fabricmc.fabric-loom-remap") apply false
-    id("net.neoforged.moddev") apply false
-    id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
 rootProject.name = "visceralib"
@@ -36,15 +23,6 @@ fun module(name: String) {
         val projectPath = ":$name-$it"
         include(projectPath)
         project(projectPath).projectDir = file("$name/$it")
-
-//        stonecutter {
-//            kotlinController=true
-//            centralScript="build.gradle.kts"
-//            create(projectPath, Action<TreeBuilder> {
-//                versions(*allVersions.toTypedArray())
-//                vcsVersion="1.21.1"
-//            })
-//        }
     }
 }
 

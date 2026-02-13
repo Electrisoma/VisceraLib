@@ -3,14 +3,8 @@ plugins {
     id("net.fabricmc.fabric-loom-remap")
 }
 
-val vProjects = rootProject.childProjects.values.filter { it.name.startsWith("visceralib-") }
-val commonProjects = vProjects.filter { it.name.endsWith("-common") }
-val fabricProjects = vProjects.filter {
-    it.name.endsWith("-fabric") && it != project
-}
-
-val dependencyProjects = commonProjects + fabricProjects
-dependencyProjects.forEach { evaluationDependsOn(it.path) }
+val commonProjects = finder.dependOn(finder.common)
+val fabricProjects = finder.dependOn(finder.fabric)
 
 dependencies {
     minecraft("com.mojang:minecraft:${mod.mc}")
@@ -21,16 +15,10 @@ dependencies {
     })
     modImplementation("net.fabricmc:fabric-loader:${mod.ver("fabric_loader")}")
 
-    val fapiVersion = "${mod.ver("fabric_api")}+${mod.mc}"
-
-    listOf(
-        "fabric-api-base",
-        "fabric-data-generation-api-v1",
-        "fabric-convention-tags-v2",
-        "fabric-particles-v1"
-    ).forEach { module ->
-        modRuntimeOnly(fabricApi.module(module, fapiVersion))
-    }
+    fapi.runtime("fabric-api-base")
+    fapi.runtime("fabric-data-generation-api-v1")
+    fapi.runtime("fabric-convention-tags-v2")
+    fapi.runtime("fabric-particles-v1")
 
     fabricProjects.forEach {
         api(project(it.path, "namedElements"))
@@ -39,14 +27,10 @@ dependencies {
 
     modLocalRuntime("com.terraformersmc:modmenu:${mod.ver("modmenu")}")
 
-    listOf(
-        "fabric-resource-loader-v0",
-        "fabric-screen-api-v1",
-        "fabric-key-binding-api-v1",
-        "fabric-lifecycle-events-v1"
-    ).forEach { module ->
-        modRuntimeOnly(fabricApi.module(module, fapiVersion))
-    }
+    fapi.runtime("fabric-resource-loader-v0")
+    fapi.runtime("fabric-screen-api-v1")
+    fapi.runtime("fabric-key-binding-api-v1")
+    fapi.runtime("fabric-lifecycle-events-v1")
 }
 
 loom {

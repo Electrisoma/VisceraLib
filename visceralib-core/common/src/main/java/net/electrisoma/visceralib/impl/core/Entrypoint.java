@@ -5,8 +5,8 @@ import net.electrisoma.visceralib.event.core.common.VisceralEvents;
 
 public final class Entrypoint {
 
-    public static void init() {
-        EntrypointMessages.onCommon(Constants.LOG, Constants.MOD_ID, Constants.NAME);
-        VisceralEvents.registerAll();
-    }
+	public static void init() {
+		EntrypointMessages.onCommon(Constants.LOG, Constants.MOD_ID, Constants.NAME);
+		VisceralEvents.registerAll();
+	}
 }

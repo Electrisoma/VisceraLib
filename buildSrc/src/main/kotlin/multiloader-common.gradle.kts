@@ -1,4 +1,6 @@
-import java.util.*
+import org.gradle.accessors.dm.LibrariesForLibs
+
+val libs = the<LibrariesForLibs>()
 
 plugins {
     id("java")
@@ -8,10 +10,17 @@ plugins {
     idea
 }
 
-val suffix = mod.module.takeIf { it.isNotBlank() }?.let { "-$it" } ?: ""
+val moduleParts = listOfNotNull(
+    mod.id,
+    mod.module,
+    mod.suffix,
+    mod.moduleVer
+).filter { it.isNotBlank() }
+val moduleName = moduleParts.joinToString("_")
 
 group = "${mod.group}.${mod.id}"
 version = "${mod.version}+mc${mod.mc}"
+base.archivesName = "${mod.moduleBase}-${props.loader}"
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(mod.java))
@@ -27,9 +36,10 @@ spotless {
         endWithNewline()
         trimTrailingWhitespace()
         removeUnusedImports()
-        importOrder("net.fabricmc", "net.neoforged", "net.electrisoma", "net.minecraft", "", "java", "javax")
+        importOrder("net.electrisoma", "net.fabricmc", "net.neoforged", "net.minecraft", "com.mojang", "", "java", "javax")
         leadingSpacesToTabs(4)
 
+        replaceRegex("newline after class opening", "((?:class|interface|enum)\\b[^\\{]*\\{\\n)(?!\\n)", "$1\n")
         replaceRegex("class-level javadoc indentation fix", "^\\*", " *")
         replaceRegex("method-level javadoc indentation fix", "\t\\*", "\t *")
     }
@@ -38,30 +48,21 @@ spotless {
 repositories {
     mavenCentral()
 
-    strictMaven("https://maven.parchmentmc.org", "org.parchmentmc.data")
-    strictMaven("https://api.modrinth.com/maven", "maven.modrinth")
-    strictMaven("https://cursemaven.com", "curse.maven")
-    strictMaven("https://repo.spongepowered.org/repository/maven-public", "org.spongepowered")
-    strictMaven("https://maven.terraformersmc.com/releases/", "com.terraformersmc")
+    repos.strictMaven("https://maven.parchmentmc.org", "org.parchmentmc.data")
+    repos.strictMaven("https://api.modrinth.com/maven", "maven.modrinth")
+    repos.strictMaven("https://cursemaven.com", "curse.maven")
+    repos.strictMaven("https://repo.spongepowered.org/repository/maven-public", "org.spongepowered")
+    repos.strictMaven("https://maven.terraformersmc.com/releases/", "com.terraformersmc")
     maven("https://raw.githubusercontent.com/Fuzss/modresources/main/maven/")
 }
 
 dependencies {
-    annotationProcessor("com.google.auto.service:auto-service:${mod.ver("auto_service")}")
-    compileOnly("com.google.auto.service:auto-service-annotations:${mod.ver("auto_service")}")
-    api("com.google.code.findbugs:jsr305:${mod.ver("find_bugs")}")
+    annotationProcessor(libs.autoservice)
+    compileOnly(libs.autoservice.annotations)
+    api(libs.findbugs)
 }
 
 tasks {
-    val namespaceParts = listOfNotNull(
-        mod.id,
-        mod.module,
-        mod.suffix,
-        mod.moduleVer
-    ).filter { it.isNotBlank() }
-
-    val namespace = namespaceParts.joinToString("_")
-
     val expandProps = mapOf(
         "java"               to mod.java,
         "compatibilityLevel" to "JAVA_${mod.java}",
@@ -77,7 +78,7 @@ tasks {
         "minecraft"          to mod.mc,
         "minMinecraft"       to mod.minMc,
         "fabric"             to mod.ver("fabric_loader"),
-        "FApi"               to mod.ver("fabric_api"),
+        "fapi"               to mod.ver("fabric_api"),
         "neoForge"           to mod.ver("neoforge")
     )
 
@@ -98,7 +99,7 @@ tasks {
         val masterLogo = rootProject.file("branding/logo.png")
         if (masterLogo.exists()) {
             from(masterLogo) {
-                into("assets/$namespace")
+                into("assets/$moduleName")
             }
         }
 
@@ -123,7 +124,7 @@ tasks {
         }
 
         manifest {
-            attributes(
+            attributes(mapOf(
                 "Fabric-Loom-Remap"      to "true",
                 "Specification-Title"    to mod.name,
                 "Specification-Vendor"   to mod.authors,
@@ -132,7 +133,7 @@ tasks {
                 "Implementation-Version" to mod.version,
                 "Implementation-Vendor"  to mod.authors,
                 "Built-On-Minecraft"     to mod.mc
-            )
+            ))
         }
     }
 
@@ -142,10 +143,11 @@ tasks {
         exclude("net/electrisoma/visceralib/mixin/**")
         exclude("net/electrisoma/visceralib/platform/**")
     }
-}
 
-val localProps = Properties().apply {
-    rootDir.resolve("local.properties").takeIf { it.exists() }?.inputStream()?.use(::load)
+    withType<JavaCompile> {
+        dependsOn("spotlessApply")
+        options.compilerArgs.add("-Xlint:unchecked")
+    }
 }
 
 publishing {
@@ -160,8 +162,8 @@ publishing {
 //            name = "GitHubPackages"
 //            url = uri("https://maven.pkg.github.com/electrisoma/VisceraLib")
 //            credentials {
-//                username = System.getenv("GITHUB_ACTOR") ?: localProps.getProperty("ghpUsername")
-//                password = System.getenv("GITHUB_TOKEN") ?: localProps.getProperty("ghpToken")
+//                username = System.getenv("GITHUB_ACTOR") ?: props.local("ghpUsername")
+//                password = System.getenv("GITHUB_TOKEN") ?: props.local("ghpToken")
 //            }
 //        }
         mavenLocal()

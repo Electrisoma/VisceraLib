@@ -1,10 +1,8 @@
 plugins {
     `multiloader-loader`
     id("net.fabricmc.fabric-loom-remap")
-    id("dev.kikugie.fletching-table.fabric")
+    alias(libs.plugins.fletchingtable.fab)
 }
-
-val commonProject: Project = project(":${mod.id}-${mod.module}-common")
 
 fletchingTable {
     j52j.register("main") { extension("json", "**/*.json5") }
@@ -19,33 +17,19 @@ dependencies {
     })
     modImplementation("net.fabricmc:fabric-loader:${mod.ver("fabric_loader")}")
 
-    val fapiVersion = "${mod.ver("fabric_api")}+${mod.mc}"
-
-    listOf(
-        "fabric-api-base",
-        "fabric-lifecycle-events-v1"
-    ).forEach { module ->
-        val dep = fabricApi.module(module, fapiVersion)
-        modApi(dep)
-        include(dep)
-    }
+    fapi.embed("fabric-api-base")
+    fapi.embed("fabric-lifecycle-events-v1")
 
     modCompileOnly("com.terraformersmc:modmenu:${mod.ver("modmenu")}")
     modLocalRuntime("com.terraformersmc:modmenu:${mod.ver("modmenu")}")
 
-    listOf(
-        "fabric-resource-loader-v0",
-        "fabric-screen-api-v1",
-        "fabric-key-binding-api-v1"
-    ).forEach { module ->
-        modRuntimeOnly(fabricApi.module(module, fapiVersion))
-    }
+    fapi.runtime("fabric-resource-loader-v0")
+    fapi.runtime("fabric-screen-api-v1")
+    fapi.runtime("fabric-key-binding-api-v1")
 }
 
 loom {
-    val commonResDir = commonProject.projectDir.resolve("src/main/resources")
-    val awFile = commonResDir.resolve("accesswideners/${mod.mc}-${mod.id}-${mod.module}.accesswidener")
-    accessWidenerPath.set(awFile)
+    accessWidenerPath.set(mod.commonAW)
 
     val loomRunDir = File("../../run")
 
@@ -64,12 +48,9 @@ loom {
 }
 
 tasks.named<ProcessResources>("processResources") {
-    val commonResDir = commonProject.projectDir.resolve("src/main/resources")
-    val awFile = commonResDir.resolve("accesswideners/${mod.mc}-${mod.id}-${mod.module}.accesswidener")
-
-    if (awFile.exists()) {
-        from(awFile) {
-            rename(awFile.name, "${mod.id}_${mod.module}.accesswidener")
+    if (mod.commonAW.exists()) {
+        from(mod.commonAW) {
+            rename(mod.commonAW.name, "${mod.id}_${mod.module}.accesswidener")
         }
     }
 }

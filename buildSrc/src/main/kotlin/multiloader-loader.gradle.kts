@@ -12,7 +12,7 @@ val commonResources: Configuration by configurations.creating {
 }
 
 dependencies {
-    val moduleBaseName = project.parent?.name?.substringBeforeLast("-")
+    val moduleBaseName = project.name.substringBeforeLast("-")
     val commonProjectName = "$moduleBaseName-common"
 
     val commonProject = rootProject.childProjects[commonProjectName]
@@ -47,7 +47,7 @@ tasks {
 }
 
 afterEvaluate {
-    val loader = loader
+    val loader = props.loader
 
     val name = mod.module.takeIf { it.isNotBlank() }
     val suffix = mod.suffix.takeIf { it.isNotBlank() }
@@ -62,24 +62,28 @@ afterEvaluate {
 //        "neoforge"
 //    )
 
-    extensions.findByType<net.neoforged.moddevgradle.dsl.NeoForgeExtension>()?.apply {
-        runs.all {
-            if (configLabel.isNotEmpty()) {
-                ideFolderName.set(configLabel)
+    extensions.findByName("neoForge")?.let {
+        configure<net.neoforged.moddevgradle.dsl.NeoForgeExtension> {
+            runs.all {
+                if (configLabel.isNotEmpty()) {
+                    ideFolderName.set(configLabel)
+                }
             }
         }
     }
 
-    extensions.findByType<net.fabricmc.loom.api.LoomGradleExtensionAPI>()?.apply {
-        runs {
-            all {
-                if (configLabel.isNotEmpty()) {
-                    ideConfigFolder.set(configLabel)
+    extensions.findByName("loom")?.let {
+        configure<net.fabricmc.loom.api.LoomGradleExtensionAPI> {
+            runs {
+                all {
+                    if (configLabel.isNotEmpty()) {
+                        ideConfigFolder.set(configLabel)
+                    }
+                    ideConfigGenerated(true)
                 }
-                ideConfigGenerated(true)
-            }
-            getByName("client") {
-                programArgs("--username", "dev")
+                getByName("client") {
+                    programArgs("--username", "dev")
+                }
             }
         }
     }

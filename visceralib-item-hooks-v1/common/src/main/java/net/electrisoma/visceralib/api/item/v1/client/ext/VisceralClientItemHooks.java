@@ -1,6 +1,7 @@
 package net.electrisoma.visceralib.api.item.v1.client.ext;
 
 import net.electrisoma.visceralib.api.item.v1.client.*;
+
 import net.minecraft.world.item.Item;
 
 /**
@@ -15,11 +16,12 @@ import net.minecraft.world.item.Item;
  * {@link Item} class.
  */
 public interface VisceralClientItemHooks extends
-        HighlightTipHook,
-        ArmorTextureHook,
-        ReequipAnimationHook,
-        BlockResetHook,
-        ArmPoseHook
+		HighlightTipHook,
+		ArmorTextureHook,
+		ReequipAnimationHook,
+		BlockResetHook,
+		ArmPoseHook
 {
-    // no-op
+
+	// no-op
 }

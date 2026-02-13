@@ -5,7 +5,7 @@ import net.electrisoma.visceralib.impl.item.v1.Constants;
 
 public final class ClientEntrypoint {
 
-    public static void init() {
-        EntrypointMessages.onClient(Constants.LOG, Constants.MOD_ID, Constants.NAME);
-    }
+	public static void init() {
+		EntrypointMessages.onClient(Constants.LOG, Constants.MOD_ID, Constants.NAME);
+	}
 }

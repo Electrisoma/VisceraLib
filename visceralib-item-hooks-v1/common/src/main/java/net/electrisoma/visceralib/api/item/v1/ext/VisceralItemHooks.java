@@ -1,6 +1,7 @@
 package net.electrisoma.visceralib.api.item.v1.ext;
 
 import net.electrisoma.visceralib.api.item.v1.*;
+
 import net.minecraft.world.item.Item;
 
 /**
@@ -15,16 +16,17 @@ import net.minecraft.world.item.Item;
  * and applicable to both logical sides.
  */
 public interface VisceralItemHooks extends
-        CombatHook,
-        CraftingRemainderHook,
-        DropHook,
-        DurabilityHook,
-        EnchantmentHook,
-        EntityHook,
-        EquipmentHook,
-        PiglinHook,
-        StackHook,
-        UseHook
+		CombatHook,
+		CraftingRemainderHook,
+		DropHook,
+		DurabilityHook,
+		EnchantmentHook,
+		EntityHook,
+		EquipmentHook,
+		PiglinHook,
+		StackHook,
+		UseHook
 {
-    // no-op
+
+	// no-op
 }

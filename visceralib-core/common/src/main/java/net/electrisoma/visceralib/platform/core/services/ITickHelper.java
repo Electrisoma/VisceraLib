@@ -4,7 +4,7 @@ import net.electrisoma.visceralib.api.core.services.ServiceHelper;
 
 public interface ITickHelper {
 
-    ITickHelper INSTANCE = ServiceHelper.load(ITickHelper.class);
+	ITickHelper INSTANCE = ServiceHelper.load(ITickHelper.class);
 
-    void registerTickListener(Runnable tickTask);
+	void registerTickListener(Runnable tickTask);
 }

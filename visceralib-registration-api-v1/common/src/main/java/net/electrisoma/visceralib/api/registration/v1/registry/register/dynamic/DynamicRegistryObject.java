@@ -10,23 +10,23 @@ import java.util.Optional;
 
 public record DynamicRegistryObject<T>(ResourceKey<Registry<T>> key) {
 
-    public Optional<Registry<T>> getRegistry(LevelReader level) {
-        return level.registryAccess().registry(key);
-    }
+	public Optional<Registry<T>> getRegistry(LevelReader level) {
+		return level.registryAccess().registry(key);
+	}
 
-    public Optional<T> get(LevelReader level, ResourceLocation id) {
-        return getRegistry(level).map(reg -> reg.get(id));
-    }
+	public Optional<T> get(LevelReader level, ResourceLocation id) {
+		return getRegistry(level).map(reg -> reg.get(id));
+	}
 
-    public Optional<T> get(LevelReader level, ResourceKey<T> entryKey) {
-        return getRegistry(level).flatMap(reg -> reg.getOptional(entryKey));
-    }
+	public Optional<T> get(LevelReader level, ResourceKey<T> entryKey) {
+		return getRegistry(level).flatMap(reg -> reg.getOptional(entryKey));
+	}
 
-    public boolean exists(LevelReader level, ResourceLocation id) {
-        return getRegistry(level).map(reg -> reg.containsKey(id)).orElse(false);
-    }
+	public boolean exists(LevelReader level, ResourceLocation id) {
+		return getRegistry(level).map(reg -> reg.containsKey(id)).orElse(false);
+	}
 
-    public Optional<Holder<T>> getHolder(LevelReader level, ResourceKey<T> entryKey) {
-        return getRegistry(level).flatMap(reg -> reg.getHolder(entryKey));
-    }
+	public Optional<Holder<T>> getHolder(LevelReader level, ResourceKey<T> entryKey) {
+		return getRegistry(level).flatMap(reg -> reg.getHolder(entryKey));
+	}
 }

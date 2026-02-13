@@ -6,7 +6,7 @@ import net.electrisoma.visceralib.api.registration.v1.registry.register.fluid.Vi
 
 public interface IFluidHelper {
 
-    IFluidHelper INSTANCE = ServiceHelper.load(IFluidHelper.class);
+	IFluidHelper INSTANCE = ServiceHelper.load(IFluidHelper.class);
 
-    void registerFluidType(String name, VisceralFluidAttributes attributes, VisceralRegistry registry);
+	void registerFluidType(String name, VisceralFluidAttributes attributes, VisceralRegistry registry);
 }

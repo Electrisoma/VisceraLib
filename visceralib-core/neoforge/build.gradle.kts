@@ -1,20 +1,14 @@
 plugins {
     `multiloader-loader`
     id("net.neoforged.moddev")
-    id("dev.kikugie.fletching-table.neoforge")
+    alias(libs.plugins.fletchingtable.neo)
 }
-
-val moduleBase = listOfNotNull(mod.id, mod.module, mod.suffix, mod.moduleVer)
-    .filter { it.isNotBlank() }
-    .joinToString("-")
-
-val commonProject: Project = project(":$moduleBase-common")
 
 fletchingTable {
     j52j.register("main") { extension("json", "**/*.json5") }
 
     accessConverter.register("main") {
-        add("accesswideners/${mod.mc}-$moduleBase.accesswidener")
+        add("accesswideners/${mod.mc}-${mod.moduleBase}.accesswidener")
     }
 }
 
@@ -24,8 +18,8 @@ configurations {
 }
 
 dependencies {
-    compileOnly(modrinth("better-modlist", mod.ver("better_modlist")))
-    "localRuntime"(modrinth("better-modlist", mod.ver("better_modlist")))
+    compileOnly(repos.modrinth("better-modlist", mod.ver("better_modlist")))
+    "localRuntime"(repos.modrinth("better-modlist", mod.ver("better_modlist")))
 }
 
 val syncAT = tasks.register<Copy>("syncAT") {
@@ -39,9 +33,10 @@ neoForge {
     version = mod.ver("neoforge")
 
     interfaceInjectionData {
-        val commonResDir = project(":$moduleBase-common").projectDir.resolve("src/main/resources")
-        from(commonResDir.resolve("interfaces.json"))
-        publish(commonResDir.resolve("interfaces.json"))
+        mod.commonResource("interfaces.json").let {
+            from(it)
+            publish(it)
+        }
     }
 
     accessTransformers {
@@ -70,11 +65,11 @@ neoForge {
         }
     }
 
-    mods.register(moduleBase) {
+    mods.register(mod.moduleBase) {
         sourceSet(sourceSets.main.get())
     }
 }
 
 tasks.processResources {
-    exclude("**/$moduleBase.accesswidener")
+    exclude("**/${mod.moduleBase}.accesswidener")
 }

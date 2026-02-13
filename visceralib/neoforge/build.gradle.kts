@@ -3,29 +3,21 @@ plugins {
     id("net.neoforged.moddev")
 }
 
-val currentMc = mod.mc
-
-val vProjects = rootProject.childProjects.values.flatMap { it.childProjects.values }
-    .filter { it.name == currentMc && it.parent?.name?.startsWith("visceralib-") == true }
-
-val commonProjects = vProjects.filter { it.parent?.name?.endsWith("-common") == true }
-val neoforgeProjects = vProjects.filter {
-    it.parent?.name?.endsWith("-neoforge") == true && it != project
-}
-
-val dependencyProjects = commonProjects + neoforgeProjects
-dependencyProjects.forEach { evaluationDependsOn(it.path) }
+val commonProjects = finder.dependOn(finder.common)
+val neoforgeProjects = finder.dependOn(finder.neoforge)
 
 configurations {
     val accessTransformersApi by creating
     val interfaceInjectionDataApi by creating
     val localRuntime by creating
 
-    named("accessTransformers") { extendsFrom(accessTransformersApi) }
-    named("accessTransformersElements") { extendsFrom(accessTransformersApi) }
+    listOf("accessTransformers", "accessTransformersElements").forEach {
+        named(it) { extendsFrom(accessTransformersApi) }
+    }
 
-    named("interfaceInjectionData") { extendsFrom(interfaceInjectionDataApi) }
-    named("interfaceInjectionDataElements") { extendsFrom(interfaceInjectionDataApi) }
+    listOf("interfaceInjectionData", "interfaceInjectionDataElements").forEach {
+        named(it) { extendsFrom(interfaceInjectionDataApi) }
+    }
 
     runtimeClasspath.get().extendsFrom(localRuntime)
 }
@@ -38,7 +30,7 @@ dependencies {
         "interfaceInjectionDataApi"(project(it.path, "interfaceInjectionDataElements"))
     }
 
-    "localRuntime"(modrinth("better-modlist", mod.ver("better_modlist")))
+    "localRuntime"(repos.modrinth("better-modlist", mod.ver("better_modlist")))
 }
 
 neoForge {
@@ -66,17 +58,17 @@ neoForge {
         }
     }
 
-    val commonResDir = projectDir.resolve("src/main/resources")
-
     interfaceInjectionData {
-        from(commonResDir.resolve("interfaces.json"))
-        publish(commonResDir.resolve("interfaces.json"))
+        mod.commonResource("interfaces.json").let {
+            from(it)
+            publish(it)
+        }
     }
 
     accessTransformers {
-        val sharedAt = commonResDir.resolve("META-INF/accesstransformer.cfg")
-        if (sharedAt.exists())
-            publish(sharedAt)
+        mod.commonResource("META-INF/accesstransformer.cfg").takeIf { it.exists() }?.let {
+            publish(it)
+        }
     }
 
     mods.register(mod.id) {

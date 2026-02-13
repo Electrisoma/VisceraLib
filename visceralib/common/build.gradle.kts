@@ -3,14 +3,7 @@ plugins {
     id("net.fabricmc.fabric-loom-remap")
 }
 
-val currentMc = mod.mc
-
-val dependencyProjects = rootProject.childProjects.values.filter {
-    it.name.startsWith("visceralib-") &&
-            it.name.endsWith("-common") &&
-            it != project
-}
-dependencyProjects.forEach { project.evaluationDependsOn(it.path) }
+val commonProjects = finder.dependOn(finder.common)
 
 dependencies {
     minecraft("com.mojang:minecraft:${mod.mc}")
@@ -22,7 +15,7 @@ dependencies {
 
     compileOnly("net.fabricmc:fabric-loader:${mod.ver("fabric_loader")}")
 
-    dependencyProjects.forEach {
+    commonProjects.forEach {
         api(it)
     }
 }
@@ -38,12 +31,8 @@ val commonResources: Configuration by configurations.creating {
 }
 
 artifacts {
-    val mainSourceSet = sourceSets.getByName("main")
-
-    mainSourceSet.java.sourceDirectories.files.forEach {
-        add(commonJava.name, it)
-    }
-    mainSourceSet.resources.sourceDirectories.files.forEach {
-        add(commonResources.name, it)
+    sourceSets.main.get().let { main ->
+        main.java.sourceDirectories.forEach { add(commonJava.name, it) }
+        main.resources.sourceDirectories.forEach { add(commonResources.name, it) }
     }
 }

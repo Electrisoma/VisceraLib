@@ -9,8 +9,8 @@ import java.util.function.Function;
 
 public interface IParticleRegistrationHelper {
 
-    <T extends ParticleOptions> void register(
-            ParticleType<T> type,
-            Function<SpriteSet, ParticleProvider<T>> constructor
-    );
+	<T extends ParticleOptions> void register(
+			ParticleType<T> type,
+			Function<SpriteSet, ParticleProvider<T>> constructor
+	);
 }

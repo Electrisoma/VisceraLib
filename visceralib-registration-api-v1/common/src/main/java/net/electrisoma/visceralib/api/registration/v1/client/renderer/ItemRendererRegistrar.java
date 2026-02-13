@@ -5,5 +5,6 @@ import net.minecraft.world.item.Item;
 
 @FunctionalInterface
 public interface ItemRendererRegistrar {
-    void register(Item item, BlockEntityWithoutLevelRenderer renderer);
+
+	void register(Item item, BlockEntityWithoutLevelRenderer renderer);
 }
