@@ -1,0 +1,54 @@
+modLoader="javafml"
+loaderVersion="*"
+license="${license}"
+issueTrackerURL="${github}/issues"
+
+[[mods]]
+    modId="visceralib_splashes_v1"
+    version="${version}"
+    displayName="VisceraLib Splashes (v1)"
+    authors="${authors}"
+    credits="${contributors}"
+    description="Contains code to allow resourcepack-driven modded splash texts."
+    logoFile="assets/visceralib_splashes_v1/logo.png"
+    logoBlur=false
+    displayURL="${github}"
+
+[[mixins]]
+    config="mixins/visceralib_splashes_v1-common.mixins.json"
+[[mixins]]
+    config="mixins/visceralib_splashes_v1-neoforge.mixins.json"
+[[mixins]]
+    config="mixins/visceralib_splashes_v1-common.client.mixins.json"
+[[mixins]]
+    config="mixins/visceralib_splashes_v1-neoforge.client.mixins.json"
+[[accessTransformers]]
+    file="META-INF/accesstransformer.cfg"
+
+[[dependencies.visceralib_splashes_v1]]
+    modId="neoforge"
+    type="required"
+    versionRange="*"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.visceralib_splashes_v1]]
+    modId="minecraft"
+    type="required"
+    versionRange="[${minMinecraft},)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.visceralib_splashes_v1]]
+    modId="visceralib_core"
+    type="required"
+    versionRange="*"
+    ordering="NONE"
+    side="BOTH"
+
+[modproperties.modmenu]
+    badges=[ "library" ]
+[modproperties.modmenu_parent]
+    id="visceralib"
+    name="VisceraLib"
+    description="${description}"
+    icon="assets/visceralib_splashes_v1/logo.png"
+    badges= [ "library" ]
