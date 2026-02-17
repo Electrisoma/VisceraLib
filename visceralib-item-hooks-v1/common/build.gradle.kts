@@ -21,22 +21,19 @@ fletchingTable {
 
 dependencies {
     minecraft("com.mojang:minecraft:${mod.mc}")
-    @Suppress("UnstableApiUsage")
-    mappings(loom.layered {
+    mappings(mapping.layered {
         officialMojangMappings()
         parchment("org.parchmentmc.data:parchment-${mod.mc}:${mod.ver("parchment")}@zip")
     })
 
     compileOnly("net.fabricmc:fabric-loader:${mod.ver("fabric_loader")}")
-    compileOnly("net.fabricmc:sponge-mixin:0.13.2+mixin.0.8.5")
+    compileOnly("net.fabricmc:sponge-mixin:${mod.ver("sponge_mixin")}")
 
     val mixinExtras = "io.github.llamalad7:mixinextras-common:${mod.ver("mixin_extras")}"
     annotationProcessor(mixinExtras)
     compileOnly(mixinExtras)
 
-    commonProjects.forEach {
-        implementation(it)
-    }
+    commonProjects.forEach { implementation(it) }
 }
 
 val commonJava: Configuration by configurations.creating {

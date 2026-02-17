@@ -23,9 +23,7 @@ configurations {
 }
 
 dependencies {
-    dependencyProjects.forEach {
-        implementation(it)
-    }
+    dependencyProjects.forEach { implementation(it) }
 
     compileOnly(repos.modrinth("better-modlist", mod.ver("better_modlist")))
     "localRuntime"(repos.modrinth("better-modlist", mod.ver("better_modlist")))

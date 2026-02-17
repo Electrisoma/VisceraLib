@@ -24,13 +24,11 @@ dependencies {
     fabricProjects.forEach { implementation(project(it.path, "namedElements")) }
 
     fapi.embed("fabric-api-base")
-    fapi.embed("fabric-data-generation-api-v1")
-    fapi.embed("fabric-convention-tags-v2")
+    fapi.embed("fabric-resource-loader-v0")
 
     modCompileOnly("com.terraformersmc:modmenu:${mod.ver("modmenu")}")
     modLocalRuntime("com.terraformersmc:modmenu:${mod.ver("modmenu")}")
 
-    fapi.runtime("fabric-resource-loader-v0")
     fapi.runtime("fabric-screen-api-v1")
     fapi.runtime("fabric-key-binding-api-v1")
     fapi.runtime("fabric-lifecycle-events-v1")

@@ -7,8 +7,7 @@ val commonProjects = finder.dependOn(finder.common)
 
 dependencies {
     minecraft("com.mojang:minecraft:${mod.mc}")
-    @Suppress("UnstableApiUsage")
-    mappings(loom.layered {
+    mappings(mapping.layered {
         officialMojangMappings()
         parchment("org.parchmentmc.data:parchment-${mod.mc}:${mod.ver("parchment")}@zip")
     })

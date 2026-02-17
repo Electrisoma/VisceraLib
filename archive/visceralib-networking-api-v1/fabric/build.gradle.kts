@@ -24,8 +24,6 @@ dependencies {
     fabricProjects.forEach { implementation(project(it.path, "namedElements")) }
 
     fapi.embed("fabric-api-base")
-    fapi.embed("fabric-data-generation-api-v1")
-    fapi.embed("fabric-convention-tags-v2")
 
     modCompileOnly("com.terraformersmc:modmenu:${mod.ver("modmenu")}")
     modLocalRuntime("com.terraformersmc:modmenu:${mod.ver("modmenu")}")

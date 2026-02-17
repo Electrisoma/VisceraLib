@@ -11,13 +11,11 @@ configurations {
     val interfaceInjectionDataApi by creating
     val localRuntime by creating
 
-    listOf("accessTransformers", "accessTransformersElements").forEach {
-        named(it) { extendsFrom(accessTransformersApi) }
-    }
+    named("accessTransformers") { extendsFrom(accessTransformersApi) }
+    named("accessTransformersElements") { extendsFrom(accessTransformersApi) }
 
-    listOf("interfaceInjectionData", "interfaceInjectionDataElements").forEach {
-        named(it) { extendsFrom(interfaceInjectionDataApi) }
-    }
+    named("interfaceInjectionData") { extendsFrom(interfaceInjectionDataApi) }
+    named("interfaceInjectionDataElements") { extendsFrom(interfaceInjectionDataApi) }
 
     runtimeClasspath.get().extendsFrom(localRuntime)
 }
@@ -26,8 +24,8 @@ dependencies {
     neoforgeProjects.forEach {
         api(it)
         jarJar(it)
-        "accessTransformersApi"(project(it.path, "accessTransformersElements"))
-        "interfaceInjectionDataApi"(project(it.path, "interfaceInjectionDataElements"))
+        "accessTransformersApi"(it)
+        "interfaceInjectionDataApi"(it)
     }
 
     "localRuntime"(repos.modrinth("better-modlist", mod.ver("better_modlist")))

@@ -10,11 +10,11 @@ fletchingTable {
 
 dependencies {
     minecraft("com.mojang:minecraft:${mod.mc}")
-    @Suppress("UnstableApiUsage")
-    mappings(loom.layered {
+    mappings(mapping.layered {
         officialMojangMappings()
         parchment("org.parchmentmc.data:parchment-${mod.mc}:${mod.ver("parchment")}@zip")
     })
+
     modImplementation("net.fabricmc:fabric-loader:${mod.ver("fabric_loader")}")
 
     fapi.embed("fabric-api-base")
@@ -50,7 +50,7 @@ loom {
 tasks.named<ProcessResources>("processResources") {
     if (mod.commonAW.exists()) {
         from(mod.commonAW) {
-            rename(mod.commonAW.name, "${mod.id}_${mod.module}.accesswidener")
+            rename(mod.commonAW.name, "${mod.modulePath}.accesswidener")
         }
     }
 }

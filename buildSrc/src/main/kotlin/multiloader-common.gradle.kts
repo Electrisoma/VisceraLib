@@ -1,22 +1,13 @@
-import org.gradle.accessors.dm.LibrariesForLibs
-
-val libs = the<LibrariesForLibs>()
+val libs = the<org.gradle.accessors.dm.LibrariesForLibs>()
 
 plugins {
     id("java")
     id("java-library")
     id("com.diffplug.spotless")
+    id("com.dorongold.task-tree")
     `maven-publish`
     idea
 }
-
-val moduleParts = listOfNotNull(
-    mod.id,
-    mod.module,
-    mod.suffix,
-    mod.moduleVer
-).filter { it.isNotBlank() }
-val moduleName = moduleParts.joinToString("_")
 
 group = "${mod.group}.${mod.id}"
 version = "${mod.version}+mc${mod.mc}"
@@ -39,7 +30,8 @@ spotless {
         importOrder("net.electrisoma", "net.fabricmc", "net.neoforged", "net.minecraft", "com.mojang", "", "java", "javax")
         leadingSpacesToTabs(4)
 
-        replaceRegex("newline after class opening", "((?:class|interface|enum)\\b[^\\{]*\\{\\n)(?!\\n)", "$1\n")
+        replaceRegex("newline after class-level opening", "^((?:public\\s+)?(?:class|interface|enum)\\b[^\\{]*\\{\\n)(?!\\n)", "$1\n")
+        replaceRegex("newline after inner class-level opening", "^[\t ]{0,4}((?:public|protected|private|static|abstract|\\s)+?(?:class|interface)\\b[^\\{]*\\{\\n)(?!\\n)", "$1\n")
         replaceRegex("class-level javadoc indentation fix", "^\\*", " *")
         replaceRegex("method-level javadoc indentation fix", "\t\\*", "\t *")
     }
@@ -96,11 +88,8 @@ tasks {
     processResources {
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
-        val masterLogo = rootProject.file("branding/logo.png")
-        if (masterLogo.exists()) {
-            from(masterLogo) {
-                into("assets/$moduleName")
-            }
+        rootProject.file("branding/logo.png").takeIf { it.exists() }?.let { logo ->
+            from(logo) { into("assets/${mod.modulePath}") }
         }
 
         filesMatching(listOf("META-INF/neoforge.mods.toml")) {
@@ -120,16 +109,16 @@ tasks {
 
     jar {
         from(rootProject.file("LICENSE")) {
-            rename { "${it}_${mod.name}" }
+            rename { "$it" }
         }
 
         manifest {
             attributes(mapOf(
                 "Fabric-Loom-Remap"      to "true",
-                "Specification-Title"    to mod.name,
+                "Specification-Title"    to mod.displayName,
                 "Specification-Vendor"   to mod.authors,
                 "Specification-Version"  to mod.version,
-                "Implementation-Title"   to name,
+                "Implementation-Title"   to project.name,
                 "Implementation-Version" to mod.version,
                 "Implementation-Vendor"  to mod.authors,
                 "Built-On-Minecraft"     to mod.mc

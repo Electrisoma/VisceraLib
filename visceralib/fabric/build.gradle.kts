@@ -8,22 +8,22 @@ val fabricProjects = finder.dependOn(finder.fabric)
 
 dependencies {
     minecraft("com.mojang:minecraft:${mod.mc}")
-    @Suppress("UnstableApiUsage")
-    mappings(loom.layered {
+    mappings(mapping.layered {
         officialMojangMappings()
         parchment("org.parchmentmc.data:parchment-${mod.mc}:${mod.ver("parchment")}@zip")
     })
-    modImplementation("net.fabricmc:fabric-loader:${mod.ver("fabric_loader")}")
 
-    fapi.runtime("fabric-api-base")
-    fapi.runtime("fabric-data-generation-api-v1")
-    fapi.runtime("fabric-convention-tags-v2")
-    fapi.runtime("fabric-particles-v1")
+    modImplementation("net.fabricmc:fabric-loader:${mod.ver("fabric_loader")}")
 
     fabricProjects.forEach {
         api(project(it.path, "namedElements"))
         include(it)
     }
+
+    fapi.runtime("fabric-api-base")
+    fapi.runtime("fabric-data-generation-api-v1")
+    fapi.runtime("fabric-convention-tags-v2")
+    fapi.runtime("fabric-particles-v1")
 
     modLocalRuntime("com.terraformersmc:modmenu:${mod.ver("modmenu")}")
 

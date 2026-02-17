@@ -6,6 +6,10 @@ plugins {
 
 val commonProjects = finder.dependOn(listOf(project(":visceralib-core-common")))
 
+fletchingTable {
+    j52j.register("main") { extension("json", "**/*.json5") }
+}
+
 loom {
     accessWidenerPath.set(mod.commonAW)
 
@@ -13,10 +17,6 @@ loom {
     rootProject.findProject("${mod.moduleBase}-fabric")?.let {
         fabricModJsonPath.set(it.file("src/main/resources/fabric.mod.json"))
     }
-}
-
-fletchingTable {
-    j52j.register("main") { extension("json", "**/*.json5") }
 }
 
 dependencies {

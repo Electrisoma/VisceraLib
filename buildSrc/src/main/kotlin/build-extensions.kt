@@ -1,14 +1,22 @@
+import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import net.fabricmc.loom.api.fabricapi.FabricApiExtension
+import net.fabricmc.loom.api.mappings.layered.spec.LayeredMappingSpecBuilder
+import net.fabricmc.loom.api.mappings.layered.spec.MojangMappingsSpecBuilder
+import net.fabricmc.loom.api.mappings.layered.spec.ParchmentMappingsSpecBuilder
+import org.gradle.api.Action
 import org.gradle.api.Project
+import org.gradle.api.artifacts.Dependency
+import org.gradle.kotlin.dsl.getByName
 import org.gradle.kotlin.dsl.maven
 import java.io.File
 import java.util.*
 
-val Project.mod    get() = ModData(this)
-val Project.fapi   get() = FabricHelpers(this)
-val Project.props  get() = PropertyManager(this)
-val Project.repos  get() = MavenHelpers(this)
-val Project.finder get() = ProjectFinder(this)
+val Project.mod     get() = ModData(this)
+val Project.fapi    get() = FabricHelpers(this)
+val Project.props   get() = PropertyManager(this)
+val Project.repos   get() = MavenHelpers(this)
+val Project.finder  get() = ProjectFinder(this)
+val Project.mapping get() = MappingManager(this)
 
 class ModData(private val project: Project) {
 
@@ -17,7 +25,12 @@ class ModData(private val project: Project) {
     val version:      String get() = prop("mod_version")
     val group:        String get() = prop("mod_group")
 
-    val module:       String get() = moduleProps.getProperty("module") ?: ""
+    private val moduleList: List<String> get() = moduleProps.getProperty("module")
+        ?.split(Regex("[\\s,_]+"))
+        ?.filter { it.isNotBlank() }
+        ?: emptyList()
+
+    val module:       String get() = moduleList.joinToString("-").lowercase()
     val suffix:       String get() = moduleProps.getProperty("suffix") ?: ""
     val moduleVer:    String get() = moduleProps.getProperty("moduleVer") ?: ""
 
@@ -31,14 +44,25 @@ class ModData(private val project: Project) {
     val minMc:        String get() = prop("min_minecraft_version")
     val java:         String get() = prop("java_version")
 
-    val moduleBase get() = listOfNotNull(id, module, suffix, moduleVer)
-        .filter { it.isNotBlank() }.joinToString("-")
+    val moduleBase get() = moduleParts.joinToString("-")
+    val modulePath get() = moduleParts.joinToString("_")
+
+    val displayName: String get() {
+        val formattedModules = moduleList.joinToString(" ") { it.replaceFirstChar(Char::titlecase) }
+        val formattedSuffix = if (suffix.lowercase() == "api") "API" else suffix.replaceFirstChar(Char::titlecase)
+
+        val mainName = listOfNotNull(name, formattedModules, formattedSuffix)
+            .filter { it.isNotBlank() }
+            .joinToString(" ")
+
+        return if (moduleVer.isNotBlank()) "$mainName ($moduleVer)" else mainName
+    }
 
     val resDir:    File get() = project.projectDir.resolve("src/main/resources")
     val commonRes: File get() = project.project(":$moduleBase-common").projectDir.resolve("src/main/resources")
     val commonAW:  File get() = commonResource("accesswideners/$mc-$moduleBase.accesswidener")
 
-    fun resource(path: String): File = resDir.resolve(path)
+    fun resource(path: String):       File = resDir.resolve(path)
     fun commonResource(path: String): File = commonRes.resolve(path)
 
     fun ver(key: String): String = project.providers.gradleProperty(key).getOrElse("")
@@ -50,6 +74,13 @@ class ModData(private val project: Project) {
         ?: throw IllegalStateException("Property '$key' is missing in gradle.properties")
 
     private val moduleProps by lazy { project.props.load("../module.properties") }
+
+    private val moduleParts: List<String> get() = buildList {
+        add(id)
+        addAll(moduleList)
+        if (suffix.isNotBlank()) add(suffix)
+        if (moduleVer.isNotBlank()) add(moduleVer)
+    }.map { it.lowercase() }
 }
 
 class PropertyManager(private val project: Project) {
@@ -118,4 +149,45 @@ class ProjectFinder(private val project: Project) {
 
     private val vProjects = project.rootProject.childProjects.values
         .filter { it.name.startsWith("visceralib-") && it != project }
+}
+
+class MappingManager(private val project: Project) {
+
+    fun layered(configure: MappingBuilder.() -> Unit): Dependency {
+        val loom = project.extensions.getByName<LoomGradleExtensionAPI>("loom")
+
+        @Suppress("UnstableApiUsage")
+        return loom.layered {
+            val builder = MappingBuilder(this)
+            builder.configure()
+        }
+    }
+}
+
+@Suppress("UnstableApiUsage")
+class MappingBuilder(private val internal: LayeredMappingSpecBuilder) {
+
+    fun officialMojangMappings() {
+        internal.officialMojangMappings()
+    }
+
+    fun officialMojangMappings(action: Action<MojangMappingsSpecBuilder>) {
+        internal.officialMojangMappings(action)
+    }
+
+    fun parchment(notation: Any) {
+        internal.parchment(notation)
+    }
+
+    fun parchment(notation: Any, action: Action<ParchmentMappingsSpecBuilder>) {
+        internal.parchment(notation, action)
+    }
+
+    fun signatureFix(notation: Any) {
+        internal.signatureFix(notation)
+    }
+
+    fun mappings(file: Any) {
+        internal.mappings(file)
+    }
 }

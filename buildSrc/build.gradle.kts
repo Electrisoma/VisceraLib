@@ -16,4 +16,5 @@ dependencies {
     implementation(libs.loom)
     implementation(libs.mdg)
     implementation(libs.spotless)
+    implementation(libs.tasktree)
 }

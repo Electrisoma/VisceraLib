@@ -26,40 +26,15 @@ fun module(name: String) {
     }
 }
 
-module("visceralib")
-module("visceralib-core")
-module("visceralib-datagen-api-v1")
-module("visceralib-item-hooks-v1")
-module("visceralib-registration-api-v1")
-//module("visceralib-modelloader-api-v1") // empty atm
-//module("visceralib-configs-api-v1") //temp
-//module("visceralib-dsp-api-v1")     //temp
-//module("visceralib-networking-api-v1") // networking
-//module("visceralib-ui-api-v1")         // splashes
-
-//fun getVersions(prop: String) = providers.gradleProperty(prop).getOrElse("")
-//    .split(",").map { it.trim() }.filter { it.isNotEmpty() }
-//
-//val dists: Map<String, List<String>> = mapOf(
-//    "common"   to getVersions("stonecutter_enabled_common_versions"),
-//    "fabric"   to getVersions("stonecutter_enabled_fabric_versions"),
-//    "neoforge" to getVersions("stonecutter_enabled_neo_versions")
-//)
-//
-//val allVersions = dists.values.flatten().distinct()
-
-//fun module(name: String) {
-//    include(name)
-//
-//    stonecutter {
-//        kotlinController=true
-//        centralScript="build.gradle.kts"
-//        create(name, Action<TreeBuilder> {
-//            versions(*allVersions.toTypedArray())
-//            dists.forEach { (branch, versions) ->
-//                branch(branch) { versions(*versions.toTypedArray()) }
-//            }
-//            vcsVersion="1.21.1"
-//        })
-//    }
-//}
+module("visceralib")                        // bundle of all modules into 1 project transitively
+//module("visceralib-configs-api-v1")       // config screen helper
+module("visceralib-core")                   // basic infrastructure for all modules
+module("visceralib-datagen-api-v1")         // platform-agnostic data providers
+module("visceralib-dsp-api-v1")             // event-driven digital sound processing effects
+module("visceralib-item-hooks-v1")          // platform-agnostic interface injection based item hooks
+//module("visceralib-model-loading-api-v1") // custom model loading helpers
+//module("visceralib-networking-api-v1")    // packet distribution and creation
+module("visceralib-registration-api-v1")    // deferred registration system
+//module("visceralib-rendering-api-v1")     // rendering helpers and events
+module("visceralib-splashes-v1")            // custom resource pack and event-driven splash texts
+//module("visceralib-ui-api-v1")            // ui modification and screen creation, might merge splashes into this

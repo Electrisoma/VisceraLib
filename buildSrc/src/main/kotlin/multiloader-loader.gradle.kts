@@ -1,5 +1,3 @@
-//import dev.kikugie.stonecutter.Identifier
-
 plugins {
     id("multiloader-common")
 }
@@ -49,18 +47,17 @@ tasks {
 afterEvaluate {
     val loader = props.loader
 
-    val name = mod.module.takeIf { it.isNotBlank() }
-    val suffix = mod.suffix.takeIf { it.isNotBlank() }
-    val ver = mod.moduleVer.takeIf { it.isNotBlank() }
+    val base = listOfNotNull(
+        mod.module.takeIf { it.isNotBlank() },
+        mod.suffix.takeIf { it.isNotBlank() }
+    ).joinToString("-")
 
-    val base = listOfNotNull(name, suffix).joinToString("-")
-    val configLabel = if (ver != null) "$base/$ver" else base
+    val specificPath = listOfNotNull(
+        base.takeIf { it.isNotBlank() },
+        mod.moduleVer.takeIf { it.isNotBlank() }
+    ).joinToString("/")
 
-//    stonecutterBuild.constants.match(
-//        loader as Identifier,
-//        "fabric",
-//        "neoforge"
-//    )
+    val configLabel = specificPath.ifBlank { mod.id }
 
     extensions.findByName("neoForge")?.let {
         configure<net.neoforged.moddevgradle.dsl.NeoForgeExtension> {
