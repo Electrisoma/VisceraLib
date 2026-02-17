@@ -1,0 +1,21 @@
+{
+  "pipeline": [
+    {
+      "type": "chorus",
+      "parameters": {
+        "chorus_rate": 1.1,
+        "chorus_depth": 0.2,
+        "chorus_feedback": 0.1
+      },
+      "wetness": 1.0
+    },
+    {
+      "type": "lowpass",
+      "parameters": {
+        "lowpass_gain": 1.0,
+        "lowpass_gainhf": 0.1
+      },
+      "wetness": 1.0
+    }
+  ]
+}
