@@ -33,6 +33,7 @@ public abstract class ItemEntityMixin extends Entity {
 
 	@Inject(method = "tick", at = @At("HEAD"), cancellable = true)
 	private void viscera$handleCustomEntitySwap(CallbackInfo ci) {
+		//noinspection resource
 		if (this.level().isClientSide || this.isRemoved()) return;
 		if (this.tickCount == 0) {
 			EntityHook hook = this.getItem().getItem();
@@ -42,6 +43,7 @@ public abstract class ItemEntityMixin extends Entity {
 				if (newEntity != null) {
 					newEntity.copyPosition(this);
 					newEntity.setDeltaMovement(this.getDeltaMovement());
+					//noinspection resource
 					this.level().addFreshEntity(newEntity);
 					this.discard();
 					ci.cancel();
