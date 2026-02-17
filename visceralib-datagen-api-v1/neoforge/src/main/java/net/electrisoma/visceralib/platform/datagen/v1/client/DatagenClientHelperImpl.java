@@ -9,7 +9,7 @@ import net.minecraft.tags.TagKey;
 import com.google.auto.service.AutoService;
 
 @AutoService(IDatagenClientHelper.class)
-public class DatagenClientHelperImpl implements IDatagenClientHelper {
+public final class DatagenClientHelperImpl implements IDatagenClientHelper {
 
 	@Override
 	public String getTagTranslationKey(TagKey<?> tagKey) {

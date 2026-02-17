@@ -32,7 +32,11 @@ public abstract class VisceralModelProvider implements DataProvider {
 	private final String modid;
 	private final CompletableFuture<HolderLookup.Provider> lookupProvider;
 
-	public VisceralModelProvider(PackOutput output, String modid, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+	public VisceralModelProvider(
+			PackOutput output,
+			String modid,
+			CompletableFuture<HolderLookup.Provider> lookupProvider
+	) {
 		this.blockStatePathProvider = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "blockstates");
 		this.modelPathProvider = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "models");
 		this.modid = modid;
@@ -44,6 +48,7 @@ public abstract class VisceralModelProvider implements DataProvider {
 	@Override
 	public CompletableFuture<?> run(CachedOutput output) {
 		return this.lookupProvider.thenCompose(lookup -> {
+
 			Map<Block, BlockStateGenerator> blockStates = Maps.newHashMap();
 			Map<ResourceLocation, Supplier<JsonElement>> models = Maps.newHashMap();
 
@@ -72,14 +77,26 @@ public abstract class VisceralModelProvider implements DataProvider {
 		});
 	}
 
-	private <T> CompletableFuture<?> saveCollection(CachedOutput output, Map<T, ? extends Supplier<JsonElement>> map, Function<T, Path> pathResolver) {
+	private <T> CompletableFuture<?> saveCollection(
+			CachedOutput output,
+			Map<T, ? extends Supplier<JsonElement>> map,
+			Function<T, Path> pathResolver
+	) {
 		return CompletableFuture.allOf(map.entrySet().stream()
-				.map(entry -> DataProvider.saveStable(output, entry.getValue().get(), pathResolver.apply(entry.getKey())))
-				.toArray(CompletableFuture[]::new));
+				.map(entry ->
+						DataProvider.saveStable(
+								output,
+								entry.getValue().get(),
+								pathResolver.apply(entry.getKey())
+						))
+				.toArray(CompletableFuture[]::new)
+		);
 	}
 
 	@Override
-	public String getName() { return "VisceralModelProvider: " + modid; }
+	public String getName() {
+		return "VisceralModelProvider: " + modid;
+	}
 
 	public interface VisualModelBuilder {
 
