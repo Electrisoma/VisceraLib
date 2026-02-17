@@ -11,6 +11,10 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+/**
+ * Utility for printing standardized initialization messages during mod entrypoints.
+ * These messages are typically restricted to development environments to keep production logs clean.
+ */
 public class EntrypointMessages {
 
 	private static final Set<Logger> LOGGERS =
@@ -18,6 +22,14 @@ public class EntrypointMessages {
 
 	private EntrypointMessages() {}
 
+	/**
+	 * Prints a common initialization message.
+	 * If on a dedicated server, appends a server-specific initialization confirmation.
+	 *
+	 * @param logger the logger to use for output.
+	 * @param id     the mod ID to look up version info.
+	 * @param name   the human-readable name of the mod.
+	 */
 	public static void onCommon(Logger logger, String id, String name) {
 		if (!IPlatformHelper.INSTANCE.isDev()) return;
 
@@ -28,6 +40,13 @@ public class EntrypointMessages {
 		);
 	}
 
+	/**
+	 * Prints a client-specific initialization message.
+	 *
+	 * @param logger the logger to use for output.
+	 * @param id     the mod ID to look up version info.
+	 * @param name   the human-readable name of the mod.
+	 */
 	public static void onClient(Logger logger, String id, String name) {
 		if (!IPlatformHelper.INSTANCE.isDev()) return;
 
@@ -38,6 +57,10 @@ public class EntrypointMessages {
 		);
 	}
 
+	/**
+	 * Prints the mod's version, platform, and Minecraft version.
+	 * This will only print once per unique Logger instance.
+	 */
 	private static void printVersionHeader(Logger logger, String id, String name) {
 		if (LOGGERS.add(logger)) {
 			logger.info("{} {}: v{} for mc{}",

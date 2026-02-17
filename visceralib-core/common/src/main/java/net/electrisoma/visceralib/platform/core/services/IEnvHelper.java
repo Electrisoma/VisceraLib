@@ -12,7 +12,6 @@ public interface IEnvHelper {
 	 * Represents the physical distribution of the game.
 	 */
 	enum EnvironmentEnum {
-
 		CLIENT,
 		SERVER
 	}

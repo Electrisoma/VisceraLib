@@ -14,14 +14,6 @@ issueTrackerURL="${github}/issues"
     logoBlur=false
     displayURL="${github}"
 
-[[mixins]]
-    config="mixins/visceralib_core-common.mixins.json"
-[[mixins]]
-    config="mixins/visceralib_core-neoforge.mixins.json"
-[[mixins]]
-    config="mixins/visceralib_core-common.client.mixins.json"
-[[mixins]]
-    config="mixins/visceralib_core-neoforge.client.mixins.json"
 [[accessTransformers]]
     file="META-INF/accesstransformer.cfg"
 

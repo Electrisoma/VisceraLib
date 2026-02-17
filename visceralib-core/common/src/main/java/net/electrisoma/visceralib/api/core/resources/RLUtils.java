@@ -2,6 +2,10 @@ package net.electrisoma.visceralib.api.core.resources;
 
 import net.minecraft.resources.ResourceLocation;
 
+/**
+ * Shorthand utilities for working with {@link ResourceLocation} instances.
+ * Provides cleaner syntax for creating mod-specific and vanilla Minecraft identifiers.
+ */
 public class RLUtils {
 
 	/**
@@ -26,6 +30,13 @@ public class RLUtils {
 		return ResourceLocation.withDefaultNamespace(path);
 	}
 
+	/**
+	 * Safely retrieves the path from a {@link ResourceLocation}.
+	 *
+	 * @param location     the resource location to query (can be null).
+	 * @param defaultValue the value to return if the location is null.
+	 * @return The path string of the location, or the default value.
+	 */
 	public static String getPathOrDefault(ResourceLocation location, String defaultValue) {
 		return location == null ? defaultValue : location.getPath();
 	}

@@ -14,10 +14,8 @@ public interface IPlatformHelper {
 	 * Supported modding platforms.
 	 */
 	enum PlatformEnum {
-
 		NEOFORGE,
-		FABRIC,
-		FORGE
+		FABRIC
 	}
 
 	/**

@@ -6,9 +6,12 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+/**
+ * Utility class for common string manipulations and case conversions.
+ */
 public class TextUtils {
 
-	// "camelCase"
+	/** "camelCase" */
 	public static String toCamelCase(String text) {
 		String[] words = splitWords(text);
 		return words.length != 0 ? IntStream
@@ -17,76 +20,83 @@ public class TextUtils {
 				.collect(Collectors.joining("", words[0].toLowerCase(Locale.ROOT), "")) : "";
 	}
 
+	/** "camelCase" with smart word boundary detection */
 	public static String toSmartCamelCase(String text) {
 		return toCamelCase(smartSplit(text));
 	}
 
-	// "PascalCase"
+	/** "PascalCase" */
 	public static String toPascalCase(String text) {
 		return Arrays.stream(splitWords(text))
 				.map(TextUtils::capitalize)
 				.collect(Collectors.joining());
 	}
 
+	/** "PascalCase" with smart word boundary detection */
 	public static String toSmartPascalCase(String text) {
 		return toPascalCase(smartSplit(text));
 	}
 
-	// "snake_case"
+	/** "snake_case" */
 	public static String toSnakeCase(String text) {
 		return String.join("_", splitWords(text)).toLowerCase(Locale.ROOT);
 	}
 
+	/** "snake_case" with smart word boundary detection */
 	public static String toSmartSnakeCase(String text) {
 		return toSnakeCase(smartSplit(text));
 	}
 
-	// "kebab-case"
+	/** "kebab-case" */
 	public static String toKebabCase(String text) {
 		return String.join("-", splitWords(text)).toLowerCase(Locale.ROOT);
 	}
 
+	/** "kebab-case" with smart word boundary detection */
 	public static String toSmartKebabCase(String text) {
 		return toKebabCase(smartSplit(text));
 	}
 
-	// "SCREAMING-SNAKE-CASE"
+	/** "SCREAMING-SNAKE-CASE" */
 	public static String toScreamingSnakeCase(String text) {
 		return String.join("_", splitWords(text)).toUpperCase(Locale.ROOT);
 	}
 
+	/** "SCREAMING-SNAKE-CASE" with smart word boundary detection */
 	public static String toSmartScreamingSnakeCase(String text) {
 		return toScreamingSnakeCase(smartSplit(text));
 	}
 
-	// "Train-Case"
+	/** "Train-Case" */
 	public static String toTrainCase(String text) {
 		return Arrays.stream(splitWords(text))
 				.map(TextUtils::capitalize)
 				.collect(Collectors.joining("-"));
 	}
 
+	/** "Train-Case" with smart word boundary detection */
 	public static String toSmartTrainCase(String text) {
 		return toTrainCase(smartSplit(text));
 	}
 
-	// "Title Case"
+	/** "Title Case" */
 	public static String toTitleCase(String text) {
 		return Arrays.stream(splitWords(text))
 				.map(TextUtils::capitalize)
 				.collect(Collectors.joining(" "));
 	}
 
+	/** "Title Case" with smart word boundary detection */
 	public static String toSmartTitleCase(String text) {
 		return toTitleCase(smartSplit(text));
 	}
 
-	// "UPPER CASE"
+	/** "UPPER CASE" */
 	public static String toUpperCase(String text) {
 		return nonNull(text).toUpperCase(Locale.ROOT);
 	}
 
-	// "ndsᴉp pown"
+	/** "ndsᴉp pown" */
 	public static String toUpsideDown(String text) {
 		String input = nonNull(text);
 		String normal = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.,'?!_;";
@@ -101,24 +111,26 @@ public class TextUtils {
 		return sb.toString();
 	}
 
-	// abbreviates text
+	/** abbreviates text */
 	public static String abbreviate(String text, int maxLength) {
 		String input = nonNull(text);
 		return input.length() <= maxLength ? input :
 				input.substring(0, Math.max(0, maxLength - 3)) + "...";
 	}
 
-	// simplifies text to be single-spaced
+	/** simplifies text to be single-spaced */
 	public static String simplify(String text) {
 		return nonNull(text).trim().replaceAll("\\s+", " ");
 	}
 
+	/** strips Minecraft §-style and {@code <tag>}-style formatting */
 	public static String stripFormatting(String text) {
 		return nonNull(text)
 				.replaceAll("§[0-9a-fk-orA-FK-ORxX]", "")
 				.replaceAll("<[^>]*>", "");
 	}
 
+	/** splits text into individual words based on case changes, underscores, or hyphens */
 	private static String[] splitWords(String text) {
 		return nonNull(text)
 				.replaceAll("([a-z])([A-Z])", "$1 $2")
@@ -148,12 +160,14 @@ public class TextUtils {
 				input.substring(0, pivot) + " " + input.substring(pivot) : input;
 	}
 
+	/** capitalizes the first letter and lowercases the rest */
 	private static String capitalize(String text) {
 		return text.isEmpty() ? "" :
 				text.substring(0, 1).toUpperCase(Locale.ROOT) +
 				text.substring(1).toLowerCase(Locale.ROOT);
 	}
 
+	/** returns an empty string if the input is null */
 	private static String nonNull(String text) {
 		return text == null ? "" : text;
 	}

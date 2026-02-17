@@ -6,6 +6,14 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 import java.util.ServiceLoader;
 
+/**
+ * A bridge utility for multi-loader platform abstraction using the Java Service Provider Interface (SPI).
+ * <p>
+ * This class allows the common module to access platform-specific implementations (Fabric/NeoForge)
+ * without having a direct dependency on loader-specific code.
+ * <p>
+ * Implementations must be defined in {@code META-INF/services/}.
+ */
 public class ServiceHelper {
 
 	private static final Logger LOG = LoggerFactory.getLogger("VisceraLib/ServiceHelper");

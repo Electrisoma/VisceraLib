@@ -19,12 +19,6 @@
     "client": [ "net.electrisoma.visceralib.impl.core.client.ClientEntrypointFabric" ],
     "modmenu": [ "net.electrisoma.visceralib.impl.core.client.ModMenuImpl" ]
   },
-  "mixins": [
-    "mixins/visceralib_core-common.mixins.json",
-    "mixins/visceralib_core-fabric.mixins.json",
-    "mixins/visceralib_core-common.client.mixins.json",
-    "mixins/visceralib_core-fabric.client.mixins.json"
-  ],
   "depends": {
     "fabric-api-base": "*",
     "fabricloader": ">=${fabric}",
