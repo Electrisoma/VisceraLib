@@ -9,7 +9,7 @@ import com.google.auto.service.AutoService;
 import java.util.function.Consumer;
 
 @AutoService(ITabHelper.class)
-public class TabHelperImpl implements ITabHelper {
+public final class TabHelperImpl implements ITabHelper {
 
 	@Override
 	public CreativeModeTab create(Consumer<CreativeModeTab.Builder> builderConfig) {

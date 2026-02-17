@@ -22,6 +22,7 @@ public abstract class EntityFluidPhysicsMixin {
 	@Inject(method = "updateInWaterStateAndDoFluidPushing", at = @At("RETURN"), cancellable = true)
 	private void visceral$handleCustomFluidBuoyancy(CallbackInfoReturnable<Boolean> cir) {
 		Entity self = (Entity) (Object) this;
+		//noinspection resource
 		FluidState state = self.level().getFluidState(self.blockPosition());
 
 		if (state.getType() instanceof VisceralFluid vf) {

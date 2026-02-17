@@ -19,7 +19,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 @AutoService(ITabHelper.class)
-public class TabHelperImpl implements ITabHelper {
+public final class TabHelperImpl implements ITabHelper {
 
 	@Override
 	public CreativeModeTab create(Consumer<CreativeModeTab.Builder> builderConfig) {

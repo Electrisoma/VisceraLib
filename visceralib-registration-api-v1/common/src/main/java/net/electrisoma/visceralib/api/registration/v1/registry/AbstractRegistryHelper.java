@@ -81,13 +81,13 @@ public abstract class AbstractRegistryHelper {
 	}
 
 	/** Registers a new custom static registry with default settings. */
-	public <T> Registry<T> newStaticRegistry(ResourceKey<Registry<T>> key) {
-		return this.registry.newStaticRegistry(key, VisceralRegistrySettings.DEFAULT);
+	public <T> void newStaticRegistry(ResourceKey<Registry<T>> key, Consumer<Registry<T>> onCreated) {
+		this.newStaticRegistry(key, VisceralRegistrySettings.DEFAULT, onCreated);
 	}
 
 	/** Registers a new custom static registry with specific settings. */
-	public <T> Registry<T> newStaticRegistry(ResourceKey<Registry<T>> key, VisceralRegistrySettings settings) {
-		return this.registry.newStaticRegistry(key, settings);
+	public <T> void newStaticRegistry(ResourceKey<Registry<T>> key, VisceralRegistrySettings settings, Consumer<Registry<T>> onCreated) {
+		this.registry.newStaticRegistry(key, settings, onCreated);
 	}
 
 	/** Registers a new dynamic registry. */

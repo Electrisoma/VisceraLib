@@ -6,13 +6,12 @@ import net.electrisoma.visceralib.platform.core.services.IEnvHelper.EnvironmentE
 
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 
 @Mod(value = Constants.MOD_ID, dist = Dist.CLIENT)
 public class ClientEntrypointNeoForge {
 
-	public ClientEntrypointNeoForge(IEventBus modEventBus, ModContainer modContainer) {
+	public ClientEntrypointNeoForge(IEventBus modEventBus) {
 		IEnvHelper.INSTANCE.runIfCurrent(EnvironmentEnum.CLIENT, ClientEntrypoint::init);
 	}
 }

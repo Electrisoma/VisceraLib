@@ -18,8 +18,8 @@ public class Constants {
     public static final String MOD_ID = "my_mod";
 
     // Initialize the helper once
-    public static final VisceralRegistrationHelper REGISTRY =
-            VisceralRegistrationHelper.of(MOD_ID);
+    public static final VisceralRegistryHelper REGISTRY =
+            VisceralRegistryHelper.of(MOD_ID);
 }
 ```
 
@@ -27,7 +27,7 @@ public class Constants {
 ```java
 public class ModItems {
 
-    public static final VisceralRegistrationHelper REGISTRY = Constants.REGISTRY;
+    public static final VisceralRegistryHelper REGISTRY = Constants.REGISTRY;
 
     public static RegistryObject<Item> MY_ITEM = REGISTRY.item(
             "my_item",
@@ -50,20 +50,20 @@ public class ModItems {
 
 ### 2. Advanced: Fluent Builders
 
-If you require more flexibility you can extend `AbstractRegistrationHelper` 
+If you require more flexibility you can extend `AbstractRegistryHelper` 
 to provide more specific helpers.
 
-In our case we'll be setting up fluent builders by extending `AbstractRegistrationHelper`
+In our case we'll be setting up fluent builders by extending `AbstractRegistryHelper`
 to return custom builders instead of raw RegistryObjects.
 
 #### Creating a Custom Helper
 ```java
-public class MyRegistrationHelper extends AbstractRegistrationHelper<MyRegistrationHelper> {
+public class MyRegistryHelper extends AbstractRegistryHelper {
 
     // ... constructor and of() method ...
 
     // Returns a builder instead of a RegistryObject immediately    
-    public <T extends Item> ItemBuilder<T, TestRegistrationHelper> item(
+    public <T extends Item> ItemBuilder<T, MyRegistryHelper> item(
             String name,
             Function<Item.Properties, T> factory
     ) {
@@ -76,7 +76,7 @@ public class MyRegistrationHelper extends AbstractRegistrationHelper<MyRegistrat
 The builder captures configurations (like properties) 
 and defers the actual registration until `register()` is called.
 ```java
-public class ItemBuilder<T extends Item, H extends AbstractRegistrationHelper<?>> {
+public class ItemBuilder<T extends Item, H extends AbstractRegistryHelper> {
 
     private final H helper;
     private final String name;
@@ -107,7 +107,7 @@ Now with this new builder style registration helper we can revisit our item regi
 ```java
 public class ModItems {
 
-    public static final MyRegistrationHelper REGISTRY = Constants.REGISTRY;
+    public static final MyRegistryHelper REGISTRY = Constants.REGISTRY;
 
     public static RegistryObject<Item> MY_ITEM = REGISTRY
             .item("my_item", Item::new)

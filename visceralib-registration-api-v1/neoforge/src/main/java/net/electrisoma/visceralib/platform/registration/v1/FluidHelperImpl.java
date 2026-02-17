@@ -13,7 +13,7 @@ import net.minecraft.sounds.SoundEvents;
 import com.google.auto.service.AutoService;
 
 @AutoService(IFluidHelper.class)
-public class FluidHelperImpl implements IFluidHelper {
+public final class FluidHelperImpl implements IFluidHelper {
 
 	@Override
 	public void registerFluidType(String name, VisceralFluidAttributes attributes, VisceralRegistry registry) {

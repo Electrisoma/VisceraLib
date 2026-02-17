@@ -4,8 +4,7 @@ import net.electrisoma.visceralib.api.core.resources.RLUtils;
 import net.electrisoma.visceralib.api.registration.v1.registry.register.custom.VisceralRegistrySettings;
 import net.electrisoma.visceralib.mixin.registration.v1.accessor.Holder$ReferenceAccessor;
 import net.electrisoma.visceralib.platform.core.services.IPlatformHelper;
-import net.electrisoma.visceralib.platform.registration.v1.services.IDynamicRegistryHelper;
-import net.electrisoma.visceralib.platform.registration.v1.services.INewRegistryHelper;
+import net.electrisoma.visceralib.platform.registration.v1.services.event.common.VisceraLibRegistrationEvents;
 
 import net.minecraft.core.HolderOwner;
 import net.minecraft.core.Registry;
@@ -25,6 +24,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -71,7 +71,7 @@ public record VisceralRegistry(String modId) {
 	}
 
 	/**
-	 * Helper method to capture registry wildcards and create type-safe holders.
+	 * Helper method to capture registry wildcards and register type-safe holders.
 	 */
 	private <R, T extends R> RegistryObject<T> internalRegister(
 			Registry<R> registry,
@@ -107,13 +107,26 @@ public record VisceralRegistry(String modId) {
 	}
 
 	/** Creates a new static registry. */
-	public <T> Registry<T> newStaticRegistry(ResourceKey<Registry<T>> key, VisceralRegistrySettings settings) {
-		return INewRegistryHelper.INSTANCE.createCustomRegistry(key, settings);
+	public <T> void newStaticRegistry(
+			ResourceKey<Registry<T>> key,
+			VisceralRegistrySettings settings,
+			Consumer<Registry<T>> onCreated
+	) {
+		VisceraLibRegistrationEvents.INSTANCE.registerStaticRegistries(registrar -> {
+			Registry<T> registry = registrar.register(key, settings);
+			onCreated.accept(registry);
+		});
 	}
 
 	/** Creates a new dynamic registry */
-	public <T> void newDynamicRegistry(ResourceKey<Registry<T>> key, Codec<T> codec, @Nullable Codec<T> networkCodec) {
-		IDynamicRegistryHelper.INSTANCE.registerDataPackRegistry(key, codec, networkCodec);
+	public <T> void newDynamicRegistry(
+			ResourceKey<Registry<T>> key,
+			Codec<T> codec,
+			@Nullable Codec<T> networkCodec
+	) {
+		VisceraLibRegistrationEvents.INSTANCE.registerDynamicRegistries(registrar ->
+			registrar.register(key, codec, networkCodec)
+		);
 	}
 
 	/**
