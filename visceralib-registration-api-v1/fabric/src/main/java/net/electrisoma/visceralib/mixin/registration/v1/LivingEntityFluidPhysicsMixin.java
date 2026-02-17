@@ -16,6 +16,7 @@ public abstract class LivingEntityFluidPhysicsMixin {
 	@ModifyVariable(method = "travel", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/LivingEntity;isInWater()Z"), ordinal = 0)
 	private double visceral$applyFluidViscosity(double speed) {
 		LivingEntity self = (LivingEntity) (Object) this;
+		//noinspection resource
 		FluidState state = self.level().getFluidState(self.blockPosition());
 
 		if (state.getType() instanceof VisceralFluid vf) {
