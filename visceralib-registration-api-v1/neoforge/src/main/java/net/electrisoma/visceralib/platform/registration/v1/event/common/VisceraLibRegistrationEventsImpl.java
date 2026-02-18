@@ -1,8 +1,6 @@
 package net.electrisoma.visceralib.platform.registration.v1.event.common;
 
 import net.electrisoma.visceralib.api.registration.v1.registry.register.custom.VisceralRegistrySettings;
-import net.electrisoma.visceralib.event.registration.v1.common.CreativeTabRegistrar;
-import net.electrisoma.visceralib.event.registration.v1.common.DynamicRegistryRegistrar;
 import net.electrisoma.visceralib.event.registration.v1.common.StaticRegistryRegistrar;
 import net.electrisoma.visceralib.event.registration.v1.common.VisceralRegistrationHooks;
 import net.electrisoma.visceralib.platform.core.services.IPlatformHelper;
@@ -19,8 +17,6 @@ import net.minecraft.resources.ResourceKey;
 
 import com.google.auto.service.AutoService;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Consumer;
 
 @AutoService(VisceraLibRegistrationEvents.class)

@@ -39,8 +39,7 @@ public class VisceralSplashStorage {
 		activePrioritySplash = null;
 		STYLE.reset();
 
-		VisceralSplashEvent.Context context = new SplashEventImpl(rm, STYLE, pool,
-				s -> activePrioritySplash = s);
+		VisceralSplashEvent.Context context = new SplashEventImpl(rm, STYLE, pool, s -> activePrioritySplash = s);
 
 		VisceraLibSplashesClientEvents.INSTANCE.postSplashPre(context);
 

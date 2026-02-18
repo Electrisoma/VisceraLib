@@ -4,21 +4,21 @@ public final class VisceralRegistrationHooks {
 
     private VisceralRegistrationHooks() {}
 
-    @FunctionalInterface
-    public interface Static {
+	@FunctionalInterface
+	public interface Static {
 
-        void onRegister(StaticRegistryRegistrar registrar);
-    }
+		void onRegister(StaticRegistryRegistrar registrar);
+	}
 
-    @FunctionalInterface
-    public interface Dynamic {
+	@FunctionalInterface
+	public interface Dynamic {
 
-        void onRegister(DynamicRegistryRegistrar registrar);
-    }
+		void onRegister(DynamicRegistryRegistrar registrar);
+	}
 
-    @FunctionalInterface
-    public interface CreativeTab {
+	@FunctionalInterface
+	public interface CreativeTab {
 
-        void onModify(CreativeTabRegistrar registrar);
-    }
+		void onModify(CreativeTabRegistrar registrar);
+	}
 }

@@ -13,7 +13,6 @@ import net.minecraft.core.particles.ParticleType;
 
 import com.google.auto.service.AutoService;
 
-import java.util.function.Consumer;
 
 @AutoService(VisceraLibRegistrationClientEvents.class)
 public final class VisceraLibRegistrationClientEventsImpl implements VisceraLibRegistrationClientEvents {
