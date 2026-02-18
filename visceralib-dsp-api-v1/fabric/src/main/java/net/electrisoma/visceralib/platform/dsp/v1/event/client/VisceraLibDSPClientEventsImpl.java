@@ -1,7 +1,7 @@
 package net.electrisoma.visceralib.platform.dsp.v1.event.client;
 
-import net.electrisoma.visceralib.event.dsp.v1.client.AudioEffectPipelineEventFabric;
-import net.electrisoma.visceralib.event.dsp.v1.client.VisceralAudioEffectPipelineEvent;
+import net.electrisoma.visceralib.event.dsp.v1.client.DSPPipelineDefinition;
+import net.electrisoma.visceralib.event.dsp.v1.client.DSPPipelineEventFabric;
 import net.electrisoma.visceralib.platform.dsp.v1.services.event.client.VisceraLibDSPClientEvents;
 
 import com.google.auto.service.AutoService;
@@ -10,12 +10,12 @@ import com.google.auto.service.AutoService;
 public final class VisceraLibDSPClientEventsImpl implements VisceraLibDSPClientEvents {
 
 	@Override
-	public void registerPipelineProvider(VisceralAudioEffectPipelineEvent.Hook h) {
-		AudioEffectPipelineEventFabric.EVENT.register(h);
+	public void registerPipelineProvider(DSPPipelineDefinition.Listener h) {
+		DSPPipelineEventFabric.EVENT.register(h);
 	}
 
 	@Override
-	public void postPipelineEvent(VisceralAudioEffectPipelineEvent.Context context) {
-		AudioEffectPipelineEventFabric.EVENT.invoker().onAudioEffectPipeline(context);
+	public void postPipelineEvent(DSPPipelineDefinition.Context context) {
+		DSPPipelineEventFabric.EVENT.invoker().onApply(context);
 	}
 }

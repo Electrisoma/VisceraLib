@@ -1,7 +1,7 @@
 package net.electrisoma.visceralib.impl.dsp.v1.client;
 
 import net.electrisoma.visceralib.api.core.resources.RLUtils;
-import net.electrisoma.visceralib.api.dsp.v1.AudioFilterLoader;
+import net.electrisoma.visceralib.api.dsp.v1.DSPPipelineReloadListener;
 import net.electrisoma.visceralib.impl.dsp.v1.Constants;
 import net.electrisoma.visceralib.platform.core.services.IEnvHelper;
 import net.electrisoma.visceralib.platform.core.services.IEnvHelper.EnvironmentEnum;
@@ -31,11 +31,11 @@ public final class ClientEntrypointFabric implements ClientModInitializer {
 	private void onRegisterReloadListeners() {
 		ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new IdentifiableResourceReloadListener() {
 
-			private final AudioFilterLoader loader = new AudioFilterLoader();
+			private final DSPPipelineReloadListener loader = new DSPPipelineReloadListener();
 
 			@Override
 			public ResourceLocation getFabricId() {
-				return RLUtils.path(Constants.MOD_ID, "audio_filters");
+				return RLUtils.path(Constants.MOD_ID, DSPPipelineReloadListener.DIR);
 			}
 
 			@Override

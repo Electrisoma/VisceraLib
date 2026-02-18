@@ -9,36 +9,36 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
-public class AudioEffectPipelineEventNeoForge extends Event implements VisceralAudioEffectPipelineEvent.Context {
+public class DSPPipelineEventNeoForge extends Event implements DSPPipelineDefinition.Context {
 
-	private final VisceralAudioEffectPipelineEvent.Context delegate;
+	private final DSPPipelineDefinition.Context context;
 
-	public AudioEffectPipelineEventNeoForge(VisceralAudioEffectPipelineEvent.Context delegate) {
-		this.delegate = delegate;
+	public DSPPipelineEventNeoForge(DSPPipelineDefinition.Context context) {
+		this.context = context;
 	}
 
 	@Override
 	public SoundInstance getSound() {
-		return delegate.getSound();
+		return context.getSound();
 	}
 
 	@Override
 	public LocalPlayer getPlayer() {
-		return delegate.getPlayer();
+		return context.getPlayer();
 	}
 
 	@Override
 	public ClientLevel getLevel() {
-		return delegate.getLevel();
+		return context.getLevel();
 	}
 
 	@Override
 	public void addPipeline(ResourceLocation id, float wetness, float width, boolean global) {
-		delegate.addPipeline(id, wetness, width, global);
+		context.addPipeline(id, wetness, width, global);
 	}
 
 	@Override
 	public List<AppliedChain> getAppliedChains() {
-		return delegate.getAppliedChains();
+		return context.getAppliedChains();
 	}
 }

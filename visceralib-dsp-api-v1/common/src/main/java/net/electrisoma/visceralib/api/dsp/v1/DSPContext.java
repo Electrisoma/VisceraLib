@@ -1,6 +1,6 @@
 package net.electrisoma.visceralib.api.dsp.v1;
 
-import net.electrisoma.visceralib.event.dsp.v1.client.VisceralAudioEffectPipelineEvent;
+import net.electrisoma.visceralib.event.dsp.v1.client.DSPPipelineDefinition;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
@@ -10,14 +10,14 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AudioFilterContext implements VisceralAudioEffectPipelineEvent.Context {
+public class DSPContext implements DSPPipelineDefinition.Context {
 
 	private final SoundInstance sound;
 	private final LocalPlayer player;
 	private final ClientLevel level;
-	private final List<VisceralAudioEffectPipelineEvent.Context.AppliedChain> pipeline = new ArrayList<>();
+	private final List<AppliedChain> pipeline = new ArrayList<>();
 
-	public AudioFilterContext(SoundInstance sound, LocalPlayer player, ClientLevel level) {
+	public DSPContext(SoundInstance sound, LocalPlayer player, ClientLevel level) {
 		this.sound = sound;
 		this.player = player;
 		this.level = level;
@@ -40,11 +40,11 @@ public class AudioFilterContext implements VisceralAudioEffectPipelineEvent.Cont
 
 	@Override
 	public void addPipeline(ResourceLocation id, float wetness, float width, boolean global) {
-		pipeline.add(new VisceralAudioEffectPipelineEvent.Context.AppliedChain(id, wetness, width, global));
+		pipeline.add(new DSPPipelineDefinition.Context.AppliedChain(id, wetness, width, global));
 	}
 
 	@Override
-	public List<VisceralAudioEffectPipelineEvent.Context.AppliedChain> getAppliedChains() {
+	public List<DSPPipelineDefinition.Context.AppliedChain> getAppliedChains() {
 		return pipeline;
 	}
 }

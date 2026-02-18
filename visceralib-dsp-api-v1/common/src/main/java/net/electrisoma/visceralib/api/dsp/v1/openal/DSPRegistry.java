@@ -1,108 +1,36 @@
-package net.electrisoma.visceralib.api.dsp.v1;
+package net.electrisoma.visceralib.api.dsp.v1.openal;
+
+import net.electrisoma.visceralib.api.dsp.v1.data.DSPProcessor;
 
 import net.minecraft.resources.ResourceLocation;
 
-import org.lwjgl.openal.AL10;
-import org.lwjgl.openal.ALC;
-import org.lwjgl.openal.ALC10;
 import org.lwjgl.openal.EXTEfx;
-import org.lwjgl.system.MemoryStack;
 
-import java.nio.IntBuffer;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
-public class AudioFilterManager {
+public class DSPRegistry {
 
-	private static final Map<ResourceLocation, AudioFilter> LOADED_TEMPLATES = new HashMap<>();
+	private static final Map<ResourceLocation, DSPProcessor> TEMPLATES = new HashMap<>();
 	private static final Map<String, Integer> PARAM_MAP = new HashMap<>();
 
-	private static final Stack<Integer> FILTER_POOL = new Stack<>();
-	private static final Stack<Integer> EFFECT_POOL = new Stack<>();
-	private static final Stack<Integer> SLOT_POOL = new Stack<>();
+	public record TypeResult(int id, boolean isEffect) {}
 
-	private static int maxSends = 1;
-	private static boolean initialized = false;
-
-	public static void reinitialize(Map<ResourceLocation, AudioFilter> filters) {
-		dispose();
-		if (!checkEfxSupport()) return;
-
-		maxSends = queryMaxSends();
-		LOADED_TEMPLATES.putAll(filters);
-		initialized = true;
+	public static void updateTemplates(Map<ResourceLocation, DSPProcessor> newTemplates) {
+		TEMPLATES.clear();
+		TEMPLATES.putAll(newTemplates);
 	}
 
-	public static AudioFilter getTemplate(ResourceLocation loc) {
-		return LOADED_TEMPLATES.get(loc);
-	}
-
-	public static int acquireFilter(int type) {
-		int id = FILTER_POOL.isEmpty() ? EXTEfx.alGenFilters() : FILTER_POOL.pop();
-		EXTEfx.alFilteri(id, EXTEfx.AL_FILTER_TYPE, type);
-		return id;
-	}
-
-	public static int acquireEffect(int type) {
-		int id = EFFECT_POOL.isEmpty() ? EXTEfx.alGenEffects() : EFFECT_POOL.pop();
-		EXTEfx.alEffecti(id, EXTEfx.AL_EFFECT_TYPE, type);
-		return id;
-	}
-
-	public static int acquireSlot() {
-		return SLOT_POOL.isEmpty() ? EXTEfx.alGenAuxiliaryEffectSlots() : SLOT_POOL.pop();
-	}
-
-	public static void releaseFilter(int id) {
-		if (id != AL10.AL_NONE) FILTER_POOL.push(id);
-	}
-
-	public static void releaseEffect(int id) {
-		if (id != AL10.AL_NONE) EFFECT_POOL.push(id);
-	}
-
-	public static void releaseSlot(int id) {
-		if (id != AL10.AL_NONE) {
-			EXTEfx.alAuxiliaryEffectSloti(id, EXTEfx.AL_EFFECTSLOT_EFFECT, EXTEfx.AL_EFFECT_NULL);
-			SLOT_POOL.push(id);
-		}
-	}
-
-	private static int queryMaxSends() {
-		try (MemoryStack stack = MemoryStack.stackPush()) {
-			IntBuffer sends = stack.mallocInt(1);
-			ALC10.alcGetIntegerv(ALC10.alcGetContextsDevice(ALC10.alcGetCurrentContext()), EXTEfx.ALC_MAX_AUXILIARY_SENDS, sends);
-			return sends.get(0);
-		}
-	}
-
-	private static boolean checkEfxSupport() {
-		long device = ALC10.alcGetContextsDevice(ALC10.alcGetCurrentContext());
-		return device != 0 && ALC.getCapabilities().ALC_EXT_EFX;
-	}
-
-	public static int getMaxSends() {
-		return maxSends;
-	}
-
-	public static void dispose() {
-		if (!initialized) return;
-
-		LOADED_TEMPLATES.clear();
-
-		while (!FILTER_POOL.isEmpty()) EXTEfx.alDeleteFilters(FILTER_POOL.pop());
-		while (!EFFECT_POOL.isEmpty()) EXTEfx.alDeleteEffects(EFFECT_POOL.pop());
-		while (!SLOT_POOL.isEmpty()) EXTEfx.alDeleteAuxiliaryEffectSlots(SLOT_POOL.pop());
-
-		initialized = false;
+	public static DSPProcessor getTemplate(ResourceLocation loc) {
+		return TEMPLATES.get(loc);
 	}
 
 	public static int getParamKey(String name) {
 		return PARAM_MAP.getOrDefault(name.toLowerCase(Locale.ROOT), 0);
 	}
 
-	public record TypeResult(int id, boolean isEffect) {}
-
-	public static TypeResult resolve(String typeName) {
+	public static TypeResult resolveType(String typeName) {
 		String name = typeName.toLowerCase(Locale.ROOT);
 		int effectId = switch (name) {
 			case "reverb" -> EXTEfx.AL_EFFECT_REVERB;
@@ -133,6 +61,7 @@ public class AudioFilterManager {
 	}
 
 	static {
+
 		// Reverb
 		PARAM_MAP.put("reverb_density", EXTEfx.AL_REVERB_DENSITY);
 		PARAM_MAP.put("reverb_diffusion", EXTEfx.AL_REVERB_DIFFUSION);

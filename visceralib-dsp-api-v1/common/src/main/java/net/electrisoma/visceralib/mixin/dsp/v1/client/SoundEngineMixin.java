@@ -1,8 +1,10 @@
 package net.electrisoma.visceralib.mixin.dsp.v1.client;
 
-import net.electrisoma.visceralib.api.dsp.v1.AudioFilterHandler;
-import net.electrisoma.visceralib.api.dsp.v1.AudioFilterLoader;
-import net.electrisoma.visceralib.api.dsp.v1.AudioFilterManager;
+import net.electrisoma.visceralib.api.dsp.v1.DSPHandler;
+import net.electrisoma.visceralib.api.dsp.v1.data.DSPProcessor;
+import net.electrisoma.visceralib.api.dsp.v1.openal.DSPManager;
+import net.electrisoma.visceralib.api.dsp.v1.openal.DSPRegistry;
+import net.electrisoma.visceralib.api.dsp.v1.openal.DSPResource;
 import net.electrisoma.visceralib.mixin.dsp.v1.client.accessor.ChannelAccessor;
 
 import net.minecraft.client.resources.sounds.SoundInstance;
@@ -31,14 +33,14 @@ import java.util.function.Consumer;
 public abstract class SoundEngineMixin {
 
 	@Unique
-	private final static Logger LOG = LoggerFactory.getLogger("VisceraLibAudioEffectsPipeline/SoundEngineMixin");
+	private final static Logger LOG = LoggerFactory.getLogger("VisceraLib/SoundEngineMixin");
 
 	@Inject(
 			method = "loadLibrary",
 			at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/audio/Listener;reset()V")
 	)
 	private void initAudioFilters(CallbackInfo ci) {
-		AudioFilterManager.reinitialize(AudioFilterLoader.getFilters());
+		DSPManager.reinitialize();
 	}
 
 	@Inject(
@@ -46,7 +48,7 @@ public abstract class SoundEngineMixin {
 			at = @At("HEAD")
 	)
 	private void disposeAudioFilters(CallbackInfo ci) {
-		AudioFilterManager.dispose();
+		DSPManager.dispose();
 	}
 
 	@WrapOperation(
@@ -59,7 +61,7 @@ public abstract class SoundEngineMixin {
 			Operation<Void> original,
 			SoundInstance sound
 	) {
-		if (sound != null) viscera$executeFilterApplication(channelHandle, sound);
+		if (sound != null) viscera$applyDSP(channelHandle, sound);
 		original.call(channelHandle, consumer);
 	}
 
@@ -73,67 +75,46 @@ public abstract class SoundEngineMixin {
 	) {
 		ChannelAccess.ChannelHandle channelHandle = (ChannelAccess.ChannelHandle) original.call(entry);
 		if (entry.getKey() != null && channelHandle != null)
-			viscera$executeFilterApplication(channelHandle, entry.getKey());
+			viscera$applyDSP(channelHandle, entry.getKey());
 		return channelHandle;
 	}
 
 	@Unique
-	private void viscera$executeFilterApplication(ChannelAccess.ChannelHandle channelHandle, SoundInstance sound) {
-		AudioFilterHandler.PipelineResult config = AudioFilterHandler.determineConfiguration(sound);
+	private void viscera$applyDSP(
+			ChannelAccess.ChannelHandle handle,
+			SoundInstance sound
+	) {
+		if (!DSPManager.isAvailable()) return;
 
-		channelHandle.execute(channel -> {
-			int sourceId = ((ChannelAccessor) channel).getSourceId();
-			if (sourceId <= 0) return;
+		DSPHandler.Pipeline pipeline = DSPHandler.determinePipeline(sound);
 
-			AL10.alSourcei(sourceId, EXTEfx.AL_DIRECT_FILTER, EXTEfx.AL_FILTER_NULL);
-			int maxHardwareSends = AudioFilterManager.getMaxSends();
-			for (int i = 0; i < maxHardwareSends; i++) {
-				AL11.alSource3i(sourceId, EXTEfx.AL_AUXILIARY_SEND_FILTER, EXTEfx.AL_EFFECTSLOT_NULL, i, EXTEfx.AL_FILTER_NULL);
+		handle.execute(channel -> {
+			int src = ((ChannelAccessor) channel).getSourceId();
+			if (src <= 0) return;
+
+			if (pipeline.processors().isEmpty()) {
+				DSPManager.cleanSource(src);
+				return;
 			}
 
-			if (config.chains().isEmpty()) return;
+			boolean tracked = DSPManager.isTracked(src);
 
-			int auxSendIndex = 0;
+			if (!tracked) DSPManager.cleanSource(src);
 
-			for (var chain : config.chains()) {
-				float eventWetness = chain.wetness();
+			int auxIdx = 0;
+			for (var proc : pipeline.processors()) {
+				for (var stage : proc.template().stages()) {
+					float wet = proc.wetness() * stage.defaultWetness();
 
-				for (var stage : chain.template().stages()) {
-					float totalWetness = eventWetness * stage.defaultWetness();
-
-					if (totalWetness <= 0.001f) continue;
+					if (wet <= 0.001f) continue;
 
 					if (stage.isEffect()) {
-						if (auxSendIndex >= maxHardwareSends) continue;
-
-						int effectId = AudioFilterManager.acquireEffect(stage.alHandle());
-						int slotId = AudioFilterManager.acquireSlot();
-						int sendFilterId = AudioFilterManager.acquireFilter(EXTEfx.AL_FILTER_LOWPASS);
-
-						stage.params().forEach((name, val) -> {
-							int key = AudioFilterManager.getParamKey(name);
-							if (key != 0) EXTEfx.alEffectf(effectId, key, val);
-						});
-
-						EXTEfx.alAuxiliaryEffectSloti(slotId, EXTEfx.AL_EFFECTSLOT_EFFECT, effectId);
-
-						EXTEfx.alFilterf(sendFilterId, EXTEfx.AL_LOWPASS_GAIN, totalWetness);
-
-						AL11.alSource3i(sourceId, EXTEfx.AL_AUXILIARY_SEND_FILTER, slotId, auxSendIndex, sendFilterId);
-
-						auxSendIndex++;
+						if (auxIdx < DSPManager.getMaxSends()) {
+							viscera$updateEffect(src, stage, auxIdx, tracked);
+							auxIdx++;
+						}
 					} else {
-						int filterId = AudioFilterManager.acquireFilter(stage.alHandle());
-
-						stage.params().forEach((name, val) -> {
-							int key = AudioFilterManager.getParamKey(name);
-							if (key != 0) {
-								float interpolatedVal = 1.0f - (totalWetness * (1.0f - val));
-								EXTEfx.alFilterf(filterId, key, interpolatedVal);
-							}
-						});
-
-						AL10.alSourcei(sourceId, EXTEfx.AL_DIRECT_FILTER, filterId);
+						viscera$updateFilter(src, stage, wet, tracked);
 					}
 				}
 			}
@@ -143,5 +124,72 @@ public abstract class SoundEngineMixin {
 				LOG.error("OpenAL Error [{}]: Pipeline failed for sound {}", err, sound.getLocation());
 			}
 		});
+	}
+
+	@Unique
+	private void viscera$updateEffect(
+			int src,
+			DSPProcessor.Stage stage,
+			int idx,
+			boolean exists
+	) {
+		int eid = exists ? DSPManager.getTrackedId(src, DSPResource.Type.EFFECT, idx)
+				: DSPManager.acquireEffect(stage.alHandle());
+		int sid = exists ? DSPManager.getTrackedId(src, DSPResource.Type.SLOT, idx)
+				: DSPManager.acquireSlot();
+
+		if (!exists) {
+			DSPManager.track(src, eid, DSPResource.Type.EFFECT);
+			DSPManager.track(src, sid, DSPResource.Type.SLOT);
+		}
+
+		stage.params().forEach((k, v) -> {
+			int key = DSPRegistry.getParamKey(k);
+			if (key != 0) {
+				if (isIntegerParam(k)) {
+					EXTEfx.alEffecti(eid, key, v.intValue());
+				} else {
+					EXTEfx.alEffectf(eid, key, v);
+				}
+			}
+		});
+
+		EXTEfx.alAuxiliaryEffectSloti(sid, EXTEfx.AL_EFFECTSLOT_EFFECT, eid);
+		AL11.alSource3i(src, EXTEfx.AL_AUXILIARY_SEND_FILTER, sid, idx, EXTEfx.AL_FILTER_NULL);
+	}
+
+	@Unique
+	private boolean isIntegerParam(String name) {
+		return name.endsWith("waveform") ||
+				name.endsWith("phase") ||
+				name.contains("phoneme") ||
+				name.contains("tune") ||
+				name.endsWith("hflimit") ||
+				name.endsWith("onoff") ||
+				name.contains("direction");
+	}
+
+	@Unique
+	private void viscera$updateFilter(
+			int src,
+			DSPProcessor.Stage stage,
+			float wet,
+			boolean exists
+	) {
+		int fid = exists ? DSPManager.getTrackedId(src, DSPResource.Type.FILTER, 0)
+				: DSPManager.acquireFilter(stage.alHandle());
+		if (!exists) {
+			DSPManager.track(src, fid, DSPResource.Type.FILTER);
+		}
+
+		stage.params().forEach((k, v) -> {
+			int key = DSPRegistry.getParamKey(k);
+			if (key == 0) return;
+
+			float interpolatedVal = 1.0f - (wet * (1.0f - v));
+			EXTEfx.alFilterf(fid, key, interpolatedVal);
+		});
+
+		AL10.alSourcei(src, EXTEfx.AL_DIRECT_FILTER, fid);
 	}
 }

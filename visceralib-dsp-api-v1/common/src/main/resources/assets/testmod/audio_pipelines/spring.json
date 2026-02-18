@@ -1,0 +1,32 @@
+{
+  "sources": [
+    "record",
+    "weather",
+    "block",
+    "hostile",
+    "neutral",
+    "player",
+    "ambient"
+  ],
+  "pipeline": [
+    {
+      "type": "eax_reverb",
+      "wetness": 0.7,
+      "parameters": {
+        "eaxreverb_density": 0.0,
+        "eaxreverb_diffusion": 0.4,
+        "eaxreverb_gain": 0.5,
+        "eaxreverb_decay_time": 1.8,
+        "eaxreverb_decay_hfratio": 1.0,
+        "eaxreverb_reflections_gain": 1.0,
+        "eaxreverb_reflections_delay": 0.02,
+        "eaxreverb_late_reverb_gain": 0.4,
+        "eaxreverb_late_reverb_delay": 0.03,
+        "eaxreverb_echo_time": 0.09,
+        "eaxreverb_echo_depth": 0.6,
+        "eaxreverb_hfreference": 12000.0,
+        "eaxreverb_decay_hflimit": 1
+      }
+    }
+  ]
+}

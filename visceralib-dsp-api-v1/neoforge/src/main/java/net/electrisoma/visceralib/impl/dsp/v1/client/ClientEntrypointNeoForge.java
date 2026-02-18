@@ -1,6 +1,6 @@
 package net.electrisoma.visceralib.impl.dsp.v1.client;
 
-import net.electrisoma.visceralib.api.dsp.v1.AudioFilterLoader;
+import net.electrisoma.visceralib.api.dsp.v1.DSPPipelineReloadListener;
 import net.electrisoma.visceralib.impl.dsp.v1.Constants;
 import net.electrisoma.visceralib.platform.core.services.IEnvHelper;
 
@@ -18,6 +18,6 @@ public final class ClientEntrypointNeoForge {
 	}
 
 	private void onRegisterClientReloadListeners(RegisterClientReloadListenersEvent event) {
-		event.registerReloadListener(new AudioFilterLoader());
+		event.registerReloadListener(new DSPPipelineReloadListener());
 	}
 }

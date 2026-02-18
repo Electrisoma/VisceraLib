@@ -7,9 +7,9 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
-public final class VisceralAudioEffectPipelineEvent {
+public final class DSPPipelineDefinition {
 
-	private VisceralAudioEffectPipelineEvent() {}
+	private DSPPipelineDefinition() {}
 
 	public interface Context {
 
@@ -25,8 +25,8 @@ public final class VisceralAudioEffectPipelineEvent {
 	}
 
 	@FunctionalInterface
-	public interface Hook {
+	public interface Listener {
 
-		void onAudioEffectPipeline(Context context);
+		void onApply(Context context);
 	}
 }
