@@ -1,4 +1,4 @@
-package net.electrisoma.visceralib.impl.splashes.v1;
+package net.electrisoma.visceralib.impl.networking.v1;
 
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;

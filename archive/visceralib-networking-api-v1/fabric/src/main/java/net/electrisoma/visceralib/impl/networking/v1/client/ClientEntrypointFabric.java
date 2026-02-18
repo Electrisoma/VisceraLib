@@ -1,4 +1,4 @@
-package net.electrisoma.visceralib.impl.splashes.v1.client;
+package net.electrisoma.visceralib.impl.networking.v1.client;
 
 import net.electrisoma.visceralib.platform.core.services.IEnvHelper;
 import net.electrisoma.visceralib.platform.core.services.IEnvHelper.EnvironmentEnum;

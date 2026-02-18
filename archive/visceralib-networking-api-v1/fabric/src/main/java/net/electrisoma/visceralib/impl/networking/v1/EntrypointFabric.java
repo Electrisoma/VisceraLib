@@ -1,4 +1,4 @@
-package net.electrisoma.visceralib.impl.splashes.v1;
+package net.electrisoma.visceralib.impl.networking.v1;
 
 import net.fabricmc.api.ModInitializer;
 

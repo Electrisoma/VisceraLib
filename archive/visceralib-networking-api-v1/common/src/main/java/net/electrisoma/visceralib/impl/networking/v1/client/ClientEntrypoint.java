@@ -1,7 +1,7 @@
-package net.electrisoma.visceralib.impl.splashes.v1.client;
+package net.electrisoma.visceralib.impl.networking.v1.client;
 
 import net.electrisoma.visceralib.api.core.debug.EntrypointMessages;
-import net.electrisoma.visceralib.impl.splashes.v1.Constants;
+import net.electrisoma.visceralib.impl.networking.v1.Constants;
 
 public final class ClientEntrypoint {
 

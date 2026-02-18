@@ -1,4 +1,4 @@
 @ApiStatus.Internal
-package net.electrisoma.visceralib.impl.splashes.v1;
+package net.electrisoma.visceralib.impl.networking.v1;
 
 import org.jetbrains.annotations.ApiStatus;
