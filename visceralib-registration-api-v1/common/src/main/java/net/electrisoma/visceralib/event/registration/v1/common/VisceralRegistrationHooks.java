@@ -2,7 +2,7 @@ package net.electrisoma.visceralib.event.registration.v1.common;
 
 public final class VisceralRegistrationHooks {
 
-    private VisceralRegistrationHooks() {}
+	private VisceralRegistrationHooks() {}
 
 	@FunctionalInterface
 	public interface Static {
