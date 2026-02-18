@@ -7,9 +7,9 @@ import java.util.function.Supplier;
 
 public final class ModelRegistrationEvents {
 
-    @FunctionalInterface
-    public interface Layer {
+	@FunctionalInterface
+	public interface ModelLayer {
 
-        void register(ModelLayerLocation location, Supplier<LayerDefinition> definition);
-    }
+		void register(ModelLayerLocation location, Supplier<LayerDefinition> definition);
+	}
 }

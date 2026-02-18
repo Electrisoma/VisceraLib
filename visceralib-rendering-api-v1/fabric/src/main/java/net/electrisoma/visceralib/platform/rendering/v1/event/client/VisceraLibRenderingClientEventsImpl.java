@@ -1,12 +1,12 @@
 package net.electrisoma.visceralib.platform.rendering.v1.event.client;
 
+import net.electrisoma.visceralib.event.rendering.v1.client.ColorHandlerEvents;
+import net.electrisoma.visceralib.event.rendering.v1.client.LayerRegistrationConsumer;
 import net.electrisoma.visceralib.event.rendering.v1.client.ModelRegistrationEvents;
 import net.electrisoma.visceralib.event.rendering.v1.client.RendererRegistrationEvents;
 import net.electrisoma.visceralib.platform.rendering.v1.services.event.client.VisceraLibRenderingClientEvents;
 
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.*;
 
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 
@@ -34,8 +34,29 @@ public final class VisceraLibRenderingClientEventsImpl implements VisceraLibRend
 	}
 
 	@Override
-	public void registerModelLayerDefinitions(Consumer<ModelRegistrationEvents.Layer> consumer) {
+	public void registerModelLayerDefinitions(Consumer<ModelRegistrationEvents.ModelLayer> consumer) {
 		consumer.accept((location, supplier) ->
 				EntityModelLayerRegistry.registerModelLayer(location, supplier::get));
+	}
+
+	@Override
+	public void registerEntityLayers(LayerRegistrationConsumer consumer) {
+		LivingEntityFeatureRendererRegistrationCallback.EVENT.register((
+				entityType,
+				entityRenderer,
+				registrationHelper,
+				context) ->
+				consumer.accept(entityType, entityRenderer, registrationHelper::register, context)
+		);
+	}
+
+	@Override
+	public void registerItemColorHandlers(Consumer<ColorHandlerEvents.ItemColorHandler> consumer) {
+		consumer.accept(ColorProviderRegistry.ITEM::register);
+	}
+
+	@Override
+	public void registerBlockColorHandlers(Consumer<ColorHandlerEvents.BlockColorHandler> consumer) {
+		consumer.accept(ColorProviderRegistry.BLOCK::register);
 	}
 }
