@@ -11,15 +11,18 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public final class RendererRegistrationEvents {
 
-    public interface BlockEntityRenderer {
-        <T extends BlockEntity> void register(BlockEntityType<? extends T> type, BlockEntityRendererProvider<T> provider);
-    }
+	public interface BlockEntityRenderer {
 
-    public interface EntityRenderer {
-        <T extends Entity> void register(EntityType<? extends T> type, EntityRendererProvider<T> provider);
-    }
+		<T extends BlockEntity> void register(BlockEntityType<? extends T> type, BlockEntityRendererProvider<T> provider);
+	}
 
-    public interface ItemRenderer {
-        void register(Item item, BlockEntityWithoutLevelRenderer renderer);
-    }
+	public interface EntityRenderer {
+
+		<T extends Entity> void register(EntityType<? extends T> type, EntityRendererProvider<T> provider);
+	}
+
+	public interface ItemRenderer {
+
+		void register(Item item, BlockEntityWithoutLevelRenderer renderer);
+	}
 }
