@@ -1,4 +1,4 @@
-package net.electrisoma.visceralib.impl.networking.v1;
+package net.electrisoma.visceralib.impl.rendering.v1;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

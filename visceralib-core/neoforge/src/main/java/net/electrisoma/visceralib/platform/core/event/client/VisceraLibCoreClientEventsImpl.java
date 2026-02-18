@@ -10,7 +10,6 @@ import net.minecraft.client.Minecraft;
 
 import com.google.auto.service.AutoService;
 
-
 @AutoService(VisceraLibCoreClientEvents.class)
 public final class VisceraLibCoreClientEventsImpl implements VisceraLibCoreClientEvents {
 

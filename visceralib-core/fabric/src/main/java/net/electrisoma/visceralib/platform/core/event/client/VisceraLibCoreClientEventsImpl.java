@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
 import com.google.auto.service.AutoService;
 
-
 @AutoService(VisceraLibCoreClientEvents.class)
 public final class VisceraLibCoreClientEventsImpl implements VisceraLibCoreClientEvents {
 
