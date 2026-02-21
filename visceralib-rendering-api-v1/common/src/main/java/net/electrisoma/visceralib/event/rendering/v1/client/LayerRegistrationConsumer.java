@@ -8,10 +8,10 @@ import net.minecraft.world.entity.LivingEntity;
 @FunctionalInterface
 public interface LayerRegistrationConsumer {
 
-    void accept(
-            EntityType<? extends LivingEntity> type,
-            LivingEntityRenderer<?, ?> renderer,
-            RendererRegistrationEvents.EntityLayer registrar,
-            EntityRendererProvider.Context context
-    );
+	void accept(
+			EntityType<? extends LivingEntity> type,
+			LivingEntityRenderer<?, ?> renderer,
+			RendererRegistrationEvents.EntityLayer registrar,
+			EntityRendererProvider.Context context
+	);
 }

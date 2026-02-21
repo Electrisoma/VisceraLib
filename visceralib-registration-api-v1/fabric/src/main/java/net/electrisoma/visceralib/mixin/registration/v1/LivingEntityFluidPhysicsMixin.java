@@ -1,6 +1,6 @@
 package net.electrisoma.visceralib.mixin.registration.v1;
 
-import net.electrisoma.visceralib.api.registration.v1.registry.register.fluid.VisceralFluid;
+import net.electrisoma.visceralib.api.registration.v1.registry.fluid.VisceralFluid;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.material.FluidState;

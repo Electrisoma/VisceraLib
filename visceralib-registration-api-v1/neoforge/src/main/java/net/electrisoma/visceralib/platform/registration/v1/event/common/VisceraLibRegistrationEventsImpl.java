@@ -1,13 +1,15 @@
 package net.electrisoma.visceralib.platform.registration.v1.event.common;
 
-import net.electrisoma.visceralib.api.registration.v1.registry.register.custom.VisceralRegistrySettings;
-import net.electrisoma.visceralib.event.registration.v1.common.StaticRegistryRegistrar;
-import net.electrisoma.visceralib.event.registration.v1.common.VisceralRegistrationHooks;
+import net.electrisoma.visceralib.api.registration.v1.registry.custom.VisceralRegistrySettings;
+import net.electrisoma.visceralib.event.registration.v1.common.CreativeTabEvents;
+import net.electrisoma.visceralib.event.registration.v1.common.EntityEvents;
+import net.electrisoma.visceralib.event.registration.v1.common.RegistryRegistrationEvents;
 import net.electrisoma.visceralib.platform.core.services.IPlatformHelper;
 import net.electrisoma.visceralib.platform.registration.v1.services.event.common.VisceraLibRegistrationEvents;
 
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
@@ -23,39 +25,45 @@ import java.util.function.Consumer;
 public final class VisceraLibRegistrationEventsImpl implements VisceraLibRegistrationEvents {
 
 	@Override
-	public void registerStaticRegistries(VisceralRegistrationHooks.Static handler) {
+	public void registerStaticRegistries(RegistryRegistrationEvents.Static handler) {
 		withBus(bus -> bus.addListener((NewRegistryEvent event) ->
-			handler.onRegister(new StaticRegistryRegistrar() {
+				handler.onRegister(new RegistryRegistrationEvents.StaticRegistrar() {
 
-				@Override
-				public <T> Registry<T> register(ResourceKey<Registry<T>> key, VisceralRegistrySettings settings) {
-					RegistryBuilder<T> builder = new RegistryBuilder<>(key);
-					if (settings.defaultId() != null) builder.defaultKey(settings.defaultId());
-					if (settings.sync()) builder.sync(true);
+					@Override
+					public <T> Registry<T> register(ResourceKey<Registry<T>> key, VisceralRegistrySettings settings) {
+						RegistryBuilder<T> builder = new RegistryBuilder<>(key);
+						if (settings.defaultId() != null) builder.defaultKey(settings.defaultId());
+						if (settings.sync()) builder.sync(true);
 
-					Registry<T> registry = builder.create();
-					event.register(registry);
-					return registry;
-				}
-			})
+						Registry<T> registry = builder.create();
+						event.register(registry);
+						return registry;
+					}
+				})
 		));
 	}
 
 	@Override
-	public void registerDynamicRegistries(VisceralRegistrationHooks.Dynamic handler) {
+	public void registerDynamicRegistries(RegistryRegistrationEvents.Dynamic handler) {
 		withBus(bus -> bus.addListener((DataPackRegistryEvent.NewRegistry event) ->
-				handler.onRegister(event::dataPackRegistry)
+				handler.onRegister(event::dataPackRegistry)));
+	}
+
+	@Override
+	public void modifyCreativeTabs(CreativeTabEvents.ModifyTab handler) {
+		withBus(bus -> bus.addListener((BuildCreativeModeTabContentsEvent event) ->
+				handler.register((tabKey, stack, visibility) -> {
+					if (event.getTabKey().equals(tabKey))
+						event.accept(stack, visibility);
+				})
 		));
 	}
 
 	@Override
-	public void modifyCreativeTabs(VisceralRegistrationHooks.CreativeTab handler) {
-		withBus(bus -> bus.addListener((BuildCreativeModeTabContentsEvent event) ->
-			handler.onModify((tabKey, stack, visibility) -> {
-				if (event.getTabKey().equals(tabKey))
-					event.accept(stack, visibility);
-			})
-		));
+	public void registerAttributes(EntityEvents.Attributes handler) {
+		withBus(bus -> bus.addListener((EntityAttributeCreationEvent event) ->
+				handler.onRegister((type, builder) ->
+						event.put(type, builder.build()))));
 	}
 
 	private void withBus(Consumer<IEventBus> consumer) {

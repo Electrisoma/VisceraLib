@@ -1,5 +1,5 @@
 plugins {
-    `multiloader-loader`
+    alias(libs.plugins.multiloader.loader)
     id("net.fabricmc.fabric-loom-remap")
     alias(libs.plugins.fletchingtable.fab)
 }
@@ -53,4 +53,7 @@ tasks.named<ProcessResources>("processResources") {
             rename(mod.commonAW.name, "${mod.modulePath}.accesswidener")
         }
     }
+
+    exclude("interfaces.json")
+    exclude("accesswideners")
 }

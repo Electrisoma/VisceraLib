@@ -1,6 +1,6 @@
 package net.electrisoma.visceralib.impl.registration.v1;
 
-import net.electrisoma.visceralib.api.registration.v1.registry.register.VisceralRegistry;
+import net.electrisoma.visceralib.api.registration.v1.registry.VisceralRegistry;
 
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;

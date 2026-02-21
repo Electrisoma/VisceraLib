@@ -1,5 +1,5 @@
 plugins {
-    `multiloader-loader`
+    alias(libs.plugins.multiloader.loader)
     id("net.neoforged.moddev")
 }
 

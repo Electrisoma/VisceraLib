@@ -1,5 +1,5 @@
 plugins {
-    id("multiloader-common")
+    alias(libs.plugins.multiloader.common)
     id("net.fabricmc.fabric-loom-remap")
     alias(libs.plugins.fletchingtable.fab)
 }

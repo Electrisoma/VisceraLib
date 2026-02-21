@@ -17,11 +17,7 @@ issueTrackerURL="${github}/issues"
 [[mixins]]
     config="mixins/visceralib_splashes_v1-common.mixins.json"
 [[mixins]]
-    config="mixins/visceralib_splashes_v1-neoforge.mixins.json"
-[[mixins]]
     config="mixins/visceralib_splashes_v1-common.client.mixins.json"
-[[mixins]]
-    config="mixins/visceralib_splashes_v1-neoforge.client.mixins.json"
 [[accessTransformers]]
     file="META-INF/accesstransformer.cfg"
 

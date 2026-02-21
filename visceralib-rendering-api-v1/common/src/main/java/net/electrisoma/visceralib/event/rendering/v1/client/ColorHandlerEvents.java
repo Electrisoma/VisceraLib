@@ -7,15 +7,15 @@ import net.minecraft.world.level.block.Block;
 
 public final class ColorHandlerEvents {
 
-    @FunctionalInterface
-    public interface ItemColorHandler {
+	@FunctionalInterface
+	public interface ItemColorHandler {
 
-        void register(ItemColor color, ItemLike... items);
-    }
+		void register(ItemColor color, ItemLike... items);
+	}
 
-    @FunctionalInterface
-    public interface BlockColorHandler {
+	@FunctionalInterface
+	public interface BlockColorHandler {
 
-        void register(BlockColor color, Block... blocks);
-    }
+		void register(BlockColor color, Block... blocks);
+	}
 }

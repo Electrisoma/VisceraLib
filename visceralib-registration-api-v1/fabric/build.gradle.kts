@@ -1,5 +1,5 @@
 plugins {
-    `multiloader-loader`
+    alias(libs.plugins.multiloader.loader)
     id("net.fabricmc.fabric-loom-remap")
     alias(libs.plugins.fletchingtable.fab)
 }
@@ -28,6 +28,7 @@ dependencies {
     fapi.embed("fabric-registry-sync-v0")
     fapi.embed("fabric-item-group-api-v1")
     fapi.embed("fabric-item-api-v1")
+    fapi.embed("fabric-object-builder-api-v1")
 
     modCompileOnly("com.terraformersmc:modmenu:${mod.ver("modmenu")}")
     modLocalRuntime("com.terraformersmc:modmenu:${mod.ver("modmenu")}")
@@ -63,4 +64,7 @@ tasks.named<ProcessResources>("processResources") {
             rename(mod.commonAW.name, "${mod.modulePath}.accesswidener")
         }
     }
+
+    exclude("interfaces.json")
+    exclude("accesswideners")
 }

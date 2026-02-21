@@ -1,7 +1,7 @@
-package net.electrisoma.visceralib.api.registration.v1.registry;
+package net.electrisoma.visceralib.api.registration.v1.registry.helper;
 
-import net.electrisoma.visceralib.api.registration.v1.registry.register.RegistryObject;
-import net.electrisoma.visceralib.api.registration.v1.registry.register.VisceralRegistry;
+import net.electrisoma.visceralib.api.registration.v1.registry.RegistryObject;
+import net.electrisoma.visceralib.api.registration.v1.registry.VisceralRegistry;
 
 import net.minecraft.core.Registry;
 

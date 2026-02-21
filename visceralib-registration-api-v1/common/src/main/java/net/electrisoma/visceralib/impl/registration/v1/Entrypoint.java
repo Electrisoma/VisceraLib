@@ -2,7 +2,6 @@ package net.electrisoma.visceralib.impl.registration.v1;
 
 import net.electrisoma.visceralib.api.core.debug.EntrypointMessages;
 
-
 public final class Entrypoint {
 
 	public static void init() {

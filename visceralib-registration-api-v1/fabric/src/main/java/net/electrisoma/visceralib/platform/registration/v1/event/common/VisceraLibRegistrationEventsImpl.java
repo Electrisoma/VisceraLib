@@ -1,15 +1,16 @@
 package net.electrisoma.visceralib.platform.registration.v1.event.common;
 
-import net.electrisoma.visceralib.api.registration.v1.registry.register.custom.VisceralRegistrySettings;
-import net.electrisoma.visceralib.event.registration.v1.common.DynamicRegistryRegistrar;
-import net.electrisoma.visceralib.event.registration.v1.common.StaticRegistryRegistrar;
-import net.electrisoma.visceralib.event.registration.v1.common.VisceralRegistrationHooks;
+import net.electrisoma.visceralib.api.registration.v1.registry.custom.VisceralRegistrySettings;
+import net.electrisoma.visceralib.event.registration.v1.common.CreativeTabEvents;
+import net.electrisoma.visceralib.event.registration.v1.common.EntityEvents;
+import net.electrisoma.visceralib.event.registration.v1.common.RegistryRegistrationEvents;
 import net.electrisoma.visceralib.platform.registration.v1.services.event.common.VisceraLibRegistrationEvents;
 
 import net.fabricmc.fabric.api.event.registry.DynamicRegistries;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -23,8 +24,8 @@ import org.jetbrains.annotations.Nullable;
 public final class VisceraLibRegistrationEventsImpl implements VisceraLibRegistrationEvents {
 
 	@Override
-	public void registerStaticRegistries(VisceralRegistrationHooks.Static handler) {
-		handler.onRegister(new StaticRegistryRegistrar() {
+	public void registerStaticRegistries(RegistryRegistrationEvents.Static handler) {
+		handler.onRegister(new RegistryRegistrationEvents.StaticRegistrar() {
 
 			@Override
 			public <T> Registry<T> register(ResourceKey<Registry<T>> key, VisceralRegistrySettings settings) {
@@ -40,8 +41,8 @@ public final class VisceraLibRegistrationEventsImpl implements VisceraLibRegistr
 	}
 
 	@Override
-	public void registerDynamicRegistries(VisceralRegistrationHooks.Dynamic handler) {
-		handler.onRegister(new DynamicRegistryRegistrar() {
+	public void registerDynamicRegistries(RegistryRegistrationEvents.Dynamic handler) {
+		handler.onRegister(new RegistryRegistrationEvents.DynamicRegistrar() {
 
 			@Override
 			public <T> void register(ResourceKey<Registry<T>> key, Codec<T> codec, @Nullable Codec<T> net) {
@@ -55,10 +56,15 @@ public final class VisceraLibRegistrationEventsImpl implements VisceraLibRegistr
 	}
 
 	@Override
-	public void modifyCreativeTabs(VisceralRegistrationHooks.CreativeTab handler) {
-		handler.onModify((tabKey, stack, visibility) ->
+	public void modifyCreativeTabs(CreativeTabEvents.ModifyTab handler) {
+		handler.register((tabKey, stack, visibility) ->
 				ItemGroupEvents.modifyEntriesEvent(tabKey).register(entries ->
 						entries.accept(stack, visibility))
 		);
+	}
+
+	@Override
+	public void registerAttributes(EntityEvents.Attributes handler) {
+		handler.onRegister(FabricDefaultAttributeRegistry::register);
 	}
 }

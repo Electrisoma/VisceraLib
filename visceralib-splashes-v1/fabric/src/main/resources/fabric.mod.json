@@ -20,9 +20,7 @@
   },
   "mixins": [
     "mixins/visceralib_splashes_v1-common.mixins.json",
-    "mixins/visceralib_splashes_v1-fabric.mixins.json",
-    "mixins/visceralib_splashes_v1-common.client.mixins.json",
-    "mixins/visceralib_splashes_v1-fabric.client.mixins.json"
+    "mixins/visceralib_splashes_v1-common.client.mixins.json"
   ],
   "depends": {
     "visceralib_core": "*",

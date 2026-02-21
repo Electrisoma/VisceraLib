@@ -16,8 +16,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [ "net.electrisoma.visceralib.impl.core.EntrypointFabric" ],
-    "client": [ "net.electrisoma.visceralib.impl.core.client.ClientEntrypointFabric" ],
-    "modmenu": [ "net.electrisoma.visceralib.impl.core.client.ModMenuImpl" ]
+    "client": [ "net.electrisoma.visceralib.impl.core.client.ClientEntrypointFabric" ]
   },
   "depends": {
     "fabric-api-base": "*",

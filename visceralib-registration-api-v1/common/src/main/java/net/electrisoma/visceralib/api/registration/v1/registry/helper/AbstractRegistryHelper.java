@@ -1,10 +1,10 @@
-package net.electrisoma.visceralib.api.registration.v1.registry;
+package net.electrisoma.visceralib.api.registration.v1.registry.helper;
 
-import net.electrisoma.visceralib.api.registration.v1.registry.register.RegistryObject;
-import net.electrisoma.visceralib.api.registration.v1.registry.register.VisceralRegistry;
-import net.electrisoma.visceralib.api.registration.v1.registry.register.custom.VisceralRegistrySettings;
-import net.electrisoma.visceralib.api.registration.v1.registry.register.dynamic.DynamicRegistryObject;
-import net.electrisoma.visceralib.api.registration.v1.registry.register.fluid.VisceralFluidProperties;
+import net.electrisoma.visceralib.api.registration.v1.registry.RegistryObject;
+import net.electrisoma.visceralib.api.registration.v1.registry.VisceralRegistry;
+import net.electrisoma.visceralib.api.registration.v1.registry.custom.VisceralRegistrySettings;
+import net.electrisoma.visceralib.api.registration.v1.registry.dynamic.DynamicRegistryObject;
+import net.electrisoma.visceralib.api.registration.v1.registry.fluid.VisceralFluidProperties;
 import net.electrisoma.visceralib.platform.registration.v1.services.ITabHelper;
 
 import net.minecraft.core.Registry;
@@ -55,11 +55,11 @@ public abstract class AbstractRegistryHelper {
 	}
 
 	/**
-	 * Internal method to register an entry to a specified registry.
+	 * Internal method to onRegister an entry to a specified registry.
 	 *
 	 * @param registry the target vanilla registry.
 	 * @param name     the registry name of the object.
-	 * @param supplier a supplier returning the object to register.
+	 * @param supplier a supplier returning the object to onRegister.
 	 * @return a RegistryObject wrapping the registered entry.
 	 */
 	public <R, T extends R> RegistryObject<T> register(
@@ -195,7 +195,7 @@ public abstract class AbstractRegistryHelper {
 		return register(BuiltInRegistries.FLUID, name, supplier);
 	}
 
-	/** Helper to register a still fluid, flowing fluid, and a bucket item in one call. */
+	/** Helper to onRegister a still fluid, flowing fluid, and a bucket item in one call. */
 	public <S extends Fluid, F extends Fluid> RegistryObject<S> fluid(
 			String name,
 			VisceralFluidProperties props,

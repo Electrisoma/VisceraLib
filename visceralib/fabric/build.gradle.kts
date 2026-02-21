@@ -1,5 +1,5 @@
 plugins {
-    `multiloader-loader`
+    alias(libs.plugins.multiloader.loader)
     id("net.fabricmc.fabric-loom-remap")
 }
 
@@ -48,4 +48,9 @@ loom {
             runDir(loomRunDir.resolve("server").toString())
         }
     }
+}
+
+tasks.named<ProcessResources>("processResources") {
+    exclude("META-INF/**")
+    exclude("interfaces.json")
 }

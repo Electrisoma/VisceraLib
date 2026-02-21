@@ -10,17 +10,11 @@ val commonResources: Configuration by configurations.creating {
 }
 
 dependencies {
-    val moduleBaseName = project.name.substringBeforeLast("-")
-    val commonProjectName = "$moduleBaseName-common"
+    val commonProject = rootProject.childProjects["${project.name.substringBeforeLast("-")}-common"]!!
 
-    val commonProject = rootProject.childProjects[commonProjectName]
-        ?: throw IllegalStateException("Could not find common sibling '$commonProjectName' for ${project.name}")
-
-    val commonPath = commonProject.path
-
-    compileOnly(project(path = commonPath))
-    commonJava(project(path = commonPath, configuration = "commonJava"))
-    commonResources(project(path = commonPath, configuration = "commonResources"))
+    compileOnly(project(path = commonProject.path))
+    commonJava(project(path = commonProject.path, configuration = "commonJava"))
+    commonResources(project(path = commonProject.path, configuration = "commonResources"))
 }
 
 java {
@@ -45,8 +39,6 @@ tasks {
 }
 
 afterEvaluate {
-    val loader = props.loader
-
     val base = listOfNotNull(
         mod.module.takeIf { it.isNotBlank() },
         mod.suffix.takeIf { it.isNotBlank() }

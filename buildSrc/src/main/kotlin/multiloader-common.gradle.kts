@@ -109,7 +109,7 @@ tasks {
 
     jar {
         from(rootProject.file("LICENSE")) {
-            rename { "$it" }
+            rename { "$it-${mod.moduleBase}" }
         }
 
         manifest {
@@ -136,6 +136,25 @@ tasks {
     withType<JavaCompile> {
         dependsOn("spotlessApply")
         options.compilerArgs.add("-Xlint:unchecked")
+    }
+
+    register("deepClean") {
+        group = "cleanup"
+        doLast {
+            allprojects.forEach { proj ->
+                val targets = listOf(
+                    proj.layout.buildDirectory.asFile.get(),
+                    proj.projectDir.resolve(".gradle")
+                )
+
+                targets.forEach { folder ->
+                    if (folder.exists()) {
+                        println("Deleting: ${folder.absolutePath}")
+                        folder.deleteRecursively()
+                    }
+                }
+            }
+        }
     }
 }
 

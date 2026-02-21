@@ -1,7 +1,7 @@
 package net.electrisoma.visceralib.platform.registration.v1;
 
-import net.electrisoma.visceralib.api.registration.v1.registry.register.VisceralRegistry;
-import net.electrisoma.visceralib.api.registration.v1.registry.register.fluid.VisceralFluidAttributes;
+import net.electrisoma.visceralib.api.registration.v1.registry.VisceralRegistry;
+import net.electrisoma.visceralib.api.registration.v1.registry.fluid.VisceralFluidAttributes;
 import net.electrisoma.visceralib.platform.registration.v1.services.IFluidHelper;
 
 import net.neoforged.neoforge.common.SoundActions;

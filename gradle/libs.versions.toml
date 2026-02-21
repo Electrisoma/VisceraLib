@@ -12,14 +12,18 @@ tasktree = "4.0.1"
 
 loom = { module = "net.fabricmc.fabric-loom-remap:net.fabricmc.fabric-loom-remap.gradle.plugin", version.ref = "loom" }
 mdg = { module = "net.neoforged.moddev:net.neoforged.moddev.gradle.plugin", version.ref = "mdg" }
+
 spotless = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
 tasktree = { module = "com.dorongold.task-tree:com.dorongold.task-tree.gradle.plugin", version.ref = "tasktree" }
 
-findbugs = { module = "com.google.code.findbugs:jsr305", version.ref = "find_bugs"}
+findbugs = { module = "com.google.code.findbugs:jsr305", version.ref = "find_bugs" }
 autoservice = { module = "com.google.auto.service:auto-service", version.ref = "autoservice" }
 autoservice_annotations = { module = "com.google.auto.service:auto-service-annotations", version.ref = "autoservice" }
 
 [plugins]
 
-fletchingtable_neo = { id = "dev.kikugie.fletching-table.neoforge", version.ref = "fletching_table"}
-fletchingtable_fab = { id = "dev.kikugie.fletching-table.fabric", version.ref = "fletching_table"}
+fletchingtable_neo = { id = "dev.kikugie.fletching-table.neoforge", version.ref = "fletching_table" }
+fletchingtable_fab = { id = "dev.kikugie.fletching-table.fabric", version.ref = "fletching_table" }
+
+multiloader_common = { id = "multiloader-common" }
+multiloader_loader = { id = "multiloader-loader" }

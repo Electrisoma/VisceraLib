@@ -1,4 +1,4 @@
-package net.electrisoma.visceralib.api.registration.v1.registry.register.dynamic;
+package net.electrisoma.visceralib.api.registration.v1.registry.dynamic;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;

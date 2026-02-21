@@ -1,7 +1,7 @@
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 
-package net.electrisoma.visceralib.api.registration.v1.registry.register.fluid;
+package net.electrisoma.visceralib.api.registration.v1.registry.fluid;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 

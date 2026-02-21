@@ -111,7 +111,8 @@ class FabricHelpers(private val project: Project) {
     }
 
     fun runtime(name: String) {
-        project.dependencies.add("modRuntimeOnly", api.module(name, fapiVersion))
+        val dep = api.module(name, fapiVersion)
+        project.dependencies.add("modRuntimeOnly", dep)
     }
 
     private val fapiVersion get() = "${project.mod.ver("fabric_api")}+${project.mod.mc}"

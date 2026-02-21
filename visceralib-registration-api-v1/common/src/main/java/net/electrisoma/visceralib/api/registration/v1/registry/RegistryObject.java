@@ -1,8 +1,9 @@
-package net.electrisoma.visceralib.api.registration.v1.registry.register;
+package net.electrisoma.visceralib.api.registration.v1.registry;
 
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderOwner;
 import net.minecraft.resources.ResourceKey;
+
 
 /**
  * A platform-agnostic handle for a registered object.
@@ -41,5 +42,9 @@ public class RegistryObject<T> extends Holder.Reference<T> {
 	 */
 	public T get() {
 		return value();
+	}
+
+	public <V> boolean is(V value) {
+		return value() == value;
 	}
 }

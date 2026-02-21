@@ -1,7 +1,7 @@
-package net.electrisoma.visceralib.api.registration.v1.registry.register;
+package net.electrisoma.visceralib.api.registration.v1.registry;
 
 import net.electrisoma.visceralib.api.core.resources.RLUtils;
-import net.electrisoma.visceralib.api.registration.v1.registry.register.custom.VisceralRegistrySettings;
+import net.electrisoma.visceralib.api.registration.v1.registry.custom.VisceralRegistrySettings;
 import net.electrisoma.visceralib.mixin.registration.v1.accessor.Holder$ReferenceAccessor;
 import net.electrisoma.visceralib.platform.core.services.IPlatformHelper;
 import net.electrisoma.visceralib.platform.registration.v1.services.event.common.VisceraLibRegistrationEvents;
@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  * no duplicate IDs are registered and providing a bridge between platform-independent
  * code and platform-specific registration events.
  * <p>
- * NeoForge uses a read-only view of all registration entries, while Fabric takes a direct call to Registry#register.
+ * NeoForge uses a read-only view of all registration entries, while Fabric takes a direct call to Registry#onRegister.
  */
 public record VisceralRegistry(String modId) {
 
@@ -71,7 +71,7 @@ public record VisceralRegistry(String modId) {
 	}
 
 	/**
-	 * Helper method to capture registry wildcards and register type-safe holders.
+	 * Helper method to capture registry wildcards and onRegister type-safe holders.
 	 */
 	private <R, T extends R> RegistryObject<T> internalRegister(
 			Registry<R> registry,
@@ -125,8 +125,7 @@ public record VisceralRegistry(String modId) {
 			@Nullable Codec<T> networkCodec
 	) {
 		VisceraLibRegistrationEvents.INSTANCE.registerDynamicRegistries(registrar ->
-			registrar.register(key, codec, networkCodec)
-		);
+			registrar.register(key, codec, networkCodec));
 	}
 
 	/**

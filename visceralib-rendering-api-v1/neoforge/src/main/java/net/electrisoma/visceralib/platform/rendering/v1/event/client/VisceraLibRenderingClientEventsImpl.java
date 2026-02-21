@@ -7,7 +7,14 @@ import net.electrisoma.visceralib.event.rendering.v1.client.RendererRegistration
 import net.electrisoma.visceralib.platform.core.services.IPlatformHelper;
 import net.electrisoma.visceralib.platform.rendering.v1.services.event.client.VisceraLibRenderingClientEvents;
 
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+
 import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -16,13 +23,6 @@ import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
-import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
-
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 
 import com.google.auto.service.AutoService;
 import org.jetbrains.annotations.NotNull;

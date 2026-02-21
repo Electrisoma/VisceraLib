@@ -1,4 +1,4 @@
-package net.electrisoma.visceralib.api.registration.v1.registry.register.custom;
+package net.electrisoma.visceralib.api.registration.v1.registry.custom;
 
 import net.minecraft.resources.ResourceLocation;
 
