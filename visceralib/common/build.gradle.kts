@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.multiloader.common)
-    id("net.fabricmc.fabric-loom-remap")
+    alias(libs.plugins.loader.loom)
 }
 
 val commonProjects = finder.dependOn(finder.common)

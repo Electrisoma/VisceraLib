@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.multiloader.loader)
-    id("net.neoforged.moddev")
+    alias(libs.plugins.loader.mdg)
     alias(libs.plugins.fletchingtable.neo)
 }
 

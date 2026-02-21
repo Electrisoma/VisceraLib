@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.multiloader.loader)
-    id("net.fabricmc.fabric-loom-remap")
+    alias(libs.plugins.loader.loom)
     alias(libs.plugins.fletchingtable.fab)
 }
 
@@ -13,7 +13,7 @@ fletchingTable {
 
 dependencies {
     minecraft("com.mojang:minecraft:${mod.mc}")
-    mappings(mapping.layered {
+    mappings(loom.layered {
         officialMojangMappings()
         parchment("org.parchmentmc.data:parchment-${mod.mc}:${mod.ver("parchment")}@zip")
     })

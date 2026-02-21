@@ -7,6 +7,8 @@ pluginManagement {
         maven("https://maven.kikugie.dev/releases")
         maven("https://maven.kikugie.dev/snapshots")
     }
+
+    includeBuild("build-logic")
 }
 
 plugins {

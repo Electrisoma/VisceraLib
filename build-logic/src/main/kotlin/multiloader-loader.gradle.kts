@@ -1,3 +1,5 @@
+import net.electrisoma.visceralib.gradle.helpers.*
+
 plugins {
     id("multiloader-common")
 }
@@ -11,7 +13,6 @@ val commonResources: Configuration by configurations.creating {
 
 dependencies {
     val commonProject = rootProject.childProjects["${project.name.substringBeforeLast("-")}-common"]!!
-
     compileOnly(project(path = commonProject.path))
     commonJava(project(path = commonProject.path, configuration = "commonJava"))
     commonResources(project(path = commonProject.path, configuration = "commonResources"))
@@ -23,7 +24,7 @@ java {
 }
 
 tasks {
-    jar {
+    withType<Jar> {
         exclude("accesswideners", "accesswideners/**")
     }
 
@@ -51,29 +52,28 @@ afterEvaluate {
 
     val configLabel = specificPath.ifBlank { mod.id }
 
-    extensions.findByName("neoForge")?.let {
-        configure<net.neoforged.moddevgradle.dsl.NeoForgeExtension> {
-            runs.all {
-                if (configLabel.isNotEmpty()) {
-                    ideFolderName.set(configLabel)
-                }
-            }
-        }
+    reflect.withExtension("neoForge") { neoForge ->
+        val runs = reflect.invokeMethod(neoForge, "getRuns") as NamedDomainObjectContainer<*>
+        runs.all(reflect.safeAction<Any> { runObj ->
+            if (configLabel.isNotEmpty())
+                reflect.setProperty(runObj, "ideFolderName", configLabel)
+        })
     }
 
-    extensions.findByName("loom")?.let {
-        configure<net.fabricmc.loom.api.LoomGradleExtensionAPI> {
-            runs {
-                all {
-                    if (configLabel.isNotEmpty()) {
-                        ideConfigFolder.set(configLabel)
-                    }
-                    ideConfigGenerated(true)
-                }
-                getByName("client") {
-                    programArgs("--username", "dev")
-                }
-            }
+    reflect.withExtension("loom") { loom ->
+        val runsAction = reflect.safeAction<Any> { runsContainer ->
+            val allMethod = runsContainer.javaClass.getMethod("all", Action::class.java)
+            allMethod.invoke(runsContainer, reflect.safeAction<Any> { runSettings ->
+                if (configLabel.isNotEmpty())
+                    reflect.setProperty(runSettings, "ideConfigFolder", configLabel)
+                reflect.invokeMethod(runSettings, "ideConfigGenerated", true)
+            })
+
+            val getByName = runsContainer.javaClass.getMethod("getByName", String::class.java, Action::class.java)
+            getByName.invoke(runsContainer, "client", reflect.safeAction<Any> { clientRun ->
+                reflect.invokeMethod(clientRun, "programArgs", arrayOf("--username", "dev"))
+            })
         }
+        reflect.invokeMethod(loom, "runs", runsAction)
     }
 }
