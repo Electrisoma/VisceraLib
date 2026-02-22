@@ -1,5 +1,3 @@
-import net.electrisoma.visceralib.gradle.extensions.*
-
 plugins {
     id("multiloader-common")
 }
@@ -36,43 +34,5 @@ tasks {
     named<ProcessResources>("processResources") {
         dependsOn(commonResources)
         from(commonResources)
-    }
-}
-
-afterEvaluate {
-    val base = listOfNotNull(
-        mod.module.takeIf { it.isNotBlank() },
-        mod.suffix.takeIf { it.isNotBlank() }
-    ).joinToString("-")
-
-    val specificPath = listOfNotNull(
-        base.takeIf { it.isNotBlank() },
-        mod.moduleVer.takeIf { it.isNotBlank() }
-    ).joinToString("/")
-
-    val configLabel = specificPath.ifBlank { mod.id }
-
-    extensions.findByName("neoForge")?.let {
-        configure<net.neoforged.moddevgradle.dsl.NeoForgeExtension> {
-            runs.all {
-                if (configLabel.isNotEmpty())
-                    ideFolderName.set(configLabel)
-            }
-        }
-    }
-
-    extensions.findByName("loom")?.let {
-        configure<net.fabricmc.loom.api.LoomGradleExtensionAPI> {
-            runs {
-                all {
-                    if (configLabel.isNotEmpty())
-                        ideConfigFolder.set(configLabel)
-                    ideConfigGenerated(true)
-                }
-                getByName("client") {
-                    programArgs("--username", "dev")
-                }
-            }
-        }
     }
 }

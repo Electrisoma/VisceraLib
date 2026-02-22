@@ -22,6 +22,7 @@ class VisceraLibPlugin : Plugin<Project> {
             plugins.apply(VisceraFormattingPlugin::class.java)
             plugins.apply(VisceraCleanupTasks::class.java)
             plugins.apply(VisceraConfigurationsPlugin::class.java)
+            plugins.apply(VisceraRunConfigPlugin::class.java)
         }
     }
 }
