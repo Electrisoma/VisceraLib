@@ -1,4 +1,4 @@
-import net.electrisoma.visceralib.gradle.helpers.*
+import net.electrisoma.visceralib.gradle.extensions.*
 
 plugins {
     id("multiloader-common")
@@ -55,9 +55,8 @@ afterEvaluate {
     extensions.findByName("neoForge")?.let {
         configure<net.neoforged.moddevgradle.dsl.NeoForgeExtension> {
             runs.all {
-                if (configLabel.isNotEmpty()) {
+                if (configLabel.isNotEmpty())
                     ideFolderName.set(configLabel)
-                }
             }
         }
     }
@@ -66,9 +65,8 @@ afterEvaluate {
         configure<net.fabricmc.loom.api.LoomGradleExtensionAPI> {
             runs {
                 all {
-                    if (configLabel.isNotEmpty()) {
+                    if (configLabel.isNotEmpty())
                         ideConfigFolder.set(configLabel)
-                    }
                     ideConfigGenerated(true)
                 }
                 getByName("client") {

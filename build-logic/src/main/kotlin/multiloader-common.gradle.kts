@@ -1,5 +1,5 @@
 import org.gradle.accessors.dm.LibrariesForLibs
-import net.electrisoma.visceralib.gradle.helpers.*
+import net.electrisoma.visceralib.gradle.extensions.*
 
 val libs = the<LibrariesForLibs>()
 
