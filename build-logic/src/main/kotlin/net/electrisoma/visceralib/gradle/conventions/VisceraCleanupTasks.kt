@@ -12,13 +12,27 @@ class VisceraCleanupTasks : Plugin<Project> {
                 group = "cleanup"
                 doLast {
                     allprojects.forEach { proj ->
-                        val targets = listOf(
-                            proj.layout.buildDirectory.asFile.get(),
-                            proj.projectDir.resolve(".gradle")
+                        val dir = proj.projectDir
+
+                        val targetFolders = listOf(
+                            proj.layout.buildDirectory.asFile.getOrNull(),
+                            dir.resolve(".gradle"),
+                            dir.resolve("run"),
+                            dir.resolve("out")
                         )
-                        targets.filter { it.exists() }.forEach { folder ->
-                            println("Deleting: ${folder.absolutePath}")
+
+                        val targetFiles = dir.listFiles()?.filter { file ->
+                            file.isFile && (file.name.endsWith(".launch"))
+                        } ?: emptyList()
+
+                        targetFolders.filterNotNull().filter { it.exists() }.forEach { folder ->
+                            println("Cleaning folder: ${folder.absolutePath}")
                             folder.deleteRecursively()
+                        }
+
+                        targetFiles.forEach { file ->
+                            println("Cleaning file: ${file.absolutePath}")
+                            file.delete()
                         }
                     }
                 }
