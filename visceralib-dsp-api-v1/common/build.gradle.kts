@@ -4,6 +4,12 @@ plugins {
     alias(libs.plugins.fletchingtable.fab)
 }
 
+val commonProjects = finder.dependOn(listOf(project(":visceralib-core-common")))
+
+fletchingTable {
+    j52j.register("main") { extension("json", "**/*.json5") }
+}
+
 loom {
     accessWidenerPath.set(mod.commonAW)
 
@@ -11,10 +17,6 @@ loom {
     rootProject.findProject("${mod.moduleBase}-fabric")?.let {
         fabricModJsonPath.set(it.file("src/main/resources/fabric.mod.json"))
     }
-}
-
-fletchingTable {
-    j52j.register("main") { extension("json", "**/*.json5") }
 }
 
 dependencies {
@@ -30,6 +32,8 @@ dependencies {
     val mixinExtras = "io.github.llamalad7:mixinextras-common:${mod.ver("mixin_extras")}"
     annotationProcessor(mixinExtras)
     compileOnly(mixinExtras)
+
+    commonProjects.forEach { implementation(it) }
 }
 
 val commonJava: Configuration by configurations.creating {

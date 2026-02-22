@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.fletchingtable.fab)
 }
 
+val commonProjects = finder.dependOn(listOf(project(":visceralib-core-common")))
+
 loom {
     accessWidenerPath.set(mod.commonAW)
 
@@ -30,6 +32,8 @@ dependencies {
     val mixinExtras = "io.github.llamalad7:mixinextras-common:${mod.ver("mixin_extras")}"
     annotationProcessor(mixinExtras)
     compileOnly(mixinExtras)
+
+    commonProjects.forEach { implementation(it) }
 }
 
 val commonJava: Configuration by configurations.creating {

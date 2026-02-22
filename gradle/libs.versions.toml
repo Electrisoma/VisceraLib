@@ -10,8 +10,8 @@ tasktree = "4.0.1"
 
 [libraries]
 
-#loom = { module = "net.fabricmc.fabric-loom-remap:net.fabricmc.fabric-loom-remap.gradle.plugin", version.ref = "loom" }
-#mdg = { module = "net.neoforged.moddev:net.neoforged.moddev.gradle.plugin", version.ref = "mdg" }
+loom = { module = "net.fabricmc.fabric-loom-remap:net.fabricmc.fabric-loom-remap.gradle.plugin", version.ref = "loom" }
+mdg = { module = "net.neoforged.moddev:net.neoforged.moddev.gradle.plugin", version.ref = "mdg" }
 
 spotless = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
 tasktree = { module = "com.dorongold.task-tree:com.dorongold.task-tree.gradle.plugin", version.ref = "tasktree" }

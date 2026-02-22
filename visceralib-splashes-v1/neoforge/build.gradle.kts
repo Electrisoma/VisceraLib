@@ -4,6 +4,11 @@ plugins {
     alias(libs.plugins.fletchingtable.neo)
 }
 
+val dependencyProjects = finder.dependOn(listOf(
+    project(":visceralib-core-common"),
+    project(":visceralib-core-neoforge")
+))
+
 fletchingTable {
     j52j.register("main") { extension("json", "**/*.json5") }
 
@@ -13,6 +18,8 @@ fletchingTable {
 }
 
 dependencies {
+    dependencyProjects.forEach { implementation(it) }
+
     compileOnly(repos.modrinth("better-modlist", mod.ver("better_modlist")))
     mdgLocalRuntime(repos.modrinth("better-modlist", mod.ver("better_modlist")))
 }

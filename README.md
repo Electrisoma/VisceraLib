@@ -237,17 +237,17 @@ This is to keep things tidy and clean and to give a general concept of what's in
 See [VisceraLib Core README](visceralib-core/README.md)
 
 ### - VisceraLib Datagen API (v1)
-See [VisceraLib Datagen API (v1) README](archive/visceralib-datagen-api-v1/README.md)
+See [VisceraLib Datagen API (v1) README](visceralib-datagen-api-v1/README.md)
 
 ### - VisceraLib DSP API (v1)
-See [VisceraLib DSP API (v1) README](archive/visceralib-dsp-api-v1/README.md)
+See [VisceraLib DSP API (v1) README](visceralib-dsp-api-v1/README.md)
 
 ### - VisceraLib Item Hooks (v1)
-See [VisceraLib Item Hooks (v1) README](archive/visceralib-item-hooks-v1/README.md)
+See [VisceraLib Item Hooks (v1) README](visceralib-item-hooks-v1/README.md)
 
 ### - VisceraLib Registration API (v1)
-See [VisceraLib Registration API (v1) README](archive/visceralib-registration-api-v1/README.md)
+See [VisceraLib Registration API (v1) README](visceralib-registration-api-v1/README.md)
 
 ### - VisceraLib Splashes (v1)
-See [VisceraLib Splashes (v1) README](archive/visceralib-splashes-v1/README.md)
+See [VisceraLib Splashes (v1) README](visceralib-splashes-v1/README.md)
 

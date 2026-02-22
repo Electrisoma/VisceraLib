@@ -4,6 +4,9 @@ plugins {
     alias(libs.plugins.fletchingtable.fab)
 }
 
+val commonProjects = finder.dependOn(listOf(project(":visceralib-core-common")))
+val fabricProjects = finder.dependOn(listOf(project(":visceralib-core-fabric")))
+
 fletchingTable {
     j52j.register("main") { extension("json", "**/*.json5") }
 }
@@ -17,8 +20,12 @@ dependencies {
 
     modImplementation("net.fabricmc:fabric-loader:${mod.ver("fabric_loader")}")
 
+    commonProjects.forEach { implementation(it) }
+    fabricProjects.forEach { implementation(project(it.path, "namedElements")) }
+
     fapi.embed("fabric-api-base")
-    fapi.embed("fabric-lifecycle-events-v1")
+    fapi.embed("fabric-rendering-v1")
+    fapi.embed("fabric-transitive-access-wideners-v1")
 
     modCompileOnly("com.terraformersmc:modmenu:${mod.ver("modmenu")}")
     modLocalRuntime("com.terraformersmc:modmenu:${mod.ver("modmenu")}")
@@ -26,6 +33,7 @@ dependencies {
     fapi.runtime("fabric-resource-loader-v0")
     fapi.runtime("fabric-screen-api-v1")
     fapi.runtime("fabric-key-binding-api-v1")
+    fapi.runtime("fabric-lifecycle-events-v1")
 }
 
 loom {

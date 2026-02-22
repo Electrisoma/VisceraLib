@@ -1,5 +1,6 @@
 package net.electrisoma.visceralib.gradle.helpers
 
+import net.electrisoma.visceralib.gradle.extensions.props
 import org.gradle.api.Project
 import java.io.File
 

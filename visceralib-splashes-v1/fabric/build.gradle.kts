@@ -4,6 +4,9 @@ plugins {
     alias(libs.plugins.fletchingtable.fab)
 }
 
+val commonProjects = finder.dependOn(listOf(project(":visceralib-core-common")))
+val fabricProjects = finder.dependOn(listOf(project(":visceralib-core-fabric")))
+
 fletchingTable {
     j52j.register("main") { extension("json", "**/*.json5") }
 }
@@ -16,6 +19,9 @@ dependencies {
     })
 
     modImplementation("net.fabricmc:fabric-loader:${mod.ver("fabric_loader")}")
+
+    commonProjects.forEach { implementation(it) }
+    fabricProjects.forEach { implementation(project(it.path, "namedElements")) }
 
     fapi.embed("fabric-api-base")
     fapi.embed("fabric-lifecycle-events-v1")

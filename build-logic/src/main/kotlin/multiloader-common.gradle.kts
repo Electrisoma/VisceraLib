@@ -6,10 +6,7 @@ val libs = the<LibrariesForLibs>()
 plugins {
     `java-library`
     idea
-    id("common-formatting")
-    id("common-metadata")
-    id("common-publication")
-    id("common-tasks")
+    id("com.dorongold.task-tree")
 }
 
 plugins.apply("net.electrisoma.visceralib.gradle")
@@ -42,6 +39,7 @@ dependencies {
 
 tasks {
     withType<JavaCompile> {
+        dependsOn("spotlessApply")
         options.compilerArgs.add("-Xlint:unchecked")
     }
 }
