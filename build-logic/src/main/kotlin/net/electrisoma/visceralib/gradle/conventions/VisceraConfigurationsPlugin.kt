@@ -12,7 +12,7 @@ class VisceraConfigurationsPlugin : Plugin<Project> {
                 plugins.withId("net.neoforged.moddev") {
                     val accessTransformersApi = configurations.maybeCreate("accessTransformersApi")
                     val interfaceInjectionDataApi = configurations.maybeCreate("interfaceInjectionDataApi")
-                    val mdglocalRuntime = configurations.maybeCreate("mdgLocalRuntime")
+                    val mdgLocalRuntime = configurations.maybeCreate("mdgLocalRuntime")
 
                     named("accessTransformers").configure { extendsFrom(accessTransformersApi) }
                     named("accessTransformersElements").configure { extendsFrom(accessTransformersApi) }
@@ -20,7 +20,7 @@ class VisceraConfigurationsPlugin : Plugin<Project> {
                     named("interfaceInjectionData").configure { extendsFrom(interfaceInjectionDataApi) }
                     named("interfaceInjectionDataElements").configure { extendsFrom(interfaceInjectionDataApi) }
 
-                    named("runtimeClasspath").configure { extendsFrom(mdglocalRuntime) }
+                    named("runtimeClasspath").configure { extendsFrom(mdgLocalRuntime) }
                 }
             }
         }

@@ -35,13 +35,13 @@ class VisceraMetadataPlugin : Plugin<Project> {
             val jsonFiles = listOf("**/*.json", "**/*.json5")
             val tomlFiles = listOf("META-INF/neoforge.mods.toml")
 
+            val logoFile = rootProject.layout.projectDirectory.file("branding/logo.png")
+
             tasks.withType<ProcessResources>().configureEach {
                 duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
-                rootProject.file("branding/logo.png").takeIf { it.exists() }?.let { logo ->
-                    from(logo) { into("assets/${mod.modulePath}") }
-                }
-
+                if (logoFile.asFile.exists()) from(logoFile) { into("assets/${mod.modulePath}") }
+                
                 filesMatching(jsonFiles) { expand(jsonExpandProps) }
                 filesMatching(tomlFiles) { expand(expandProps) }
 

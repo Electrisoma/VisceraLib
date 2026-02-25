@@ -31,13 +31,6 @@ class VisceraPublicationPlugin : Plugin<Project> {
                 }
             }
 
-            tasks.named<Javadoc>("javadoc").configure {
-                exclude("**/package-info.java")
-                exclude("net/electrisoma/visceralib/impl/**")
-                exclude("net/electrisoma/visceralib/mixin/**")
-                exclude("net/electrisoma/visceralib/platform/**")
-            }
-
             configure<PublishingExtension> {
                 publications.create<MavenPublication>("mavenJava") {
                     from(components.getByName("java"))

@@ -38,6 +38,13 @@ dependencies {
 }
 
 tasks {
+    withType<Javadoc> {
+        exclude("**/package-info.java")
+        exclude("net/electrisoma/visceralib/impl/**")
+        exclude("net/electrisoma/visceralib/mixin/**")
+        exclude("net/electrisoma/visceralib/platform/**")
+    }
+
     withType<JavaCompile> {
         dependsOn("spotlessApply")
         options.compilerArgs.add("-Xlint:unchecked")

@@ -10,9 +10,8 @@ class VisceraRunConfigPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         project.afterEvaluate {
 
-            if (project.name.endsWith("-common") || project.name == "common") {
+            if (project.name.endsWith("-common") || project.name == "common")
                 return@afterEvaluate
-            }
 
             val base = listOfNotNull(
                 mod.module.takeIf { it.isNotBlank() },

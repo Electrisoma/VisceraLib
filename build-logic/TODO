@@ -1,0 +1,3 @@
+-create a module versioning system (similar to fabric api)
+-make a maven repo (eventually)
+-configure modrinth and curseforge uploading for the monolithic jars
