@@ -9,6 +9,8 @@ import org.gradle.kotlin.dsl.*
 import org.gradle.kotlin.dsl.withType
 import org.gradle.api.tasks.javadoc.Javadoc
 import net.electrisoma.visceralib.gradle.extensions.mod
+import net.fabricmc.loom.task.AbstractRemapJarTask
+import net.fabricmc.loom.task.RemapJarTask
 
 class VisceraPublicationPlugin : Plugin<Project> {
 
@@ -18,16 +20,18 @@ class VisceraPublicationPlugin : Plugin<Project> {
 
             tasks.withType<Jar>().configureEach {
                 manifest {
-                    attributes(mapOf(
-                        "Fabric-Loom-Remap"      to "true",
-                        "Specification-Title"    to mod.displayName,
-                        "Specification-Vendor"   to mod.authors,
-                        "Specification-Version"  to mod.version,
-                        "Implementation-Title"   to project.name,
-                        "Implementation-Version" to mod.version,
-                        "Implementation-Vendor"  to mod.authors,
-                        "Built-On-Minecraft"     to mod.mc
-                    ))
+                    attributes(
+                        mapOf(
+                            "Specification-Title" to mod.displayName,
+                            "Specification-Vendor" to mod.authors,
+                            "Specification-Version" to mod.version,
+                            "Implementation-Title" to project.name,
+                            "Implementation-Version" to mod.version,
+                            "Implementation-Vendor" to mod.authors,
+                            "Built-On-Minecraft" to mod.mc,
+                            "Fabric-Loom-Remap" to "true"
+                        )
+                    )
                 }
             }
 
@@ -35,6 +39,7 @@ class VisceraPublicationPlugin : Plugin<Project> {
                 publications.create<MavenPublication>("mavenJava") {
                     from(components.getByName("java"))
                 }
+
                 repositories {
                     mavenLocal()
 //                    maven {
