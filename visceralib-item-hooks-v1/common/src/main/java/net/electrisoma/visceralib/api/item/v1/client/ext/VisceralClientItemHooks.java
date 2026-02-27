@@ -23,5 +23,7 @@ public interface VisceralClientItemHooks extends
 		ArmPoseHook
 {
 
-	// no-op
+	VisceralClientItemHooks DEFAULT = new VisceralClientItemHooks() {
+		// no-op
+	};
 }

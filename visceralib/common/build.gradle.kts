@@ -1,21 +1,39 @@
 plugins {
     alias(libs.plugins.multiloader.common)
-    alias(libs.plugins.loader.loom)
+    alias(libs.plugins.loader.mdg)
 }
 
 val commonProjects = finder.dependOn(finder.common)
 
 dependencies {
-    minecraft("com.mojang:minecraft:${mod.mc}")
-    mappings(mapping.layered {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${mod.mc}:${mod.ver("parchment")}@zip")
-    })
-
-    compileOnly("net.fabricmc:fabric-loader:${mod.ver("fabric_loader")}")
-
     commonProjects.forEach {
         api(it)
+        accessTransformersApi(it)
+        interfaceInjectionDataApi(it)
+    }
+}
+
+neoForge {
+    neoFormVersion = mod.ver("neoform")
+
+    parchment {
+        mod.ver("parchment").let {
+            mappingsVersion = it
+            minecraftVersion = mod.mc
+        }
+    }
+
+    interfaceInjectionData {
+        mod.commonResource("interfaces.json").let {
+            from(it)
+            publish(it)
+        }
+    }
+
+    accessTransformers {
+        mod.commonResource("META-INF/accesstransformer.cfg").takeIf { it.exists() }?.let {
+            publish(it)
+        }
     }
 }
 

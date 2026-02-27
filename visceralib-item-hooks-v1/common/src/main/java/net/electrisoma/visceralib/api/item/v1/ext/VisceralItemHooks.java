@@ -4,6 +4,8 @@ import net.electrisoma.visceralib.api.item.v1.*;
 
 import net.minecraft.world.item.Item;
 
+import java.util.function.Consumer;
+
 /**
  * The master extension interface for {@link Item} subclasses, providing access to
  * common (server and client) logic hooks via interface injection.
@@ -28,5 +30,5 @@ public interface VisceralItemHooks extends
 		UseHook
 {
 
-	// no-op
+	default void initializeVisceralClient(Consumer<Object> consumer) {}
 }

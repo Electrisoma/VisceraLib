@@ -1,5 +1,6 @@
 package net.electrisoma.visceralib.impl.item.v1.client;
 
+import net.electrisoma.visceralib.api.item.v1.client.ext.VisceralClientExtensionsManager;
 import net.electrisoma.visceralib.platform.core.services.IEnvHelper;
 import net.electrisoma.visceralib.platform.core.services.IEnvHelper.EnvironmentEnum;
 
@@ -10,5 +11,6 @@ public final class ClientEntrypointFabric implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		IEnvHelper.INSTANCE.runIfCurrent(EnvironmentEnum.CLIENT, ClientEntrypoint::init);
+		VisceralClientExtensionsManager.init();
 	}
 }

@@ -1,6 +1,8 @@
 package net.electrisoma.visceralib.mixin.item.v1.client;
 
 import net.electrisoma.visceralib.api.item.v1.client.ArmPoseHook;
+import net.electrisoma.visceralib.api.item.v1.client.ext.VisceralClientExtensionsManager;
+import net.electrisoma.visceralib.api.item.v1.client.ext.VisceralClientItemHooks;
 
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -23,10 +25,14 @@ public abstract class PlayerRendererMixin {
 			CallbackInfoReturnable<HumanoidModel.ArmPose> cir
 	) {
 		ItemStack stack = player.getItemInHand(hand);
-		ArmPoseHook hook = stack.getItem();
-		HumanoidModel.ArmPose pose = hook.viscera$getArmPose(stack, player, hand);
-		if (pose != null) {
-			cir.setReturnValue(pose);
+		if (stack.isEmpty()) return;
+
+		VisceralClientItemHooks hooks = VisceralClientExtensionsManager.get(stack.getItem());
+
+		if (hooks instanceof ArmPoseHook armHook) {
+			HumanoidModel.ArmPose pose = armHook.viscera$getArmPose(stack, player, hand);
+			if (pose != null)
+				cir.setReturnValue(pose);
 		}
 	}
 }

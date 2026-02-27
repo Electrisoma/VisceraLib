@@ -2,8 +2,8 @@ package net.electrisoma.visceralib.mixin.item.v1;
 
 import net.electrisoma.visceralib.api.item.v1.CraftingRemainderHook;
 import net.electrisoma.visceralib.api.item.v1.EnchantmentHook;
-import net.electrisoma.visceralib.api.item.v1.client.BlockResetHook;
-import net.electrisoma.visceralib.api.item.v1.client.ReequipAnimationHook;
+import net.electrisoma.visceralib.api.item.v1.client.ext.VisceralClientExtensionsManager;
+import net.electrisoma.visceralib.api.item.v1.client.ext.VisceralClientItemHooks;
 
 import net.fabricmc.fabric.api.item.v1.EnchantingContext;
 import net.fabricmc.fabric.api.item.v1.FabricItem;
@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.item.v1.FabricItem;
 import net.minecraft.core.Holder;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 
@@ -29,10 +30,8 @@ public interface IFabricItemMixin {
 			ItemStack oldStack,
 			ItemStack newStack
 	) {
-		if ((Object) this instanceof ReequipAnimationHook hooks) {
-			return hooks.viscera$shouldAllowReequipAnimation(oldStack, newStack, false);
-		}
-		return original;
+		VisceralClientItemHooks hooks = VisceralClientExtensionsManager.get((Item) this);
+		return hooks.viscera$shouldAllowReequipAnimation(oldStack, newStack, original);
 	}
 
 	@ModifyReturnValue(method = "allowContinuingBlockBreaking", at = @At("RETURN"))
@@ -42,10 +41,9 @@ public interface IFabricItemMixin {
 			ItemStack oldStack,
 			ItemStack newStack
 	) {
-		if ((Object) this instanceof BlockResetHook hooks) {
-			if (oldStack.getItem() == newStack.getItem()) {
-				return hooks.viscera$shouldContinueBreaking(oldStack, newStack);
-			}
+		if (oldStack.getItem() == newStack.getItem()) {
+			VisceralClientItemHooks hooks = VisceralClientExtensionsManager.get((Item) this);
+			return hooks.viscera$shouldContinueBreaking(oldStack, newStack);
 		}
 		return original;
 	}

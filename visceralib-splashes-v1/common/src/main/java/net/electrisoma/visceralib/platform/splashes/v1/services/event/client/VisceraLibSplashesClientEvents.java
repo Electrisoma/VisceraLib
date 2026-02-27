@@ -3,8 +3,6 @@ package net.electrisoma.visceralib.platform.splashes.v1.services.event.client;
 import net.electrisoma.visceralib.api.core.services.ServiceHelper;
 import net.electrisoma.visceralib.event.splashes.v1.client.VisceralSplashEvent;
 
-
-
 public interface VisceraLibSplashesClientEvents {
 
 	VisceraLibSplashesClientEvents INSTANCE = ServiceHelper.load(VisceraLibSplashesClientEvents.class);

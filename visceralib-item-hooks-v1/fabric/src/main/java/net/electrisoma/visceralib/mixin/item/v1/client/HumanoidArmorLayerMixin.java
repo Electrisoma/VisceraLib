@@ -1,6 +1,6 @@
 package net.electrisoma.visceralib.mixin.item.v1.client;
 
-import net.electrisoma.visceralib.api.item.v1.client.ArmorTextureHook;
+import net.electrisoma.visceralib.api.item.v1.client.ext.VisceralClientExtensionsManager;
 
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.resources.ResourceLocation;
@@ -33,9 +33,8 @@ public abstract class HumanoidArmorLayerMixin {
 			@Local(argsOnly = true) EquipmentSlot slot,
 			@Local(ordinal = 0) ItemStack stack
 	) {
-		ArmorTextureHook hook = stack.getItem();
-		return hook.viscera$getArmorTexture(stack, entity, slot, layer, inner) != null
-				? hook.viscera$getArmorTexture(stack, entity, slot, layer, inner)
-				: original.call(layer, inner);
+		var extensions = VisceralClientExtensionsManager.get(stack.getItem());
+		ResourceLocation customTexture = extensions.viscera$getArmorTexture(stack, entity, slot, layer, inner);
+		return customTexture != null ? customTexture : original.call(layer, inner);
 	}
 }

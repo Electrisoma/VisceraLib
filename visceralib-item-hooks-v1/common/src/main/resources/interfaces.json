@@ -1,6 +1,5 @@
 {
   "net/minecraft/world/item/Item": [
-    "net/electrisoma/visceralib/api/item/v1/ext/VisceralItemHooks",
-    "net/electrisoma/visceralib/api/item/v1/client/ext/VisceralClientItemHooks"
+    "net/electrisoma/visceralib/api/item/v1/ext/VisceralItemHooks"
   ]
 }

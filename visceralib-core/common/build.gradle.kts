@@ -1,35 +1,53 @@
 plugins {
     alias(libs.plugins.multiloader.common)
-    alias(libs.plugins.loader.loom)
-    alias(libs.plugins.fletchingtable.fab)
-}
-
-loom {
-    accessWidenerPath.set(mod.commonAW)
-
-    // interface injection
-    rootProject.findProject("${mod.moduleBase}-fabric")?.let {
-        fabricModJsonPath.set(it.file("src/main/resources/fabric.mod.json"))
-    }
+    alias(libs.plugins.loader.mdg)
+    alias(libs.plugins.fletchingtable.neo)
 }
 
 fletchingTable {
     j52j.register("main") { extension("json", "**/*.json5") }
+
+    accessConverter.register("main") {
+        add("accesswideners/${mod.mc}-${mod.moduleBase}.accesswidener")
+    }
 }
 
 dependencies {
-    minecraft("com.mojang:minecraft:${mod.mc}")
-    mappings(mapping.layered {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-${mod.mc}:${mod.ver("parchment")}@zip")
-    })
-
-    compileOnly("net.fabricmc:fabric-loader:${mod.ver("fabric_loader")}")
     compileOnly("net.fabricmc:sponge-mixin:${mod.ver("sponge_mixin")}")
 
     val mixinExtras = "io.github.llamalad7:mixinextras-common:${mod.ver("mixin_extras")}"
     annotationProcessor(mixinExtras)
     compileOnly(mixinExtras)
+}
+
+val syncAT = tasks.register<Copy>("syncAT") {
+    dependsOn(tasks.processResources)
+    from(layout.buildDirectory.dir("resources/main/META-INF"))
+    include("accesstransformer.cfg")
+    into(layout.buildDirectory.dir("generated/at"))
+}
+
+neoForge {
+    neoFormVersion = mod.ver("neoform")
+
+    parchment {
+        mod.ver("parchment").let {
+            mappingsVersion = it
+            minecraftVersion = mod.mc
+        }
+    }
+
+    accessTransformers {
+        from(syncAT.map { it.destinationDir.resolve("accesstransformer.cfg") })
+        publish(syncAT.map { it.destinationDir.resolve("accesstransformer.cfg") })
+    }
+
+    interfaceInjectionData {
+        mod.commonResource("interfaces.json").let {
+            from(it)
+            publish(it)
+        }
+    }
 }
 
 val commonJava: Configuration by configurations.creating {
