@@ -24,19 +24,19 @@ issueTrackerURL="${github}/issues"
     type="required"
     versionRange="*"
     ordering="NONE"
-    side="BOTH"
+    side="CLIENT"
 [[dependencies.visceralib_dsp_api_v1]]
     modId="minecraft"
     type="required"
     versionRange="[${minMinecraft},)"
     ordering="NONE"
-    side="BOTH"
+    side="CLIENT"
 [[dependencies.visceralib_dsp_api_v1]]
     modId="visceralib_core"
     type="required"
     versionRange="*"
     ordering="NONE"
-    side="BOTH"
+    side="CLIENT"
 
 [modproperties.modmenu]
     badges=[ "library" ]

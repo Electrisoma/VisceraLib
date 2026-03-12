@@ -15,8 +15,6 @@ issueTrackerURL="${github}/issues"
     displayURL="${github}"
 
 [[mixins]]
-    config="mixins/visceralib_splashes_v1-common.mixins.json"
-[[mixins]]
     config="mixins/visceralib_splashes_v1-common.client.mixins.json"
 [[accessTransformers]]
     file="META-INF/accesstransformer.cfg"
@@ -26,19 +24,19 @@ issueTrackerURL="${github}/issues"
     type="required"
     versionRange="*"
     ordering="NONE"
-    side="BOTH"
+    side="CLIENT"
 [[dependencies.visceralib_splashes_v1]]
     modId="minecraft"
     type="required"
     versionRange="[${minMinecraft},)"
     ordering="NONE"
-    side="BOTH"
+    side="CLIENT"
 [[dependencies.visceralib_splashes_v1]]
     modId="visceralib_core"
     type="required"
     versionRange="*"
     ordering="NONE"
-    side="BOTH"
+    side="CLIENT"
 
 [modproperties.modmenu]
     badges=[ "library" ]

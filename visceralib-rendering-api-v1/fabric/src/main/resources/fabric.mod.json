@@ -13,14 +13,11 @@
   },
   "license": "${license}",
   "icon": "assets/visceralib_rendering_api_v1/logo.png",
-  "environment": "*",
+  "environment": "client",
   "entrypoints": {
-    "main": [ "net.electrisoma.visceralib.impl.rendering.v1.EntrypointFabric" ],
     "client": [ "net.electrisoma.visceralib.impl.rendering.v1.client.ClientEntrypointFabric" ]
   },
   "mixins": [
-    "mixins/visceralib_rendering_api_v1-common.mixins.json",
-    "mixins/visceralib_rendering_api_v1-fabric.mixins.json",
     "mixins/visceralib_rendering_api_v1-common.client.mixins.json",
     "mixins/visceralib_rendering_api_v1-fabric.client.mixins.json"
   ],
