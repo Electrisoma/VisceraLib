@@ -1,5 +1,6 @@
 package net.electrisoma.visceralib.mixin.registration.v1;
 
+import net.electrisoma.visceralib.api.core.resources.RLUtils;
 import net.electrisoma.visceralib.api.registration.v1.registry.fluid.VisceralFluid;
 
 import net.neoforged.neoforge.common.NeoForgeMod;
@@ -21,7 +22,7 @@ public abstract class VisceralFluidMixin extends Fluid {
 		ResourceLocation id = BuiltInRegistries.FLUID.getKey(this);
 
 		if (id.getPath().startsWith("flowing_")) {
-			id = ResourceLocation.fromNamespaceAndPath(id.getNamespace(), id.getPath().substring(8));
+			id = RLUtils.path(id.getNamespace(), id.getPath().substring(8));
 		}
 
 		FluidType type = NeoForgeRegistries.FLUID_TYPES.get(id);

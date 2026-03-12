@@ -3,8 +3,11 @@ package net.electrisoma.visceralib.platform.registration.v1;
 import net.electrisoma.visceralib.platform.registration.v1.services.ITabHelper;
 
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.fabricmc.fabric.mixin.itemgroup.ItemGroupAccessor;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -26,6 +29,40 @@ public final class TabHelperImpl implements ITabHelper {
 		CreativeModeTab.Builder builder = FabricItemGroup.builder();
 		builderConfig.accept(new DelegatingBuilder(builder));
 		return builder.build();
+	}
+
+	@Override
+	public void setOrderBefore(CreativeModeTab.Builder builder, ResourceKey<CreativeModeTab> before) {
+		CreativeModeTab targetTab = BuiltInRegistries.CREATIVE_MODE_TAB.get(before);
+		if (targetTab != null && builder instanceof ItemGroupAccessor accessor) {
+			int prevCol = targetTab.column() - 1;
+			CreativeModeTab.Row row = targetTab.row();
+
+			if (prevCol < 0) {
+				prevCol = 8;
+				row = (row == CreativeModeTab.Row.BOTTOM) ? CreativeModeTab.Row.TOP : CreativeModeTab.Row.BOTTOM;
+			}
+
+			accessor.setColumn(prevCol);
+			accessor.setRow(row);
+		}
+	}
+
+	@Override
+	public void setOrderAfter(CreativeModeTab.Builder builder, ResourceKey<CreativeModeTab> after) {
+		CreativeModeTab targetTab = BuiltInRegistries.CREATIVE_MODE_TAB.get(after);
+		if (targetTab != null && builder instanceof ItemGroupAccessor accessor) {
+			int nextCol = targetTab.column() + 1;
+			CreativeModeTab.Row row = targetTab.row();
+
+			if (nextCol > 8) {
+				nextCol = 0;
+				row = (row == CreativeModeTab.Row.TOP) ? CreativeModeTab.Row.BOTTOM : CreativeModeTab.Row.TOP;
+			}
+
+			accessor.setColumn(nextCol);
+			accessor.setRow(row);
+		}
 	}
 
 	private static class DelegatingBuilder extends CreativeModeTab.Builder {

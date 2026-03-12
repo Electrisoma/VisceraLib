@@ -7,7 +7,9 @@ import net.electrisoma.visceralib.api.registration.v1.registry.dynamic.DynamicRe
 import net.electrisoma.visceralib.api.registration.v1.registry.fluid.VisceralFluidProperties;
 import net.electrisoma.visceralib.platform.registration.v1.services.ITabHelper;
 
+import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -15,14 +17,20 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.village.poi.PoiType;
+import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.minecraft.world.level.storage.loot.predicates.LootItemConditionType;
 
 import com.mojang.serialization.Codec;
 
@@ -70,8 +78,6 @@ public abstract class AbstractRegistryHelper {
 		return this.registry.register(registry, name, supplier);
 	}
 
-	// --- Custom Registry Management ---
-
 	/**
 	 * Creates a helper focused on a specific registry.
 	 * @param target the registry to bind to.
@@ -108,94 +114,58 @@ public abstract class AbstractRegistryHelper {
 		return new DynamicRegistryObject<>(key);
 	}
 
-	// --- Blocks and Items ---
-
-	/** Shorthand for registering a Block. */
 	public <T extends Block> RegistryObject<T> block(String name, Supplier<T> supplier) {
 		return register(BuiltInRegistries.BLOCK, name, supplier);
 	}
 
-	/** Backport of 1.21.11 block registration using a property factory. */
-	public <T extends Block> RegistryObject<T> block(
-			String name,
-			Function<BlockBehaviour.Properties, ? extends T> factory,
-			Supplier<BlockBehaviour.Properties> supplier
-	) {
-		return register(BuiltInRegistries.BLOCK, name, () -> factory.apply(supplier.get()));
+	public <T extends Block> RegistryObject<T> block(String name, Function<BlockBehaviour.Properties, ? extends T> factory, Supplier<BlockBehaviour.Properties> props) {
+		return register(BuiltInRegistries.BLOCK, name, () -> factory.apply(props.get()));
 	}
 
-	/** Shorthand for registering an Item. */
 	public <T extends Item> RegistryObject<T> item(String name, Supplier<T> supplier) {
 		return register(BuiltInRegistries.ITEM, name, supplier);
 	}
 
-	/** Backport of 1.21.11 item registration using a property factory. */
-	public <T extends Item> RegistryObject<T> item(
-			String name,
-			Function<Item.Properties, ? extends T> factory,
-			Supplier<Item.Properties> supplier
-	) {
-		return register(BuiltInRegistries.ITEM, name, () -> factory.apply(supplier.get()));
+	public <T extends Item> RegistryObject<T> item(String name, Function<Item.Properties, ? extends T> factory, Supplier<Item.Properties> props) {
+		return register(BuiltInRegistries.ITEM, name, () -> factory.apply(props.get()));
 	}
 
-	/** Registers a block and automatically creates a corresponding BlockItem. */
 	public <T extends Block> RegistryObject<T> blockWithItem(String name, Supplier<T> blockSupplier) {
 		RegistryObject<T> blockObj = block(name, blockSupplier);
 		this.registry.addPostRegisterCallback(BuiltInRegistries.BLOCK.key(), blockObj.key().location(), () ->
-			item(name, () -> new BlockItem(blockObj.get(), new Item.Properties()))
+				item(name, () -> new BlockItem(blockObj.get(), new Item.Properties()))
 		);
 		return blockObj;
 	}
 
-	/** Backport of 1.21.11 block item registration. */
-	public <T extends Block> RegistryObject<T> blockWithItem(
-			String name,
-			Function<BlockBehaviour.Properties, ? extends T> factory,
-			Supplier<BlockBehaviour.Properties> supplier
-	) {
-		RegistryObject<T> blockObj = block(name, () -> factory.apply(supplier.get()));
+	public <T extends Block> RegistryObject<T> blockWithItem(String name, Function<BlockBehaviour.Properties, ? extends T> factory, Supplier<BlockBehaviour.Properties> props) {
+		RegistryObject<T> blockObj = block(name, () -> factory.apply(props.get()));
 		this.registry.addPostRegisterCallback(BuiltInRegistries.BLOCK.key(), blockObj.key().location(), () ->
-			item(name, p -> new BlockItem(blockObj.get(), p), Item.Properties::new)
+				item(name, p -> new BlockItem(blockObj.get(), p), Item.Properties::new)
 		);
 		return blockObj;
 	}
 
-	// --- Gameplay Mechanics ---
-
-	/** Shorthand for registering a Block Entity Type. */
 	public <T extends BlockEntityType<?>> RegistryObject<T> blockEntityType(String name, Supplier<T> supplier) {
 		return register(BuiltInRegistries.BLOCK_ENTITY_TYPE, name, supplier);
 	}
 
-	/** Backport of 1.21.11 Block Entity registration. */
-	public <T extends BlockEntityType<?>> RegistryObject<T> blockEntityType(
-			String name,
-			Function<BlockEntityType.BlockEntitySupplier<?>, ? extends T> factory,
-			Supplier<BlockEntityType.BlockEntitySupplier<?>> supplier
-	) {
+	public <T extends BlockEntityType<?>> RegistryObject<T> blockEntityType(String name, Function<BlockEntityType.BlockEntitySupplier<?>, ? extends T> factory, Supplier<BlockEntityType.BlockEntitySupplier<?>> supplier) {
 		return register(BuiltInRegistries.BLOCK_ENTITY_TYPE, name, () -> factory.apply(supplier.get()));
 	}
 
-	/** Shorthand for registering an Entity Type. */
 	public <T extends EntityType<?>> RegistryObject<T> entityType(String name, Supplier<T> supplier) {
 		return register(BuiltInRegistries.ENTITY_TYPE, name, supplier);
 	}
 
-	/** Backport of 1.21.11 Entity registration. */
-	public <T extends EntityType<?>> RegistryObject<T> entityType(
-			String name,
-			Function<EntityType.EntityFactory<?>, ? extends T> factory,
-			Supplier<EntityType.EntityFactory<?>> supplier
-	) {
+	public <T extends EntityType<?>> RegistryObject<T> entityType(String name, Function<EntityType.EntityFactory<?>, ? extends T> factory, Supplier<EntityType.EntityFactory<?>> supplier) {
 		return register(BuiltInRegistries.ENTITY_TYPE, name, () -> factory.apply(supplier.get()));
 	}
 
-	/** Shorthand for registering a Fluid. */
 	public <T extends Fluid> RegistryObject<T> fluid(String name, Supplier<T> supplier) {
 		return register(BuiltInRegistries.FLUID, name, supplier);
 	}
 
-	/** Helper to onRegister a still fluid, flowing fluid, and a bucket item in one call. */
 	public <S extends Fluid, F extends Fluid> RegistryObject<S> fluid(
 			String name,
 			VisceralFluidProperties props,
@@ -215,17 +185,18 @@ public abstract class AbstractRegistryHelper {
 		return still;
 	}
 
-	/** Shorthand for registering a Sound Event. */
 	public <T extends SoundEvent> RegistryObject<T> sound(String name, Supplier<T> supplier) {
 		return register(BuiltInRegistries.SOUND_EVENT, name, supplier);
 	}
 
-	/** Shorthand for registering a Menu Type. */
 	public <T extends MenuType<?>> RegistryObject<T> menu(String name, Supplier<T> supplier) {
 		return register(BuiltInRegistries.MENU, name, supplier);
 	}
 
-	/** Shorthand for registering a Particle Type. */
+	public <T extends MenuType<?>> RegistryObject<T> menu(String name, Function<MenuType.MenuSupplier<?>, ? extends T> factory, Supplier<MenuType.MenuSupplier<?>> supplier) {
+		return register(BuiltInRegistries.MENU, name, () -> factory.apply(supplier.get()));
+	}
+
 	public <T extends ParticleType<?>> RegistryObject<T> particle(String name, Supplier<T> supplier) {
 		return register(BuiltInRegistries.PARTICLE_TYPE, name, supplier);
 	}
@@ -234,30 +205,59 @@ public abstract class AbstractRegistryHelper {
 		return register(BuiltInRegistries.CREATIVE_MODE_TAB, name, supplier);
 	}
 
-	/** Shorthand for registering a Creative Mode Tab. */
 	public RegistryObject<CreativeModeTab> autoTab(String name, Consumer<CreativeModeTab.Builder> builderConfig) {
 		return tab(name, () -> ITabHelper.INSTANCE.create(builderConfig));
 	}
 
-	// --- Effects and Mechanics ---
+	public <T extends DataComponentType<?>> RegistryObject<T> dataComponent(String name, Supplier<T> supplier) {
+		return register(BuiltInRegistries.DATA_COMPONENT_TYPE, name, supplier);
+	}
 
-	/** Shorthand for registering a Mob Effect. */
+	public <T extends RecipeType<?>> RegistryObject<T> recipeType(String name, Supplier<T> supplier) {
+		return register(BuiltInRegistries.RECIPE_TYPE, name, supplier);
+	}
+
+	public <T extends RecipeSerializer<?>> RegistryObject<T> recipeSerializer(String name, Supplier<T> supplier) {
+		return register(BuiltInRegistries.RECIPE_SERIALIZER, name, supplier);
+	}
+
+	public <T extends CriterionTrigger<?>> RegistryObject<T> trigger(String name, Supplier<T> supplier) {
+		return register(BuiltInRegistries.TRIGGER_TYPES, name, supplier);
+	}
+
+	public <T extends LootItemConditionType> RegistryObject<T> lootCondition(String name, Supplier<T> supplier) {
+		return register(BuiltInRegistries.LOOT_CONDITION_TYPE, name, supplier);
+	}
+
+	public <T extends LootItemFunctionType<?>> RegistryObject<T> lootFunction(String name, Supplier<T> supplier) {
+		return register(BuiltInRegistries.LOOT_FUNCTION_TYPE, name, supplier);
+	}
+
 	public <T extends MobEffect> RegistryObject<T> effect(String name, Supplier<T> supplier) {
 		return register(BuiltInRegistries.MOB_EFFECT, name, supplier);
 	}
 
-	/** Shorthand for registering an Entity Attribute. */
 	public <T extends Attribute> RegistryObject<T> attribute(String name, Supplier<T> supplier) {
 		return register(BuiltInRegistries.ATTRIBUTE, name, supplier);
 	}
 
-	/** Shorthand for registering a Potion. */
+	public <T extends ArmorMaterial> RegistryObject<T> armorMaterial(String name, Supplier<T> supplier) {
+		return register(BuiltInRegistries.ARMOR_MATERIAL, name, supplier);
+	}
+
 	public <T extends Potion> RegistryObject<T> potion(String name, Supplier<T> supplier) {
 		return register(BuiltInRegistries.POTION, name, supplier);
 	}
 
-	/** Shorthand for registering a Worldgen Feature. */
 	public <T extends Feature<?>> RegistryObject<T> feature(String name, Supplier<T> supplier) {
 		return register(BuiltInRegistries.FEATURE, name, supplier);
+	}
+
+	public <T extends PoiType> RegistryObject<T> poiType(String name, Supplier<T> supplier) {
+		return register(BuiltInRegistries.POINT_OF_INTEREST_TYPE, name, supplier);
+	}
+
+	public <T extends VillagerProfession> RegistryObject<T> villagerProfession(String name, Supplier<T> supplier) {
+		return register(BuiltInRegistries.VILLAGER_PROFESSION, name, supplier);
 	}
 }
