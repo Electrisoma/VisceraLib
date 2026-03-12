@@ -1,6 +1,5 @@
 package net.electrisoma.visceralib.api.model.loading.v1.client.obj;
 
-import net.electrisoma.visceralib.api.core.resources.RLUtils;
 import net.electrisoma.visceralib.api.model.loading.v1.client.model.VisceralBakedModel;
 import net.electrisoma.visceralib.api.model.loading.v1.client.model.VisceralUnbakedGeometry;
 import net.electrisoma.visceralib.api.model.loading.v1.client.model.geometry.IVisceralGeometryContext;
@@ -74,16 +73,18 @@ public class VisceralObjGeometry implements VisceralUnbakedGeometry {
 	}
 
 	@Override
-	public Collection<Material> getMaterials(IVisceralGeometryContext context, Function<ResourceLocation, UnbakedModel> modelGetter) {
+	public Collection<Material> getMaterials(IVisceralGeometryContext context) {
 		List<Material> materials = new ArrayList<>();
-		ResourceLocation blockAtlas = RLUtils.mc("textures/atlas/blocks.png");
 
 		for (String matKey : materialGroups.keySet()) {
 			String lookup = getTextureLookup(matKey);
-			if (!lookup.startsWith("#")) {
-				materials.add(new Material(blockAtlas, ResourceLocation.parse(lookup)));
-			}
+			Material mat = context.getMaterial(lookup);
+
+			if (mat != null && !mat.texture().getPath().equals("missingno"))
+				materials.add(mat);
 		}
+
+		materials.add(context.getMaterial("#particle"));
 		return materials;
 	}
 

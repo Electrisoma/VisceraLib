@@ -4,7 +4,6 @@ import net.electrisoma.visceralib.api.model.loading.v1.client.model.geometry.IVi
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -14,7 +13,7 @@ public interface VisceralUnbakedGeometry {
 
 	BakedModel bake(IVisceralGeometryContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState state);
 
-	default Collection<Material> getMaterials(IVisceralGeometryContext context, Function<ResourceLocation, UnbakedModel> modelGetter) {
+	default Collection<Material> getMaterials(IVisceralGeometryContext context) {
 		return Collections.emptyList();
 	}
 }

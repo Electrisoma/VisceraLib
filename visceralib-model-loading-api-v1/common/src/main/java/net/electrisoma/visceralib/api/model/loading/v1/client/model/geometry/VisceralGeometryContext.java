@@ -12,32 +12,31 @@ import net.minecraft.world.inventory.InventoryMenu;
 
 import com.google.gson.JsonObject;
 
+import java.util.function.Function;
+
 public class VisceralGeometryContext implements IVisceralGeometryContext {
 
 	private final JsonObject json;
 	private final ModelBaker baker;
+	private final Function<ResourceLocation, UnbakedModel> resolver;
 
 	public VisceralGeometryContext(JsonObject json, ModelBaker baker) {
+		this(json, baker, null);
+	}
+
+	public VisceralGeometryContext(JsonObject json, Function<ResourceLocation, UnbakedModel> resolver) {
+		this(json, null, resolver);
+	}
+
+	private VisceralGeometryContext(JsonObject json, ModelBaker baker, Function<ResourceLocation, UnbakedModel> resolver) {
 		this.json = json;
 		this.baker = baker;
+		this.resolver = resolver;
 	}
 
 	@Override
 	public Material getMaterial(String name) {
-		String reference = name;
-
-		if (name.startsWith("#")) {
-			String key = name.substring(1);
-			JsonObject textures = json.getAsJsonObject("textures");
-
-			if (textures != null && textures.has(key)) {
-				reference = textures.get(key).getAsString();
-			} else {
-				return new Material(InventoryMenu.BLOCK_ATLAS, RLUtils.mc("missingno"));
-			}
-		}
-
-		return new Material(InventoryMenu.BLOCK_ATLAS, RLUtils.parse(reference));
+		return resolveMaterialRecursive(this.json, name);
 	}
 
 	@Override
@@ -59,5 +58,34 @@ public class VisceralGeometryContext implements IVisceralGeometryContext {
 				return blockModel.getTransforms();
 		}
 		return ItemTransforms.NO_TRANSFORMS;
+	}
+
+	private Material resolveMaterialRecursive(JsonObject currentJson, String name) {
+		if (!name.startsWith("#")) {
+			return new Material(InventoryMenu.BLOCK_ATLAS, RLUtils.parse(name));
+		}
+
+		String key = name.substring(1);
+		JsonObject textures = currentJson.getAsJsonObject("textures");
+
+		if (textures != null && textures.has(key)) {
+			String ref = textures.get(key).getAsString();
+			if (ref.startsWith("#")) return resolveMaterialRecursive(currentJson, ref);
+			return new Material(InventoryMenu.BLOCK_ATLAS, RLUtils.parse(ref));
+		}
+
+		if (currentJson.has("parent")) {
+			ResourceLocation parentLoc = RLUtils.parse(currentJson.get("parent").getAsString());
+
+			UnbakedModel parentModel = null;
+			if (baker != null) parentModel = baker.getModel(parentLoc);
+			else if (resolver != null) parentModel = resolver.apply(parentLoc);
+
+			if (parentModel instanceof BlockModel bm) {
+				return bm.getMaterial(key);
+			}
+		}
+
+		return new Material(InventoryMenu.BLOCK_ATLAS, RLUtils.mc("missingno"));
 	}
 }

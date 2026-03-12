@@ -5,7 +5,6 @@ import net.electrisoma.visceralib.api.model.loading.v1.client.model.VisceralUnba
 import net.electrisoma.visceralib.api.model.loading.v1.client.model.geometry.IVisceralGeometryContext;
 import net.electrisoma.visceralib.api.model.loading.v1.client.model.geometry.VisceralGeometryContext;
 import net.electrisoma.visceralib.api.model.loading.v1.client.model.geometry.VisceralGeometryLoader;
-import net.electrisoma.visceralib.api.model.loading.v1.client.obj.VisceralObjGeometry;
 import net.electrisoma.visceralib.event.model.loading.v1.client.VisceralModelEvent;
 import net.electrisoma.visceralib.event.model.loading.v1.client.VisceralModelEventHandlers;
 import net.electrisoma.visceralib.platform.model.loading.v1.service.event.client.VisceraLibModelEvents;
@@ -76,13 +75,16 @@ public final class VisceraLibModelClientEventsImpl implements VisceraLibModelEve
 
 							@Override
 							public @NotNull Collection<ResourceLocation> getDependencies() {
+								if (json.has("parent"))
+									return List.of(RLUtils.parse(json.get("parent").getAsString()));
 								return Collections.emptyList();
 							}
 
 							@Override
 							public void resolveParents(@NotNull Function<ResourceLocation, UnbakedModel> modelGetter) {
-								IVisceralGeometryContext visceralContext = new VisceralGeometryContext(json, null);
-								geom.getMaterials(visceralContext, modelGetter);
+								IVisceralGeometryContext discoveryContext = new VisceralGeometryContext(json, modelGetter);
+								for (Material mat : geom.getMaterials(discoveryContext))
+									modelGetter.apply(mat.texture());
 							}
 
 							@Override
@@ -92,8 +94,7 @@ public final class VisceraLibModelClientEventsImpl implements VisceraLibModelEve
 									@NotNull ModelState state
 							) {
 								IVisceralGeometryContext visceralContext = new VisceralGeometryContext(json, baker);
-								return geom.bake(visceralContext, baker, getter, state);
-							}
+								return geom.bake(visceralContext, baker, getter, state);}
 						};
 					}
 				}
