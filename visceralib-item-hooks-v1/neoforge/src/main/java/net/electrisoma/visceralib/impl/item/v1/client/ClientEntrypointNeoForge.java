@@ -18,7 +18,7 @@ public final class ClientEntrypointNeoForge {
 		modEventBus.addListener(this::onClientSetup);
 	}
 
-	private void onClientSetup(FMLClientSetupEvent event) {
-		event.enqueueWork(VisceralClientExtensionsManager::init);
+	private void onClientSetup(final FMLClientSetupEvent event) {
+		VisceralClientExtensionsManager.init();
 	}
 }

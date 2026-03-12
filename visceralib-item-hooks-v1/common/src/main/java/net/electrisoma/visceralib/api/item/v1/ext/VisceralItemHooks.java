@@ -1,6 +1,7 @@
 package net.electrisoma.visceralib.api.item.v1.ext;
 
 import net.electrisoma.visceralib.api.item.v1.*;
+import net.electrisoma.visceralib.api.item.v1.client.ext.VisceralClientItemHooks;
 
 import net.minecraft.world.item.Item;
 
@@ -30,5 +31,5 @@ public interface VisceralItemHooks extends
 		UseHook
 {
 
-	default void initializeVisceralClient(Consumer<Object> consumer) {}
+	default void viscera$initializeClient(Consumer<VisceralClientItemHooks> consumer) {}
 }

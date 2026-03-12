@@ -13,7 +13,7 @@ import java.util.function.Consumer;
 public abstract class ItemMixin implements VisceralItemHooks {
 
 	@Override
-	public void initializeVisceralClient(Consumer<Object> consumer) {
+	public void viscera$initializeClient(Consumer<VisceralClientItemHooks> consumer) {
 		if (this instanceof VisceralClientItemHooks clientHooks) {
 			consumer.accept(clientHooks);
 		}

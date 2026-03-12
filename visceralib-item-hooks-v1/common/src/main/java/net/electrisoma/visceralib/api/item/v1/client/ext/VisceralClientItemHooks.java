@@ -20,7 +20,8 @@ public interface VisceralClientItemHooks extends
 		ArmorTextureHook,
 		ReequipAnimationHook,
 		BlockResetHook,
-		ArmPoseHook
+		ArmPoseHook,
+		CustomRendererHook
 {
 
 	VisceralClientItemHooks DEFAULT = new VisceralClientItemHooks() {

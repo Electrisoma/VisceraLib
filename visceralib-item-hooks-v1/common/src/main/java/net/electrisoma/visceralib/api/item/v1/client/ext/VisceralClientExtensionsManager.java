@@ -10,20 +10,18 @@ import java.util.Map;
 
 public final class VisceralClientExtensionsManager {
 
-	private VisceralClientExtensionsManager() {}
-
 	private static final Map<Item, VisceralClientItemHooks> ITEM_EXTENSIONS = new IdentityHashMap<>();
 	private static boolean initialized = false;
+
+	private VisceralClientExtensionsManager() {}
 
 	public static void init() {
 		if (initialized) return;
 
 		BuiltInRegistries.ITEM.forEach(item -> {
 			if (item instanceof VisceralItemHooks visceralItem) {
-				visceralItem.initializeVisceralClient(ext -> {
-					if (ext instanceof VisceralClientItemHooks clientExt)
-						ITEM_EXTENSIONS.put(item, clientExt);
-				});
+				visceralItem.viscera$initializeClient(ext ->
+						ITEM_EXTENSIONS.put(item, ext));
 			}
 		});
 
@@ -31,8 +29,7 @@ public final class VisceralClientExtensionsManager {
 	}
 
 	public static VisceralClientItemHooks get(Item item) {
-		if (!initialized)
-			init();
+		if (!initialized) init();
 		return ITEM_EXTENSIONS.getOrDefault(item, VisceralClientItemHooks.DEFAULT);
 	}
 }

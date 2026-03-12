@@ -21,35 +21,14 @@ public abstract class ItemEntityMixin extends Entity {
 
 	@Shadow public abstract ItemStack getItem();
 
-	public ItemEntityMixin(EntityType<?> type, Level level) {
-		super(type, level);
+	public ItemEntityMixin(EntityType<?> entityType, Level level) {
+		super(entityType, level);
 	}
 
 	@ModifyConstant(method = "tick", constant = @Constant(intValue = 6000))
 	private int viscera$modifyLifespan(int original) {
 		EntityHook hook = this.getItem().getItem();
 		return hook.viscera$getEntityDespawn(this.getItem(), this.level());
-	}
-
-	@Inject(method = "tick", at = @At("HEAD"), cancellable = true)
-	private void viscera$handleCustomEntitySwap(CallbackInfo ci) {
-		//noinspection resource
-		if (this.level().isClientSide || this.isRemoved()) return;
-		if (this.tickCount == 0) {
-			EntityHook hook = this.getItem().getItem();
-			if (hook.viscera$customItemEntity(this.getItem())) {
-				Entity newEntity = hook.viscera$createEntity(this.level(), this, this.getItem());
-
-				if (newEntity != null) {
-					newEntity.copyPosition(this);
-					newEntity.setDeltaMovement(this.getDeltaMovement());
-					//noinspection resource
-					this.level().addFreshEntity(newEntity);
-					this.discard();
-					ci.cancel();
-				}
-			}
-		}
 	}
 
 	@Inject(method = "tick", at = @At("HEAD"), cancellable = true)

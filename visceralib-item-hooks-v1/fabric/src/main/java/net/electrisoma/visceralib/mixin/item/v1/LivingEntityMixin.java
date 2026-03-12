@@ -1,9 +1,11 @@
 package net.electrisoma.visceralib.mixin.item.v1;
 
 import net.electrisoma.visceralib.api.item.v1.CombatHook;
+import net.electrisoma.visceralib.api.item.v1.EntityHook;
 import net.electrisoma.visceralib.api.item.v1.EquipmentHook;
 import net.electrisoma.visceralib.api.item.v1.UseHook;
 
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -53,6 +55,21 @@ public abstract class LivingEntityMixin {
 		if (weaponStack.getItem() instanceof CombatHook hook) {
 			if (hook.viscera$canDisableShield(weaponStack, shieldStack, defender, attacker))
 				defender.canDisableShield();
+		}
+	}
+
+	@Inject(
+			method = "swing(Lnet/minecraft/world/InteractionHand;Z)V",
+			at = @At("HEAD"),
+			cancellable = true
+	)
+	private void viscera$onSwing(InteractionHand hand, boolean updateSelf, CallbackInfo ci) {
+		LivingEntity entity = (LivingEntity) (Object) this;
+		ItemStack stack = entity.getItemInHand(hand);
+
+		if (!stack.isEmpty() && stack.getItem() instanceof EntityHook hook) {
+			if (hook.viscera$shouldCancelSwing(stack, entity, hand))
+				ci.cancel();
 		}
 	}
 }
