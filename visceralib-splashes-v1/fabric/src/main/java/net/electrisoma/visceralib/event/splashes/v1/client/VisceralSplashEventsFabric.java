@@ -7,6 +7,8 @@ import java.util.Arrays;
 
 public final class VisceralSplashEventsFabric {
 
+	private VisceralSplashEventsFabric() {}
+
 	public static final Event<VisceralSplashEvent.Pre> PRE = EventFactory.createArrayBacked(
 			VisceralSplashEvent.Pre.class,
 			listeners -> (context) ->
@@ -18,6 +20,4 @@ public final class VisceralSplashEventsFabric {
 			listeners -> (context) ->
 				Arrays.stream(listeners).forEach(listener -> listener.onSplashPost(context))
 	);
-
-	private VisceralSplashEventsFabric() {}
 }
