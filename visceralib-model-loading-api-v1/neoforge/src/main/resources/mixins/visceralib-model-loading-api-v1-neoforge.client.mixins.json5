@@ -1,0 +1,8 @@
+{
+  package: "net.electrisoma.visceralib.mixin.model.loading.v1.client",
+  required: true,
+  minVersion: "0.8",
+  compatibilityLevel: "${compatibilityLevel}",
+  injectors: { defaultRequire: 1 },
+  client: []
+}

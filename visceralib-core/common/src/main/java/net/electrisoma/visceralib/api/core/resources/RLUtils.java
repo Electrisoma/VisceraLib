@@ -31,6 +31,16 @@ public class RLUtils {
 	}
 
 	/**
+	 * Simple ResourceLocation.parse wrapper to make parsing resource locations easier.
+	 *
+	 * @param path the path (the name of the texture, model, or data entry).
+	 * @return A new {@link ResourceLocation} instance.
+	 */
+	public static ResourceLocation parse(String path) {
+		return ResourceLocation.parse(path);
+	}
+
+	/**
 	 * Safely retrieves the path from a {@link ResourceLocation}.
 	 *
 	 * @param location     the resource location to query (can be null).
