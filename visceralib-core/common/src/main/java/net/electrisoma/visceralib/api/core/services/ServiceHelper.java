@@ -7,10 +7,10 @@ import java.util.Optional;
 import java.util.ServiceLoader;
 
 /**
- * A bridge utility for multi-loader platform abstraction using the Java Service Provider Interface (SPI).
+ * A bridge utility for multiplatform abstraction using the Java Service Provider Interface (SPI).
  * <p>
- * This class allows the common module to access platform-specific implementations (Fabric/NeoForge)
- * without having a direct dependency on loader-specific code.
+ * This class allows the common module to access platform-specific implementations
+ * without having a direct dependency on platform-specific code.
  * <p>
  * Implementations must be defined in {@code META-INF/services/}.
  */
@@ -30,7 +30,7 @@ public class ServiceHelper {
 	public static <T> Optional<T> find(Class<T> clazz) {
 
 		Optional<T> loadedService = ServiceLoader
-				.load(clazz)
+				.load(clazz, clazz.getClassLoader())
 				.findFirst();
 
 		if (loadedService.isPresent()) {

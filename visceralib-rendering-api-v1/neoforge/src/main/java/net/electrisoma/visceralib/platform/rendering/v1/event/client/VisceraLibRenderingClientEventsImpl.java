@@ -1,13 +1,12 @@
 package net.electrisoma.visceralib.platform.rendering.v1.event.client;
 
+import net.electrisoma.visceralib.api.core.event.IEventBusHelper;
 import net.electrisoma.visceralib.event.rendering.v1.client.ColorHandlerEvents;
 import net.electrisoma.visceralib.event.rendering.v1.client.LayerRegistrationConsumer;
 import net.electrisoma.visceralib.event.rendering.v1.client.ModelRegistrationEvents;
 import net.electrisoma.visceralib.event.rendering.v1.client.RendererRegistrationEvents;
-import net.electrisoma.visceralib.platform.core.services.IPlatformHelper;
 import net.electrisoma.visceralib.platform.rendering.v1.services.event.client.VisceraLibRenderingClientEvents;
 
-import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
@@ -30,9 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.function.Consumer;
 
 @AutoService(VisceraLibRenderingClientEvents.class)
-public final class VisceraLibRenderingClientEventsImpl implements VisceraLibRenderingClientEvents {
-
-	IEventBus modBus = IPlatformHelper.INSTANCE.getModEventBus();
+public final class VisceraLibRenderingClientEventsImpl implements VisceraLibRenderingClientEvents, IEventBusHelper {
 
 	@Override
 	public void registerBlockEntityRenderers(Consumer<RendererRegistrationEvents.BlockEntityRenderer> consumer) {
@@ -74,6 +71,7 @@ public final class VisceraLibRenderingClientEventsImpl implements VisceraLibRend
 			for (EntityType<?> type : event.getEntityTypes()) {
 				EntityRenderer<?> renderer = event.getRenderer(type);
 				if (renderer instanceof LivingEntityRenderer<?, ?> living)
+					//noinspection unchecked
 					processLayer(consumer, (EntityType<? extends LivingEntity>) type, living, context);
 			}
 
@@ -95,10 +93,6 @@ public final class VisceraLibRenderingClientEventsImpl implements VisceraLibRend
 	public void registerBlockColorHandlers(Consumer<ColorHandlerEvents.BlockColorHandler> consumer) {
 		withModBus(bus -> bus.addListener((RegisterColorHandlersEvent.Block event) ->
 				consumer.accept(event::register)));
-	}
-
-	private void withModBus(Consumer<IEventBus> action) {
-		if (modBus != null) action.accept(modBus);
 	}
 
 	@SuppressWarnings("unchecked")
