@@ -1,12 +1,13 @@
 package net.electrisoma.visceralib.platform.core.event.server;
 
 import net.electrisoma.visceralib.event.core.server.VisceralServerLifecycleEvent;
+import net.electrisoma.visceralib.event.core.server.VisceralServerTickEvent;
 import net.electrisoma.visceralib.platform.core.services.event.server.VisceraLibCoreServerEvents;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 import com.google.auto.service.AutoService;
-
 
 @AutoService(VisceraLibCoreServerEvents.class)
 public final class VisceraLibCoreServerEventsImpl implements VisceraLibCoreServerEvents {
@@ -29,5 +30,15 @@ public final class VisceraLibCoreServerEventsImpl implements VisceraLibCoreServe
 	@Override
 	public void registerStopped(VisceralServerLifecycleEvent.Stopped h) {
 		ServerLifecycleEvents.SERVER_STOPPED.register(h::onLifecycle);
+	}
+
+	@Override
+	public void registerPreServerTick(VisceralServerTickEvent.Pre h) {
+		ServerTickEvents.START_SERVER_TICK.register(h::onServerTick);
+	}
+
+	@Override
+	public void registerPostServerTick(VisceralServerTickEvent.Post h) {
+		ServerTickEvents.END_SERVER_TICK.register(h::onServerTick);
 	}
 }
