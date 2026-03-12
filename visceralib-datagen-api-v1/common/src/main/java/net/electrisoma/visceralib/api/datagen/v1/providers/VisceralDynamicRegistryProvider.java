@@ -34,11 +34,11 @@ public abstract class VisceralDynamicRegistryProvider implements DataProvider {
 	public VisceralDynamicRegistryProvider(
 			PackOutput output,
 			String modid,
-			CompletableFuture<HolderLookup.Provider> lookup
+			CompletableFuture<HolderLookup.Provider> lookupProvider
 	) {
 		this.output = output;
 		this.modid = modid;
-		this.lookupProvider = lookup;
+		this.lookupProvider = lookupProvider;
 	}
 
 	protected <T> void add(
@@ -55,13 +55,13 @@ public abstract class VisceralDynamicRegistryProvider implements DataProvider {
 		return this.lookupProvider.thenCompose(lookup -> {
 
 			RegistryAccess.Frozen frozen = RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY);
-			HolderLookup.Provider fullLookup = this.builder.build(frozen);
+			HolderLookup.Provider lookupProvider = this.builder.build(frozen);
 
-			RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, fullLookup);
+			RegistryOps<JsonElement> ops = RegistryOps.create(JsonOps.INSTANCE, lookupProvider);
 			List<CompletableFuture<?>> futures = new ArrayList<>();
 
 			this.registries.forEach((key, codec) ->
-					generateRegistry(futures, writer, fullLookup, ops, key, codec));
+					generateRegistry(futures, writer, lookupProvider, ops, key, codec));
 
 			return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
 		});
@@ -71,14 +71,19 @@ public abstract class VisceralDynamicRegistryProvider implements DataProvider {
 	private <T> void generateRegistry(
 			List<CompletableFuture<?>> futures,
 			CachedOutput writer,
-			HolderLookup.Provider lookup,
+			HolderLookup.Provider lookupProvider,
 			RegistryOps<JsonElement> ops, ResourceKey<? extends Registry<?>> key,
 			Codec<?> codec
 	) {
 		var registryKey = (ResourceKey<Registry<T>>) key;
 		var typedCodec = (Codec<T>) codec;
-		var registryLookup = lookup.lookupOrThrow(registryKey);
-		var pathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, registryKey.location().getPath());
+		var registryLookup = lookupProvider.lookupOrThrow(registryKey);
+
+		String folderPath = registryKey.location().getNamespace().equals("minecraft")
+				? registryKey.location().getPath()
+				: registryKey.location().getNamespace() + "/" + registryKey.location().getPath();
+
+		var pathProvider = output.createPathProvider(PackOutput.Target.DATA_PACK, folderPath);
 
 		registryLookup.listElementIds()
 				.filter(id -> id.location().getNamespace().equals(this.modid))

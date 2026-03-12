@@ -25,15 +25,15 @@ public abstract class VisceralTagProvider<T> extends TagsProvider<T> {
 
 	protected VisceralTagProvider(
 			PackOutput output,
-			ResourceKey<? extends Registry<T>> registryKey,
+			String modid,
 			CompletableFuture<HolderLookup.Provider> lookupProvider,
-			String modid
+			ResourceKey<? extends Registry<T>> registryKey
 	) {
 		super(output, registryKey, lookupProvider);
 		this.modid = modid;
 	}
 
-	protected abstract void addTags(HolderLookup.Provider lookup);
+	protected abstract void addTags(HolderLookup.Provider lookupProvider);
 
 	protected abstract ResourceKey<T> reverseLookup(T element);
 
@@ -49,19 +49,19 @@ public abstract class VisceralTagProvider<T> extends TagsProvider<T> {
 	public static class VisceralTagBuilder<T> extends TagAppender<T> {
 
 		private final TagBuilder internalBuilder;
-		private final Function<T, ResourceKey<T>> lookup;
+		private final Function<T, ResourceKey<T>> lookupProvider;
 
 		public VisceralTagBuilder(
 				TagBuilder builder,
-				Function<T, ResourceKey<T>> lookup
+				Function<T, ResourceKey<T>> lookupProvider
 		) {
 			super(builder);
 			this.internalBuilder = builder;
-			this.lookup = lookup;
+			this.lookupProvider = lookupProvider;
 		}
 
 		public VisceralTagBuilder<T> add(T element) {
-			this.internalBuilder.addElement(lookup.apply(element).location());
+			this.internalBuilder.addElement(lookupProvider.apply(element).location());
 			return this;
 		}
 
@@ -78,8 +78,7 @@ public abstract class VisceralTagProvider<T> extends TagsProvider<T> {
 
 		@SafeVarargs
 		public final VisceralTagBuilder<T> visceral$add(ResourceKey<T>... keys) {
-			for (ResourceKey<T> key : keys)
-				this.visceral$add(key);
+			Arrays.stream(keys).forEach(this::visceral$add);
 			return this;
 		}
 
@@ -91,8 +90,7 @@ public abstract class VisceralTagProvider<T> extends TagsProvider<T> {
 
 		@SafeVarargs @SuppressWarnings("UnusedReturnValue")
 		public final VisceralTagBuilder<T> addTags(TagKey<T>... tags) {
-			for (TagKey<T> tag : tags)
-				this.addTag(tag);
+			Arrays.stream(tags).forEach(this::addTag);
 			return this;
 		}
 
@@ -113,10 +111,10 @@ public abstract class VisceralTagProvider<T> extends TagsProvider<T> {
 
 		public BlockTagProvider(
 				PackOutput output,
-				CompletableFuture<HolderLookup.Provider> lookupProvider,
-				String modid
+				String modid,
+				CompletableFuture<HolderLookup.Provider> lookupProvider
 		) {
-			super(output, Registries.BLOCK, lookupProvider, modid);
+			super(output, modid, lookupProvider, Registries.BLOCK);
 		}
 
 		@Override
@@ -130,10 +128,10 @@ public abstract class VisceralTagProvider<T> extends TagsProvider<T> {
 
 		public ItemTagProvider(
 				PackOutput output,
-				CompletableFuture<HolderLookup.Provider> lookupProvider,
-				String modid
+				String modid,
+				CompletableFuture<HolderLookup.Provider> lookupProvider
 		) {
-			super(output, Registries.ITEM, lookupProvider, modid);
+			super(output, modid, lookupProvider, Registries.ITEM);
 		}
 
 		@Override
@@ -147,10 +145,10 @@ public abstract class VisceralTagProvider<T> extends TagsProvider<T> {
 
 		public FluidTagProvider(
 				PackOutput output,
-				CompletableFuture<HolderLookup.Provider> lookupProvider,
-				String modid
+				String modid,
+				CompletableFuture<HolderLookup.Provider> lookupProvider
 		) {
-			super(output, Registries.FLUID, lookupProvider, modid);
+			super(output, modid, lookupProvider, Registries.FLUID);
 		}
 
 		@Override
@@ -164,10 +162,10 @@ public abstract class VisceralTagProvider<T> extends TagsProvider<T> {
 
 		public EntityTypeTagProvider(
 				PackOutput output,
-				CompletableFuture<HolderLookup.Provider> lookupProvider,
-				String modid
+				String modid,
+				CompletableFuture<HolderLookup.Provider> lookupProvider
 		) {
-			super(output, Registries.ENTITY_TYPE, lookupProvider, modid);
+			super(output, modid, lookupProvider, Registries.ENTITY_TYPE);
 		}
 
 		@Override

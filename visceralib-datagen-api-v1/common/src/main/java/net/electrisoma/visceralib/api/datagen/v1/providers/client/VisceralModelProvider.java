@@ -27,20 +27,20 @@ import java.util.function.Supplier;
 
 public abstract class VisceralModelProvider implements DataProvider {
 
-	protected final PackOutput.PathProvider blockStatePathProvider;
-	protected final PackOutput.PathProvider modelPathProvider;
 	private final String modid;
 	private final CompletableFuture<HolderLookup.Provider> lookupProvider;
+	protected final PackOutput.PathProvider blockStatePathProvider;
+	protected final PackOutput.PathProvider modelPathProvider;
 
 	public VisceralModelProvider(
 			PackOutput output,
 			String modid,
 			CompletableFuture<HolderLookup.Provider> lookupProvider
 	) {
-		this.blockStatePathProvider = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "blockstates");
-		this.modelPathProvider = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "models");
 		this.modid = modid;
 		this.lookupProvider = lookupProvider;
+		this.blockStatePathProvider = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "blockstates");
+		this.modelPathProvider = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "models");
 	}
 
 	protected abstract void registerModels(HolderLookup.Provider lookup, VisualModelBuilder builder);

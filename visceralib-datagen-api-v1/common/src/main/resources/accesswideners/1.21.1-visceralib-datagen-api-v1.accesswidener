@@ -1,4 +1,4 @@
 accessWidener v2 named
 
 # Tags
-accessible class net/minecraft/data/tags/TagsProvider$TagAppender
+transitive-accessible class net/minecraft/data/tags/TagsProvider$TagAppender

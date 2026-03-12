@@ -32,48 +32,60 @@ public abstract class VisceralLangProvider implements DataProvider {
 
 	private final PackOutput output;
 	private final String modid;
-	private final String locale;
 	private final CompletableFuture<HolderLookup.Provider> lookupProvider;
+	private final String locale;
 	private final boolean generateUpsideDown;
 
 	public VisceralLangProvider(
 			PackOutput output,
 			String modid,
-			String locale,
-			CompletableFuture<HolderLookup.Provider> lookupProvider
+			CompletableFuture<HolderLookup.Provider> lookupProvider,
+			String locale
 	) {
-		this(output, modid, locale, lookupProvider, "en_us".equals(locale));
+		this(output, modid, lookupProvider, locale, "en_us".equals(locale));
 	}
 
 	public VisceralLangProvider(
 			PackOutput output,
 			String modid,
-			String locale,
 			CompletableFuture<HolderLookup.Provider> lookupProvider,
+			String locale,
 			boolean generateUpsideDown
 	) {
 		this.output = output;
 		this.modid = modid;
-		this.locale = locale;
 		this.lookupProvider = lookupProvider;
+		this.locale = locale;
 		this.generateUpsideDown = generateUpsideDown;
 	}
 
-	protected abstract void generateTranslations(HolderLookup.Provider lookup, TranslationBuilder builder);
+	protected abstract void generateTranslations(HolderLookup.Provider lookupProvider, TranslationBuilder builder);
 
 	@Override
 	public CompletableFuture<?> run(CachedOutput writer) {
 
-		return this.lookupProvider.thenCompose(lookup -> {
+		return this.lookupProvider.thenCompose(lookupProvider -> {
 			TreeMap<String, String> mainEntries = new TreeMap<>();
 			TreeMap<String, String> upsideDownEntries = new TreeMap<>();
 
-			generateTranslations(lookup, (key, value) -> {
-				if (mainEntries.put(key, value) != null)
-					throw new IllegalStateException("Duplicate translation key: " + key);
-				if (generateUpsideDown)
-					upsideDownEntries.put(key, TextUtils.toUpsideDown(value));
-			});
+			TranslationBuilder builder = new TranslationBuilder() {
+
+				@Override
+				public void add(String key, String value) {
+					if (mainEntries.containsKey(key))
+						throw new IllegalStateException("Duplicate translation key: " + key);
+					mainEntries.put(key, value);
+					if (generateUpsideDown)
+						upsideDownEntries.put(key, TextUtils.toUpsideDown(value));
+				}
+
+				@Override
+				public boolean exists(String key) {
+					return mainEntries.containsKey(key);
+				}
+			};
+
+			generateTranslations(lookupProvider, builder);
 
 			List<CompletableFuture<?>> futures = new ArrayList<>();
 			futures.add(save(writer, mainEntries, this.locale));
@@ -106,33 +118,40 @@ public abstract class VisceralLangProvider implements DataProvider {
 		return "VisceralLangProvider: " + locale + " for " + modid;
 	}
 
-	@FunctionalInterface
 	public interface TranslationBuilder {
 
 		void add(String key, String value);
 
+		boolean exists(String key);
+
 		default void addAuto(Block block) {
-			add(block, TextUtils.toTitleCase(RLUtils.getPathOrDefault(BuiltInRegistries.BLOCK.getKey(block), "unknown")));
+			if (!exists(block))
+				add(block, TextUtils.toTitleCase(RLUtils.getPathOrDefault(BuiltInRegistries.BLOCK.getKey(block), "unknown")));
 		}
 
 		default void addAuto(Item item) {
-			add(item, TextUtils.toTitleCase(RLUtils.getPathOrDefault(BuiltInRegistries.ITEM.getKey(item), "unknown")));
+			if (!exists(item))
+				add(item, TextUtils.toTitleCase(RLUtils.getPathOrDefault(BuiltInRegistries.ITEM.getKey(item), "unknown")));
 		}
 
 		default void addAuto(EntityType<?> type) {
-			add(type, TextUtils.toTitleCase(RLUtils.getPathOrDefault(BuiltInRegistries.ENTITY_TYPE.getKey(type), "unknown")));
+			if (!exists(type))
+				add(type, TextUtils.toTitleCase(RLUtils.getPathOrDefault(BuiltInRegistries.ENTITY_TYPE.getKey(type), "unknown")));
 		}
 
 		default void addAuto(MobEffect effect) {
-			add(effect, TextUtils.toTitleCase(RLUtils.getPathOrDefault(BuiltInRegistries.MOB_EFFECT.getKey(effect), "unknown")));
+			if (!exists(effect))
+				add(effect, TextUtils.toTitleCase(RLUtils.getPathOrDefault(BuiltInRegistries.MOB_EFFECT.getKey(effect), "unknown")));
 		}
 
 		default void addAuto(TagKey<?> tag) {
-			add(tag, TextUtils.toTitleCase(RLUtils.getPathOrDefault(tag.location(), "unknown")));
+			if (!exists(tag))
+				add(tag, TextUtils.toTitleCase(RLUtils.getPathOrDefault(tag.location(), "unknown")));
 		}
 
 		default void addAuto(ResourceKey<Enchantment> enchantment) {
-			add(enchantment, TextUtils.toTitleCase(RLUtils.getPathOrDefault(enchantment.location(), "unknown")));
+			if (!exists(enchantment))
+				add(enchantment, TextUtils.toTitleCase(RLUtils.getPathOrDefault(enchantment.location(), "unknown")));
 		}
 
 		default void add(Block block, String value) {
@@ -167,6 +186,34 @@ public abstract class VisceralLangProvider implements DataProvider {
 
 		default void add(ResourceLocation id, String value) {
 			add(id.toLanguageKey(), value);
+		}
+
+		default boolean exists(Item item) {
+			return exists(item.getDescriptionId());
+		}
+
+		default boolean exists(Block block) {
+			return exists(block.getDescriptionId());
+		}
+
+		default boolean exists(EntityType<?> type) {
+			return exists(type.getDescriptionId());
+		}
+
+		default boolean exists(MobEffect effect) {
+			return exists(effect.getDescriptionId());
+		}
+
+		default boolean exists(SoundEvent sound) {
+			return exists("subtitles." + sound.getLocation().toLanguageKey());
+		}
+
+		default boolean exists(TagKey<?> tag) {
+			return exists(IDatagenClientHelper.INSTANCE.getTagTranslationKey(tag));
+		}
+
+		default boolean exists(ResourceKey<Enchantment> enchantment) {
+			return exists(Util.makeDescriptionId("enchantment", enchantment.location()));
 		}
 	}
 }
