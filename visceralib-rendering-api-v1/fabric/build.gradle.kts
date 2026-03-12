@@ -25,6 +25,7 @@ dependencies {
 
     fapi.embed("fabric-api-base")
     fapi.embed("fabric-rendering-v1")
+    fapi.embed("fabric-renderer-api-v1")
     fapi.embed("fabric-transitive-access-wideners-v1")
 
     modCompileOnly("com.terraformersmc:modmenu:${mod.ver("modmenu")}")
