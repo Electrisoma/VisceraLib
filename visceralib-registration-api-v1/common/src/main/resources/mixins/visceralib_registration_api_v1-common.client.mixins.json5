@@ -1,10 +1,8 @@
 {
+  package: "net.electrisoma.visceralib.mixin.registration.v1.client",
   required: true,
   minVersion: "0.8",
-  package: "net.electrisoma.visceralib.mixin.registration.v1.client",
   compatibilityLevel: "${compatibilityLevel}",
-  client: [],
-  injectors: {
-    defaultRequire: 1
-  }
+  injectors: { defaultRequire: 1 },
+  client: []
 }

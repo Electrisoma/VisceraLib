@@ -1,13 +1,11 @@
 {
+  package: "net.electrisoma.visceralib.mixin.dsp.v1.client",
   required: true,
   minVersion: "0.8",
-  package: "net.electrisoma.visceralib.mixin.dsp.v1.client",
   compatibilityLevel: "${compatibilityLevel}",
+  injectors: { defaultRequire: 1 },
   client: [
     "SoundEngineMixin",
     "accessor.ChannelAccessor"
-  ],
-  injectors: {
-    defaultRequire: 1
-  }
+  ]
 }

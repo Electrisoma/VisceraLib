@@ -1,13 +1,12 @@
 {
+  package: "net.electrisoma.visceralib.mixin.item.v1.client",
   required: true,
   minVersion: "0.8",
-  package: "net.electrisoma.visceralib.mixin.item.v1.client",
   compatibilityLevel: "${compatibilityLevel}",
+  injectors: { defaultRequire: 1 },
   client: [
     "HumanoidArmorLayerMixin",
-    "GuiMixin"
-  ],
-  injectors: {
-    defaultRequire: 1
-  }
+    "GuiMixin",
+    "PlayerRendererMixin"
+  ]
 }

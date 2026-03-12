@@ -1,12 +1,10 @@
 {
+  package: "net.electrisoma.visceralib.mixin.item.v1",
   required: true,
   minVersion: "0.8",
-  package: "net.electrisoma.visceralib.mixin.item.v1",
   compatibilityLevel: "${compatibilityLevel}",
+  injectors: { defaultRequire: 1 },
   mixins: [
     "ItemMixin"
-  ],
-  injectors: {
-    defaultRequire: 1
-  }
+  ]
 }
